@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin quản lý khóa học</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #f1f8e9);
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 40px;
+    }
+    form {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #37474f;
+    }
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    button[type="submit"] {
+      background-color: #00796b;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button[type="submit"]:hover {
+      background-color: #004d40;
+    }
+    .list-section {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    .list-section h2 {
+      margin-bottom: 24px;
+      color: #2e7d32;
+      border-bottom: 2px solid #66bb6a;
+      padding-bottom: 8px;
+    }
+    .khuvuc-block {
+      margin-bottom: 30px;
+    }
+    .khuvuc-block h3 {
+      font-size: 20px;
+      margin-bottom: 12px;
+      color: #388e3c;
+    }
+    .course-item {
+      background-color: #f1f8e9;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .course-item .info {
+      max-width: 75%;
+    }
+    .course-item .info strong {
+      font-size: 16px;
+      color: #2e7d32;
+    }
+    .course-item .info span {
+      display: block;
+      font-size: 13px;
+      color: #616161;
+    }
+    .btn-delete {
+      background-color: #e53935;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn-delete:hover {
+      background-color: #b71c1c;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Trang quản lý khóa học</h1>
+
+<form id="formAddCourse">
+  <label for="selectKhuVuc">Chọn khu vực</label>
+  <select id="selectKhuVuc" required></select>
+
+  <label for="inputTen">Tên khóa học</label>
+  <input type="text" id="inputTen" required placeholder="Nhập tên khóa học" />
+
+  <label for="inputMoTa">Mô tả khóa học</label>
+  <textarea id="inputMoTa" required placeholder="Nhập mô tả khóa học"></textarea>
+
+  <label for="inputGia">Giá khóa học (VND)</label>
+  <input type="number" id="inputGia" required min="0" placeholder="Nhập giá khóa học" />
+
+  <label for="inputHinh">Link hình ảnh minh họa (URL)</label>
+  <input type="text" id="inputHinh" placeholder="https://example.com/image.jpg" />
+
+  <button type="submit">Thêm khóa học</button>
+</form>
+
+<section class="list-section">
+  <h2>Các khóa học hiện có</h2>
+  <div id="listKhoaHoc"></div>
+</section>
+
+<script>
+  // ======== PHẦN BẢO VỆ MẬT KHẨU ============
+  const PASSWORD = "lamlam2802"; // 🔐 Mật khẩu bạn có thể thay đổi tại đây
+
+  function checkPassword() {
+    const input = prompt("🔐 Nhập mật khẩu để truy cập trang admin:");
+    if (input !== PASSWORD) {
+      alert("❌ Mật khẩu sai. Quay về trang chủ.");
+      window.location.href = "/"; // Có thể đổi thành URL bạn muốn
+    }
+  }
+  checkPassword();
+
+  // ======== ADMIN FUNCTIONALITY =============
+  const danhSachKhuVuc = [
+    "Toán", "Lý", "Tiếng Anh", "Sinh", "Văn", "Sử", "Địa",
+    "DGNL (HSA)", "VATC - APT", "DGTD (TSA)", "TOEIC", "IELTS", "Đại học"
+  ];
+
+  const selectKhuVuc = document.getElementById("selectKhuVuc");
+  const formAddCourse = document.getElementById("formAddCourse");
+  const listKhoaHocDiv = document.getElementById("listKhoaHoc");
+
+  function loadKhoaHoc() {
+    return JSON.parse(localStorage.getItem("khoahoc") || "[]");
+  }
+
+  function saveKhoaHoc(data) {
+    localStorage.setItem("khoahoc", JSON.stringify(data));
+  }
+
+  function taoOptionKhuVuc() {
+    danhSachKhuVuc.forEach(kv => {
+      const option = document.createElement("option");
+      option.value = kv;
+      option.textContent = kv;
+      selectKhuVuc.appendChild(option);
+    });
+  }
+
+  function hienThiDanhSachKhoaHoc() {
+    const data = loadKhoaHoc();
+    listKhoaHocDiv.innerHTML = "";
+
+    if (data.length === 0) {
+      listKhoaHocDiv.innerHTML = `<p style="font-style: italic; color: #666;">Chưa có khóa học nào.</p>`;
+      return;
+    }
+
+    danhSachKhuVuc.forEach(khuvuc => {
+      const khoaHocKhu = data.filter(kh => kh.loai === khuvuc);
+      if (khoaHocKhu.length === 0) return;
+
+      const block = document.createElement("div");
+      block.className = "khuvuc-block";
+
+      const h3 = document.createElement("h3");
+      h3.textContent = khuvuc;
+      block.appendChild(h3);
+
+      khoaHocKhu.forEach(kh => {
+        const item = document.createElement("div");
+        item.className = "course-item";
+
+        const info = document.createElement("div");
+        info.className = "info";
+        info.innerHTML = `
+          <strong>${kh.ten}</strong>
+          <span>Mô tả: ${kh.moTa}</span>
+          <span>Giá: ${kh.gia} VND</span>
+        `;
+
+        const btnXoa = document.createElement("button");
+        btnXoa.className = "btn-delete";
+        btnXoa.textContent = "Xóa";
+        btnXoa.onclick = () => {
+          if (confirm(`Bạn có chắc muốn xóa khóa học "${kh.ten}" không?`)) {
+            xoaKhoaHoc(kh.ten, khuvuc);
+          }
+        };
+
+        item.appendChild(info);
+        item.appendChild(btnXoa);
+        block.appendChild(item);
+      });
+
+      listKhoaHocDiv.appendChild(block);
+    });
+  }
+
+  function xoaKhoaHoc(ten, loai) {
+    let data = loadKhoaHoc();
+    data = data.filter(kh => !(kh.ten === ten && kh.loai === loai));
+    saveKhoaHoc(data);
+    hienThiDanhSachKhoaHoc();
+  }
+
+  formAddCourse.addEventListener("submit", e => {
+    e.preventDefault();
+
+    const ten = document.getElementById("inputTen").value.trim();
+    const moTa = document.getElementById("inputMoTa").value.trim();
+    const gia = document.getElementById("inputGia").value.trim();
+    const loai = selectKhuVuc.value;
+    const hinh = document.getElementById("inputHinh").value.trim() || '';
+
+    if (!ten || !moTa || !gia || !loai) {
+      alert("Vui lòng điền đầy đủ thông tin khóa học.");
+      return;
+    }
+
+    let data = loadKhoaHoc();
+    data.push({ ten, moTa, gia, loai, hinh });
+    saveKhoaHoc(data);
+
+    alert("✅ Đã thêm khóa học thành công!");
+    formAddCourse.reset();
+    selectKhuVuc.selectedIndex = 0;
+    hienThiDanhSachKhoaHoc();
+  });
+
+  taoOptionKhuVuc();
+  hienThiDanhSachKhoaHoc();
+</script>
+
+</body>
+</html>
