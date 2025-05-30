@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Hóa đơn thanh toán</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body {
+      background: #f3f6fb;
+      font-family: 'Inter', sans-serif;
+      padding: 2rem;
+    }
+    .invoice-form, .invoice-preview, .history-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 1rem;
+    }
+    input, label {
+      display: block;
+      width: 100%;
+    }
+    input {
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    label {
+      font-weight: bold;
+      margin: 0.5rem 0 0.25rem;
+    }
+    .btn {
+      background-color: #2b6cb0;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-right: 1rem;
+    }
+    .btn:hover {
+      background-color: #1a4f80;
+    }
+    #invoice {
+      max-width: 700px;
+      margin: auto;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    .invoice-header {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .invoice-header img {
+      max-height: 60px;
+      margin-bottom: 10px;
+    }
+    .invoice-header h3 {
+      margin-bottom: 0.2rem;
+      color: #2c3e50;
+      font-size: 1.5rem;
+    }
+    .invoice-id {
+      text-align: right;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      color: #4a5568;
+    }
+    .invoice-info p {
+      font-size: 1rem;
+      margin: 6px 0;
+    }
+    .qr-section {
+      text-align: center;
+    }
+    .qr-section img {
+      width: 180px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 6px;
+      background: #f9f9f9;
+    }
+    .button-group {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+    .history-section table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .history-section th, .history-section td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    .history-section th {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- <script>
+  const PASSWORD = "lamlam2802";
+  const input = prompt("🔐 Nhập mật khẩu để truy cập tạo hóa đơn:");
+  if (input !== PASSWORD) {
+    alert("❌ Sai mật khẩu.");
+    window.location.href = "/";
+  }
+</script> -->
+
+<main>
+  <h2><i class="fas fa-file-invoice-dollar"></i> Tạo hóa đơn thanh toán</h2>
+
+  <div class="invoice-form">
+    <label>Email:</label>
+    <input type="email" id="email">
+    <label>Số điện thoại:</label>
+    <input type="text" id="phone">
+    <label>Tên khóa học:</label>
+    <input type="text" id="course">
+    <label>Giá (VND):</label>
+    <input type="number" id="price">
+    <label>Ngày thanh toán:</label>
+    <input type="date" id="date">
+    <label>Ảnh QR chuyển khoản:</label>
+    <input type="file" id="qr" accept="image/*">
+    <label>Tên chủ tài khoản:</label>
+    <input type="text" id="account">
+    <button class="btn" onclick="generateInvoice()"><i class="fas fa-eye"></i> Tạo hóa đơn</button>
+  </div>
+
+  <div class="invoice-preview" style="display:none">
+    <div id="invoice">
+      <div class="invoice-header">
+        <div style="font-size: 24px; font-weight: bold; color: #2c3e50; margin-bottom: 10px;">khoahocvip.io.vn</div>
+        <h3><i class="fas fa-receipt"></i> HÓA ĐƠN THANH TOÁN</h3>
+      </div>
+      <div class="invoice-id">
+        Mã hóa đơn: <span id="invoiceCode"></span>
+      </div>
+      <div class="invoice-info">
+        <p><strong>Email:</strong> <span id="outEmail"></span></p>
+        <p><strong>SĐT:</strong> <span id="outPhone"></span></p>
+        <p><strong>Khóa học:</strong> <span id="outCourse"></span></p>
+        <p><strong>Giá:</strong> <span id="outPrice"></span> VND</p>
+        <p><strong>Ngày thanh toán:</strong> <span id="outDate"></span></p>
+      </div>
+      <div class="qr-section">
+        <img id="outQR" alt="QR ngân hàng">
+        <p id="outAccount"></p>
+      </div>
+    </div>
+    <div class="button-group">
+      <button class="btn" onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> Tải PDF</button>
+      <button class="btn" onclick="downloadImage()"><i class="fas fa-image"></i> Tải ảnh</button>
+    </div>
+  </div>
+
+  <div class="history-section">
+    <h2>Lịch sử hóa đơn đã tạo</h2>
+    <table id="historyTable">
+      <thead>
+        <tr>
+          <th>Mã</th><th>Email</th><th>SĐT</th><th>Khóa học</th><th>Giá</th><th>Ngày</th><th>Chủ TK</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="button-group">
+      <button class="btn" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Tải danh sách Excel</button>
+    </div>
+  </div>
+</main>
+
+<script>
+  const historyData = JSON.parse(localStorage.getItem("invoiceHistory") || "[]");
+
+  function generateInvoice() {
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const course = document.getElementById('course').value;
+    const price = document.getElementById('price').value;
+    const date = document.getElementById('date').value;
+    const account = document.getElementById('account').value;
+    const qrInput = document.getElementById('qr');
+
+    if (!qrInput.files[0]) return alert("Chọn ảnh QR");
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const code = Math.floor(100000 + Math.random() * 900000);
+      document.getElementById('outEmail').textContent = email;
+      document.getElementById('outPhone').textContent = phone;
+      document.getElementById('outCourse').textContent = course;
+      document.getElementById('outPrice').textContent = parseInt(price).toLocaleString();
+      document.getElementById('outDate').textContent = date.split('-').reverse().join('/');
+      document.getElementById('outQR').src = e.target.result;
+      document.getElementById('outAccount').textContent = "Chủ tài khoản: " + account;
+      document.getElementById('invoiceCode').textContent = code;
+      document.querySelector('.invoice-preview').style.display = 'block';
+
+      // Lưu lịch sử
+      const invoice = { code, email, phone, course, price, date, account };
+      historyData.push(invoice);
+      localStorage.setItem("invoiceHistory", JSON.stringify(historyData));
+      renderHistory();
+    };
+    reader.readAsDataURL(qrInput.files[0]);
+  }
+
+  function renderHistory() {
+    const tbody = document.querySelector("#historyTable tbody");
+    tbody.innerHTML = "";
+    historyData.forEach(item => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${item.code}</td>
+        <td>${item.email}</td>
+        <td>${item.phone}</td>
+        <td>${item.course}</td>
+        <td>${parseInt(item.price).toLocaleString()}</td>
+        <td>${item.date.split('-').reverse().join('/')}</td>
+        <td>${item.account}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function downloadPDF() {
+    html2pdf().from(document.getElementById('invoice')).set({
+      margin: 0.5,
+      filename: `hoa-don-${Date.now()}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' }
+    }).save();
+  }
+
+  function downloadImage() {
+    html2canvas(document.getElementById('invoice')).then(canvas => {
+      const link = document.createElement('a');
+      link.download = `hoa-don-${Date.now()}.png`;
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  }
+
+  function exportToExcel() {
+    const ws = XLSX.utils.json_to_sheet(historyData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Invoices");
+    XLSX.writeFile(wb, "danh-sach-hoa-don.xlsx");
+  }
+
+  renderHistory();
+</script>
+
+</body>
+</html>

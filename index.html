@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Website bán khóa học</title>
+
+  <!-- Thư viện icon Font Awesome từ cdnjs -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Các thư viện bạn đã dùng -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <style>
+    /* Reset cơ bản */
+    * {
+      box-sizing: border-box;
+      margin: 0; padding: 0;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: linear-gradient(90deg, #2980b9, #3498db);
+      color: white;
+      padding: 20px 15px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    header .logo {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      user-select: none;
+    }
+    header nav {
+      margin-top: 10px;
+      flex-grow: 1;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    header nav button {
+      background: transparent;
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 18px;
+      margin-right: 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+      white-space: nowrap;
+    }
+    header nav button:hover,
+    header nav button.active {
+      background-color: rgba(255,255,255,0.25);
+    }
+    @media (max-width: 600px) {
+      header {
+        justify-content: center;
+      }
+    }
+
+    main {
+      flex-grow: 1;
+      max-width: 960px;
+      margin: 30px auto;
+      padding: 0 15px 40px;
+    }
+    .courses {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0;
+    }
+    .course-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgb(0 0 0 / 0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease;
+    }
+    .course-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 20px rgb(0 0 0 / 0.12);
+    }
+    .course-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-bottom: 1px solid #eee;
+      user-select: none;
+    }
+    .course-info {
+      padding: 18px 20px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .course-info h3 {
+      margin-bottom: 10px;
+      font-size: 20px;
+      color: #2c3e50;
+      user-select: text;
+      text-align: center;
+    }
+    .course-info p {
+      flex-grow: 1;
+      font-size: 14px;
+      color: #555;
+      line-height: 1.4;
+      margin-bottom: 16px;
+      user-select: text;
+      text-align: center;
+    }
+    .course-info .price {
+      font-weight: 700;
+      color: #e67e22;
+      font-size: 18px;
+      margin-bottom: 12px;
+      user-select: text;
+      text-align: center;
+    }
+    .course-info a.buy-btn {
+      background: #27ae60;
+      color: white;
+      text-align: center;
+      padding: 12px 0;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 3px 8px rgb(39 174 96 / 0.7);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+    .course-info a.buy-btn:hover {
+      background: #2ecc71;
+      box-shadow: 0 5px 15px rgb(46 204 113 / 0.85);
+    }
+
+    footer {
+      background: #2c3e50;
+      color: #ccc;
+      text-align: center;
+      padding: 25px 15px;
+      font-size: 14px;
+      box-shadow: inset 0 1px 4px rgba(255,255,255,0.1);
+      user-select: none;
+    }
+    footer a {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    header nav::-webkit-scrollbar {
+      height: 6px;
+    }
+    header nav::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.3);
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo" style="display: flex; align-items: center; gap: 10px;">
+    <img src="logo.png" alt="Logo" style="height: 50px;" />
+    <span style="font-size: 20px; font-weight: bold; color: #fff;">
+      <i class="fas fa-graduation-cap" style="margin-right: 5px;"></i>
+      Khoahocvip.io.vn
+    </span>
+  </div>
+  <nav id="nav-khuvuc" aria-label="Danh sách khu vực khóa học">
+    <!-- Nút khu vực sẽ tạo tự động -->
+  </nav>
+</header>
+
+<main>
+  <div id="courses" class="courses" aria-live="polite" aria-atomic="true">
+    <!-- Khóa học sẽ hiển thị ở đây -->
+  </div>
+</main>
+
+<footer>
+  <p>© 2025 Công ty DNL - Nhà phát hành khóa học trực tuyến</p>
+  <p>
+    <i class="fas fa-map-marker-alt"></i> Bảo Lý - Phú Bình - Thái Nguyên |
+    <i class="fas fa-envelope"></i> <a href="mailto:duongngoclam28022008@gmail.com">duongngoclam28022008@gmail.com</a> |
+    <i class="fas fa-phone"></i> 0333041525
+  </p>
+  <p><i class="fas fa-laptop-code"></i> Website được phát triển bởi Ngọc Lâm</p>
+</footer>
+
+<script>
+  const SUPABASE_URL = "https://sdixqzzpggcxrbtaqqtf.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkaXhxenpwZ2djeHJidGFxcXRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg2MDQ4OTMsImV4cCI6MjA2NDE4MDg5M30.5nP_A5N6Jb2fDDNmRVcLva_znbrQhErt-xcpmm5V6S8";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const danhSachKhuVuc = [
+    "Khóa Combo", "Toán", "Lý", "Tiếng Anh", "Sinh", "Văn", "Sử", "Địa",
+    "DGNL (HSA)", "VATC - APT", "DGTD (TSA)", "TOEIC", "IELTS", "Đại học", 
+  ];
+
+  const zaloLink = "https://zalo.me/0333041525";
+  const nav = document.getElementById("nav-khuvuc");
+  const coursesDiv = document.getElementById("courses");
+
+  function taoNutKhuVuc() {
+    danhSachKhuVuc.forEach(kv => {
+      const btn = document.createElement("button");
+      btn.innerHTML = `<i class="fas fa-book-open" style="margin-right: 6px;"></i>${kv}`;
+      btn.dataset.khuvuc = kv;
+      btn.setAttribute("aria-pressed", "false");
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#nav-khuvuc button").forEach(b => {
+          b.classList.remove("active");
+          b.setAttribute("aria-pressed", "false");
+        });
+        btn.classList.add("active");
+        btn.setAttribute("aria-pressed", "true");
+        hienThiKhoaHoc(kv);
+      });
+      nav.appendChild(btn);
+    });
+  }
+
+  async function hienThiKhoaHoc(khuvuc) {
+    const { data: khoaHocLoc, error } = await supabase
+      .from("khoahoc")
+      .select("*")
+      .eq("loai", khuvuc);
+
+    coursesDiv.innerHTML = "";
+
+    if (error) {
+      coursesDiv.innerHTML = `<p style="color:red;">Lỗi tải dữ liệu: ${error.message}</p>`;
+      return;
+    }
+
+    if (!khoaHocLoc || khoaHocLoc.length === 0) {
+      coursesDiv.innerHTML = `<p style="font-style: italic; color: #666; text-align:center;">Chưa có khóa học nào trong khu vực <strong>${khuvuc}</strong>.</p>`;
+      return;
+    }
+
+    khoaHocLoc.forEach(kh => {
+      const card = document.createElement("div");
+      card.className = "course-card";
+      card.innerHTML = `
+        <img src="${kh.hinh || 'https://via.placeholder.com/400x160?text=No+Image'}" alt="${kh.ten}" />
+        <div class="course-info">
+          <h3>${kh.ten}</h3>
+          <p>${kh.moTa}</p>
+          <div class="price">${parseInt(kh.gia).toLocaleString()} VND</div>
+          <a class="buy-btn" href="https://zalo.me/0333041525" target="_blank" rel="noopener noreferrer">
+            <i class="fas fa-shopping-cart" style="margin-right: 6px;"></i>Mua ngay
+          </a>
+        </div>
+      `;
+      coursesDiv.appendChild(card);
+    });
+  }
+
+
+  taoNutKhuVuc();
+</script>
+
+</body>
+</html>
