@@ -146,15 +146,15 @@
 
 <script>
   // ======== PHẦN BẢO VỆ MẬT KHẨU ============
-  // const PASSWORD = "lamlam2802"; // 🔐 Mật khẩu bạn có thể thay đổi tại đây
+  const PASSWORD = "lamlam2802"; // 🔐 Mật khẩu bạn có thể thay đổi tại đây
 
-  // function checkPassword() {
-  //   const input = prompt("🔐 Nhập mật khẩu để truy cập trang admin:");
-  //   if (input !== PASSWORD) {
-  //     alert("❌ Mật khẩu sai. Quay về trang chủ.");
-  //     window.location.href = "/"; // Có thể đổi thành URL bạn muốn
-  //   }
-  // }
+  function checkPassword() {
+    const input = prompt("🔐 Nhập mật khẩu để truy cập trang admin:");
+    if (input !== PASSWORD) {
+      alert("❌ Mật khẩu sai. Quay về trang chủ.");
+      window.location.href = "/"; // Có thể đổi thành URL bạn muốn
+    }
+  }
   // checkPassword();
 
   // ======== ADMIN FUNCTIONALITY =============
@@ -165,7 +165,7 @@
 
   
   const danhSachKhuVuc = [
-    "Toán", "Lý", "Tiếng Anh", "Sinh", "Văn", "Sử", "Địa",
+    "Khóa Combo", "Toán", "Lý", "Tiếng Anh", "Sinh", "Văn", "Sử", "Địa",
     "DGNL (HSA)", "VATC - APT", "DGTD (TSA)", "TOEIC", "IELTS", "Đại học"
   ];
 
