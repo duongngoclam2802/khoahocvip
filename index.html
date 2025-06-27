@@ -7,10 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Website bán khóa học</title>
 
-  <!-- Thư viện icon Font Awesome từ cdnjs -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <!-- Các thư viện bạn đã dùng -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -166,6 +164,13 @@
       background: #2ecc71;
       box-shadow: 0 5px 15px rgb(46 204 113 / 0.85);
     }
+    /* Thêm style cho nút Học Ngay để khác biệt nếu cần */
+    .course-info a.learn-btn {
+        background: #3498db; /* Màu xanh khác */
+    }
+    .course-info a.learn-btn:hover {
+        background: #5dade2;
+    }
 
     footer {
       background: #2c3e50;
@@ -205,14 +210,12 @@
     </span>
   </div>
   <nav id="nav-khuvuc" aria-label="Danh sách khu vực khóa học">
-    <!-- Nút khu vực sẽ tạo tự động -->
-  </nav>
+    </nav>
 </header>
 
 <main>
   <div id="courses" class="courses" aria-live="polite" aria-atomic="true">
-    <!-- Khóa học sẽ hiển thị ở đây -->
-  </div>
+    </div>
 </main>
 
 <footer>
@@ -230,9 +233,11 @@
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkaXhxenpwZ2djeHJidGFxcXRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg2MDQ4OTMsImV4cCI6MjA2NDE4MDg5M30.5nP_A5N6Jb2fDDNmRVcLva_znbrQhErt-xcpmm5V6S8";
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+  // === THAY ĐỔI 1: Thêm "Khóa học miễn phí" và "Tài liệu" vào danh sách ===
   const danhSachKhuVuc = [
-    "Khóa Combo", "Toán", "Lý", "Hóa", "Tiếng Anh", "Sinh", "Văn", "Sử", "Địa",
-    "DGNL (HSA)", "VATC - APT", "DGTD (TSA)", "TOEIC", "IELTS", "Đại học", 
+    "Khóa Combo","Khóa học miễn phí", "Tài liệu", "Toán", "Lý", "Hóa", "Tiếng Anh", "Sinh", "Văn", "Sử", "Địa",
+    "DGNL (HSA)", "VATC - APT", "DGTD (TSA)", "TOEIC", "IELTS", "Đại học"
+    
   ];
 
   const zaloLink = "https://zalo.me/0333041525";
@@ -275,25 +280,45 @@
       coursesDiv.innerHTML = `<p style="font-style: italic; color: #666; text-align:center;">Chưa có khóa học nào trong khu vực <strong>${khuvuc}</strong>.</p>`;
       return;
     }
-
+    
+    // === THAY ĐỔI 2: Logic hiển thị thẻ khóa học ===
     khoaHocLoc.forEach(kh => {
       const card = document.createElement("div");
       card.className = "course-card";
+
+      // Điều kiện cho giá: nếu giá là 0 hoặc null thì hiển thị "Miễn phí"
+      const giaHienThi = (kh.gia && parseInt(kh.gia) > 0)
+        ? `${parseInt(kh.gia).toLocaleString()} VND`
+        : "Miễn phí";
+
+      let nutHanhDong;
+      // Điều kiện cho nút: nếu là khu vực miễn phí hoặc tài liệu thì hiển thị nút "Học Ngay"
+      if (khuvuc === "Khóa học miễn phí" || khuvuc === "Tài liệu") {
+        // QUAN TRỌNG: Đảm bảo bảng 'khoahoc' của bạn có cột 'linkdrive' để chứa link học/tải
+        nutHanhDong = `
+          <a class="buy-btn learn-btn" href="${kh.linkdrive || '#'}" target="_blank" rel="noopener noreferrer">
+            <i class="fas fa-play-circle" style="margin-right: 6px;"></i>Học Ngay
+          </a>`;
+      } else {
+        // Giữ nguyên nút "Liên Hệ Mua" cho các khu vực khác
+        nutHanhDong = `
+          <a class="buy-btn" href="${zaloLink}" target="_blank" rel="noopener noreferrer">
+            <i class="fas fa-shopping-cart" style="margin-right: 6px;"></i>Liên Hệ Mua
+          </a>`;
+      }
+
       card.innerHTML = `
         <img src="${kh.hinh || 'https://via.placeholder.com/400x160?text=No+Image'}" alt="${kh.ten}" />
         <div class="course-info">
           <h3>${kh.ten}</h3>
           <p>${kh.moTa}</p>
-          <div class="price">${parseInt(kh.gia).toLocaleString()} VND</div>
-          <a class="buy-btn" href="https://zalo.me/0333041525" target="_blank" rel="noopener noreferrer">
-            <i class="fas fa-shopping-cart" style="margin-right: 6px;"></i>Liên Hệ Mua
-          </a>
+          <div class="price">${giaHienThi}</div>
+          ${nutHanhDong}
         </div>
       `;
       coursesDiv.appendChild(card);
     });
   }
-
 
   taoNutKhuVuc();
   document.querySelectorAll('#nav-khuvuc button').forEach(btn => {
@@ -304,7 +329,7 @@
   });
   hienThiKhoaHoc("Khóa Combo");
 </script>
-<!-- Google tag (gtag.js) -->
+
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-T3HC34BE89"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -313,5 +338,10 @@
 
   gtag('config', 'G-T3HC34BE89');
 </script>
+
+<script>
+(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="RjrPO3Z_fyoAJ9oiVDKuk";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+</script>
+
 </body>
 </html>
