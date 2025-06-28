@@ -1,302 +1,462 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Website bán khóa học</title>
+    <title>Khoahocvip.io.vn | Chia sẻ khóa học chất lượng cao</title>
+    <meta name="description" content="Khám phá kho khóa học trực tuyến đa dạng các môn Toán, Lý, Hóa, Tiếng Anh, IELTS, TOEIC và luyện thi ĐGNL, DGTD. Cung cấp tài liệu học tập và các khóa học miễn phí." />
+    <meta name="keywords" content="khóa học online, học trực tuyến, chia sẻ khóa học, khoahocvip, toán, lý, hóa, tiếng anh, ielts, toeic, đgnl, dgtd, tài liệu học tập" />
+    <meta property="og:title" content="Khoahocvip.io.vn | Chia sẻ khóa học chất lượng cao" />
+    <meta property="og:description" content="Khám phá kho khóa học trực tuyến đa dạng các môn Toán, Lý, Hóa, Tiếng Anh, IELTS, TOEIC và luyện thi ĐGNL, DGTD." />
+    <meta property="og:image" content="logo.png" />
+    <meta property="og:url" content="https://khoahocvip.io.vn" />
+    <meta property="og:type" content="website" />
 
-  <!-- Thư viện icon Font Awesome từ cdnjs -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <!-- Các thư viện bạn đã dùng -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    /* Reset cơ bản */
-    * {
-      box-sizing: border-box;
-      margin: 0; padding: 0;
-    }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f5f7fa;
-      color: #333;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --primary-dark: #0056b3;
+            --secondary-color: #28a745;
+            --secondary-dark: #1e7e34;
+            --text-dark: #212529;
+            --text-light: #6c757d;
+            --bg-light: #f8f9fa;
+            --white-color: #ffffff;
+            --border-color: #dee2e6;
+            --star-color: #ffc107;
+            --sale-color: #dc3545;
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+            --header-height: 60px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-    header {
-      background: linear-gradient(90deg, #2980b9, #3498db);
-      color: white;
-      padding: 20px 15px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-    header .logo {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      user-select: none;
-    }
-    header nav {
-      margin-top: 10px;
-      flex-grow: 1;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
-    header nav button {
-      background: transparent;
-      border: none;
-      color: white;
-      font-weight: 600;
-      font-size: 14px;
-      padding: 10px 18px;
-      margin-right: 6px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.25s ease;
-      white-space: nowrap;
-    }
-    header nav button:hover,
-    header nav button.active {
-      background-color: rgba(255,255,255,0.25);
-    }
-    @media (max-width: 600px) {
-      header {
-        justify-content: center;
-      }
-    }
+        /* HEADER & NAVIGATION */
+        header {
+            background-color: var(--white-color);
+            padding: 0 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo { display: flex; align-items: center; gap: 12px; font-size: 1.5rem; font-weight: 700; color: var(--primary-color); text-decoration: none; }
+        .logo img { height: 35px; }
+        .header-right nav button { background: transparent; border: none; color: var(--text-dark); font-weight: 500; font-size: 1rem; padding: 8px 15px; margin-left: 10px; border-radius: 8px; cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease; white-space: nowrap; }
+        .header-right nav button:hover { color: var(--primary-color); }
+        .header-right nav button.active { background-color: var(--primary-color); color: var(--white-color); font-weight: 600; }
+        .category-scroll { background-color: var(--white-color); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); overflow-x: auto; white-space: nowrap; padding: 10px 15px; border-bottom: 1px solid var(--border-color); position: sticky; top: var(--header-height); z-index: 999; display: none; }
+        .category-scroll button { display: inline-block; background: #f1f3f5; border: 1px solid transparent; color: var(--text-dark); font-size: 0.9rem; padding: 8px 16px; margin-right: 10px; border-radius: 20px; cursor: pointer; transition: all 0.2s ease; }
+        .category-scroll button:hover { background-color: #e9ecef; }
+        .category-scroll button.active { border-color: var(--primary-color); color: var(--primary-color); background-color: #e7f5ff; font-weight: 600; }
+        .category-scroll::-webkit-scrollbar { height: 0; }
+        .category-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* MAIN CONTENT */
+        main { flex-grow: 1; max-width: 1200px; width: 100%; margin: 30px auto; padding: 0 20px; }
+        .courses { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
 
-    main {
-      flex-grow: 1;
-      max-width: 960px;
-      margin: 30px auto;
-      padding: 0 15px 40px;
-    }
-    .courses {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 0;
-    }
-    @media screen and (max-width: 600px) {
-      .courses {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 16px !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 90vw !important;
-        max-width: 90vw !important;
-      }
-    }
-    .course-card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgb(0 0 0 / 0.08);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.3s ease;
-    }
-    .course-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 8px 20px rgb(0 0 0 / 0.12);
-    }
-    .course-card img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-      border-bottom: 1px solid #eee;
-      user-select: none;
-    }
-    .course-info {
-      padding: 18px 20px;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-    }
-    .course-info h3 {
-      margin-bottom: 10px;
-      font-size: 20px;
-      color: #2c3e50;
-      user-select: text;
-      text-align: center;
-    }
-    .course-info p {
-      flex-grow: 1;
-      font-size: 14px;
-      color: #555;
-      line-height: 1.4;
-      margin-bottom: 16px;
-      user-select: text;
-      text-align: center;
-    }
-    .course-info .price {
-      font-weight: 700;
-      color: #e67e22;
-      font-size: 18px;
-      margin-bottom: 12px;
-      user-select: text;
-      text-align: center;
-    }
-    .course-info a.buy-btn {
-      background: #27ae60;
-      color: white;
-      text-align: center;
-      padding: 12px 0;
-      border-radius: 8px;
-      font-weight: 600;
-      text-decoration: none;
-      box-shadow: 0 3px 8px rgb(39 174 96 / 0.7);
-      transition: background-color 0.3s ease, box-shadow 0.3s ease;
-      user-select: none;
-    }
-    .course-info a.buy-btn:hover {
-      background: #2ecc71;
-      box-shadow: 0 5px 15px rgb(46 204 113 / 0.85);
-    }
+        /* === SỬA 1: CSS CHO THÔNG BÁO RỖNG === */
+        .no-courses-message {
+            grid-column: 1 / -1; /* Quan trọng: Cho phép message chiếm toàn bộ chiều rộng grid */
+            text-align: center;
+            padding: 40px 20px;
+            font-style: italic;
+            color: var(--text-light);
+            background-color: var(--white-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        /* === COURSE CARD === */
+        .course-card {
+            background: var(--white-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .course-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); }
+        .card-image-container { position: relative; cursor: pointer; } /* Thêm cursor pointer */
+        .course-badge {
+            position: absolute; top: 15px; left: -1px;
+            background-color: var(--sale-color); color: var(--white-color);
+            padding: 5px 12px; font-size: 13px; font-weight: 700;
+            border-radius: 0 4px 4px 0; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        }
+        .course-card img { width: 100%; height: 180px; object-fit: cover; display: block; }
+        .course-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+        .course-info h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; line-height: 1.4; cursor: pointer; } /* Thêm cursor pointer */
+        .course-info h3:hover { color: var(--primary-color); }
+        
+        .course-meta {
+            display: flex; align-items: center; gap: 15px;
+            font-size: 14px; color: var(--text-light); margin-bottom: 15px;
+        }
+        .course-rating { display: flex; align-items: center; gap: 5px; }
+        .course-rating .stars { color: var(--star-color); }
+        .course-rating .rating-count { color: var(--text-light); font-size: 13px; }
+        .course-sales { display: flex; align-items: center; gap: 5px; }
+        .course-sales i { color: var(--primary-color); }
 
-    footer {
-      background: #2c3e50;
-      color: #ccc;
-      text-align: center;
-      padding: 25px 15px;
-      font-size: 14px;
-      box-shadow: inset 0 1px 4px rgba(255,255,255,0.1);
-      user-select: none;
-    }
-    footer a {
-      color: #3498db;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    footer a:hover {
-      text-decoration: underline;
-    }
+        .course-pricing {
+            display: flex; align-items: flex-end; gap: 10px; margin-bottom: 15px;
+        }
+        .course-pricing .current-price {
+            font-size: 1.8rem; font-weight: 700; color: var(--sale-color);
+        }
+        .course-pricing .original-price {
+            font-size: 1rem; color: var(--text-light); text-decoration: line-through;
+        }
+        .course-pricing .discount-badge {
+            background-color: var(--sale-color); color: var(--white-color);
+            padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;
+        }
+        .normal-price {
+            font-size: 1.8rem; font-weight: 700; color: var(--primary-color); margin-bottom: 15px;
+        }
+        .course-info .buy-btn {
+            background: var(--primary-dark); color: var(--white-color);
+            padding: 12px 20px; border-radius: 8px; font-weight: 600;
+            text-decoration: none; transition: background-color 0.2s ease, transform 0.2s ease;
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 8px; margin-top: auto; width: 100%;
+        }
+        .course-info .buy-btn:hover { background-color: var(--primary-color); transform: scale(1.03); }
+        .course-info a.learn-btn { background: var(--secondary-dark); }
+        .course-info a.learn-btn:hover { background: var(--secondary-color); }
 
-    header nav::-webkit-scrollbar {
-      height: 6px;
-    }
-    header nav::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,0.3);
-      border-radius: 3px;
-    }
-  </style>
+        /* === SỬA 2: CSS CHO MODAL HIỂN THỊ MÔ TẢ === */
+        .modal {
+            display: none; /* Ẩn mặc định */
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-content {
+            background-color: var(--white-color);
+            margin: 10% auto;
+            padding: 30px 35px;
+            border-radius: var(--border-radius);
+            max-width: 700px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            animation: slideIn 0.4s ease;
+        }
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--text-dark);
+        }
+        #modal-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+        }
+        #modal-description {
+            margin-bottom: 30px;
+            line-height: 1.7;
+            color: var(--text-dark);
+            max-height: 40vh; /* Giới hạn chiều cao và cho phép cuộn */
+            overflow-y: auto;
+            padding-right: 15px; /* Tạo khoảng trống cho thanh cuộn */
+        }
+        #modal-buy-link {
+            width: auto; /* Để nút không chiếm toàn bộ chiều rộng */
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* FOOTER */
+        footer { background: #212529; color: #ced4da; text-align: center; padding: 30px 20px; font-size: 0.9rem; margin-top: 30px; }
+        footer p { margin-bottom: 10px; }
+        footer a { color: var(--primary-color); text-decoration: none; font-weight: 500; transition: color 0.2s ease; }
+        footer a:hover { color: var(--white-color); }
+        footer .fas, footer .fab { margin-right: 5px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 992px) { .header-right nav { display: none; } .category-scroll { display: block; } }
+        @media (max-width: 768px) { header { padding: 0 15px; } .logo { font-size: 1.2rem; } .logo span { display: none; } main { padding: 0 15px; margin-top: 15px; } .courses { grid-template-columns: 1fr; gap: 20px; } .modal-content { margin: 15% auto; } }
+    </style>
 </head>
 <body>
 
-<header>
-  <div class="logo" style="display: flex; align-items: center; gap: 10px;">
-    <img src="logo.png" alt="Logo" style="height: 50px;" />
-    <span style="font-size: 20px; font-weight: bold; color: #fff;">
-      <i class="fas fa-graduation-cap" style="margin-right: 5px;"></i>
-      Khoahocvip.io.vn
-    </span>
-  </div>
-  <nav id="nav-khuvuc" aria-label="Danh sách khu vực khóa học">
-    <!-- Nút khu vực sẽ tạo tự động -->
-  </nav>
-</header>
-
-<main>
-  <div id="courses" class="courses" aria-live="polite" aria-atomic="true">
-    <!-- Khóa học sẽ hiển thị ở đây -->
-  </div>
-</main>
-
-<footer>
-  <p>Admin : Nguyễn Thùy Linh</p>
-  <p>
-    <i class="fas fa-map-marker-alt"></i> Bảo Lý - Phú Bình - Thái Nguyên |
-    <i class="fas fa-envelope"></i> <a href="mailto:thyyling08@gmail.com">thyyling08@gmail.com</a> |
-    <i class="fas fa-phone"></i> 0365820821
-  </p>
-  <p><i class="fas fa-laptop-code"></i> Website Trực Thuộc Hệ Thống Khóa Học Vip</p>
-</footer>
-
-<script>
-  const SUPABASE_URL = "https://sdixqzzpggcxrbtaqqtf.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkaXhxenpwZ2djeHJidGFxcXRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg2MDQ4OTMsImV4cCI6MjA2NDE4MDg5M30.5nP_A5N6Jb2fDDNmRVcLva_znbrQhErt-xcpmm5V6S8";
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  const danhSachKhuVuc = [
-    "Khóa Combo", "Toán", "Lý", "Hóa", "Tiếng Anh", "Sinh", "Văn", "Sử", "Địa",
-    "DGNL (HSA)", "VATC - APT", "DGTD (TSA)", "TOEIC", "IELTS", "Đại học", 
-  ];
-
-  const zaloLink = "https://zalo.me/0365820821";
-  const nav = document.getElementById("nav-khuvuc");
-  const coursesDiv = document.getElementById("courses");
-
-  function taoNutKhuVuc() {
-    danhSachKhuVuc.forEach(kv => {
-      const btn = document.createElement("button");
-      btn.innerHTML = `<i class="fas fa-book-open" style="margin-right: 6px;"></i>${kv}`;
-      btn.dataset.khuvuc = kv;
-      btn.setAttribute("aria-pressed", "false");
-      btn.addEventListener("click", () => {
-        document.querySelectorAll("#nav-khuvuc button").forEach(b => {
-          b.classList.remove("active");
-          b.setAttribute("aria-pressed", "false");
-        });
-        btn.classList.add("active");
-        btn.setAttribute("aria-pressed", "true");
-        hienThiKhoaHoc(kv);
-      });
-      nav.appendChild(btn);
-    });
-  }
-
-  async function hienThiKhoaHoc(khuvuc) {
-    const { data: khoaHocLoc, error } = await supabase
-      .from("khoahoc")
-      .select("*")
-      .eq("loai", khuvuc);
-
-    coursesDiv.innerHTML = "";
-
-    if (error) {
-      coursesDiv.innerHTML = `<p style="color:red;">Lỗi tải dữ liệu: ${error.message}</p>`;
-      return;
-    }
-
-    if (!khoaHocLoc || khoaHocLoc.length === 0) {
-      coursesDiv.innerHTML = `<p style="font-style: italic; color: #666; text-align:center;">Chưa có khóa học nào trong khu vực <strong>${khuvuc}</strong>.</p>`;
-      return;
-    }
-
-    khoaHocLoc.forEach(kh => {
-      const card = document.createElement("div");
-      card.className = "course-card";
-      card.innerHTML = `
-        <img src="${kh.hinh || 'https://via.placeholder.com/400x160?text=No+Image'}" alt="${kh.ten}" />
-        <div class="course-info">
-          <h3>${kh.ten}</h3>
-          <p>${kh.moTa}</p>
-          <div class="price">${parseInt(kh.gia).toLocaleString()} VND</div>
-          <a class="buy-btn" href="https://zalo.me/0365820821" target="_blank" rel="noopener noreferrer">
-            <i class="fas fa-shopping-cart" style="margin-right: 6px;"></i>Mua ngay
-          </a>
+    <header>
+        <a href="/" class="logo">
+            <img src="logo.png" alt="Logo Khoahocvip.io.vn">
+            <span>VIPSTUDY</span>
+        </a>
+        <div class="header-right">
+            <nav id="nav-desktop"></nav>
         </div>
-      `;
-      coursesDiv.appendChild(card);
-    });
-  }
+    </header>
+
+    <div class="category-scroll" id="nav-mobile"></div>
+
+    <main>
+        <div id="courses" class="courses"></div>
+    </main>
+
+    <div id="course-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modal-title"></h2>
+            <div id="modal-description"></div>
+            <a id="modal-buy-link" class="buy-btn" href="#" target="_blank" rel="noopener noreferrer"></a>
+        </div>
+    </div>
 
 
-  taoNutKhuVuc();
-</script>
+    <footer>
+        <p>© 2025 Hệ thống khoahocvip - Chia sẻ khóa học và tài liệu trực tuyến.</p>
+        <p>
+            <i class="fas fa-map-marker-alt"></i> Phú Bình - Thái Nguyên |
+            <i class="fas fa-envelope"></i> <a href="mailto:lamduongngoc935@gmail.com">thyyling08@gmail.com </a>
+        </p>
+        <p><i class="fas fa-laptop-code"></i> Website được phát triển bởi hệ thống VIPSTUDY</p>
+    </footer>
+
+    <script>
+        const SUPABASE_URL = "https://sdixqzzpggcxrbtaqqtf.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkaXhxenpwZ2djeHJidGFxcXRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg2MDQ4OTMsImV4cCI6MjA2NDE4MDg5M30.5nP_A5N6Jb2fDDNmRVcLva_znbrQhErt-xcpmm5V6S8";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const danhSachKhuVuc = ["Khóa Combo", "Khóa học miễn phí", "Tài liệu", "Toán", "Lý", "Hóa", "Tiếng Anh", "Sinh", "Văn", "Sử", "Địa", "DGNL (HSA)", "VATC - APT", "DGTD (TSA)", "TOEIC", "IELTS", "Đại học"];
+        const zaloLink = "https://zalo.me/0365820821";
+        const navDesktop = document.getElementById("nav-desktop");
+        const navMobile = document.getElementById("nav-mobile");
+        const coursesDiv = document.getElementById("courses");
+
+        // === SỬA 4: CÁC BIẾN VÀ HÀM ĐIỀU KHIỂN MODAL ===
+        const modal = document.getElementById("course-modal");
+        const modalTitle = document.getElementById("modal-title");
+        const modalDescription = document.getElementById("modal-description");
+        const modalBuyLink = document.getElementById("modal-buy-link");
+        const closeButton = document.querySelector(".close-button");
+
+        // Hàm mở modal với thông tin khóa học
+        function openModal(course, khuVuc) {
+            modalTitle.textContent = course.ten;
+            // Dùng innerHTML để có thể render các thẻ HTML như <br> trong mô tả
+            modalDescription.innerHTML = course.mo_ta || 'Chưa có mô tả chi tiết cho khóa học này.';
+            
+            // Cập nhật nút hành động trong modal
+            if (khuVuc === "Khóa học miễn phí" || khuVuc === "Tài liệu" || course.gia === 0) {
+                modalBuyLink.href = course.linkdrive || '#';
+                modalBuyLink.innerHTML = `<i class="fas fa-play-circle"></i> Học Ngay`;
+                modalBuyLink.classList.add("learn-btn");
+
+            } else {
+                modalBuyLink.href = zaloLink;
+                modalBuyLink.innerHTML = `<i class="fas fa-shopping-cart"></i> Liên Hệ Mua`;
+                modalBuyLink.classList.remove("learn-btn");
+            }
+
+            modal.style.display = "block";
+        }
+
+        // Đóng modal khi click nút (x)
+        closeButton.onclick = function() {
+            modal.style.display = "none";
+        }
+        // Đóng modal khi click ra ngoài vùng content
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+        // ===============================================
+
+        // Hàm tạo các ngôi sao đánh giá
+        function generateStars(rating) {
+            if (!rating || rating <= 0) return '';
+            let starsHTML = '';
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 !== 0;
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+            for (let i = 0; i < fullStars; i++) starsHTML += '<i class="fas fa-star"></i>';
+            if (halfStar) starsHTML += '<i class="fas fa-star-half-alt"></i>';
+            for (let i = 0; i < emptyStars; i++) starsHTML += '<i class="far fa-star"></i>';
+            return starsHTML;
+        }
+        
+        // Hàm chính để hiển thị khóa học
+        async function hienThiKhoaHoc(khuvuc) {
+            coursesDiv.innerHTML = `<p style="text-align:center; padding: 20px;">Đang tải khóa học...</p>`;
+            // === SỬA 5: LẤY THÊM CỘT 'mo_ta' TỪ SUPABASE ===
+            const { data: khoaHocLoc, error } = await supabase
+                .from("khoahoc")
+                .select("*, mo_ta") // Thêm cột mo_ta vào đây
+                .eq("loai", khuvuc)
+                .order('ten', { ascending: true });
+
+            coursesDiv.innerHTML = "";
+            if (error) {
+                coursesDiv.innerHTML = `<div class="no-courses-message">Lỗi tải dữ liệu: ${error.message}</div>`;
+                return;
+            }
+            if (!khoaHocLoc || khoaHocLoc.length === 0) {
+                // === SỬA 6: SỬ DỤNG CLASS MỚI CHO THÔNG BÁO RỖNG ===
+                coursesDiv.innerHTML = `<div class="no-courses-message">Chưa có khóa học nào trong mục <strong>${khuvuc}</strong>.</div>`;
+                return;
+            }
+
+            khoaHocLoc.forEach(kh => {
+                const card = document.createElement("div");
+                card.className = "course-card";
+
+                const badgeHTML = kh.badge ? `<div class="course-badge">${kh.badge}</div>` : '';
+                const starsHTML = generateStars(kh.rating);
+                let metaHTML = '';
+                if (starsHTML || kh.luot_mua > 0) {
+                    metaHTML += '<div class="course-meta">';
+                    if (starsHTML) {
+                        metaHTML += `<div class="course-rating">
+                                        <span class="stars">${starsHTML}</span>
+                                        <span class="rating-count">(${kh.rating_count || 0})</span>
+                                     </div>`;
+                    }
+                    if (kh.luot_mua > 0) {
+                        metaHTML += `<div class="course-sales">
+                                        <i class="fas fa-user-group"></i>
+                                        <span>${kh.luot_mua.toLocaleString('vi-VN')}</span>
+                                     </div>`;
+                    }
+                    metaHTML += '</div>';
+                }
+
+                let priceHTML = '';
+                const gia = kh.gia;
+                const gia_goc = kh.gia_goc;
+                if (gia_goc && gia_goc > gia) {
+                    const discountPercent = Math.round(((gia_goc - gia) / gia_goc) * 100);
+                    priceHTML = `<div class="course-pricing">
+                                    <span class="current-price">${gia.toLocaleString('vi-VN')}đ</span>
+                                    <span class="original-price">${gia_goc.toLocaleString('vi-VN')}đ</span>
+                                    <span class="discount-badge">-${discountPercent}%</span>
+                                 </div>`;
+                } else {
+                     priceHTML = `<div class="normal-price">${gia > 0 ? gia.toLocaleString('vi-VN') + 'đ' : 'Miễn phí'}</div>`;
+                }
+
+                let nutHanhDong;
+                if (khuvuc === "Khóa học miễn phí" || khuvuc === "Tài liệu" || gia === 0) {
+                    nutHanhDong = `<a class="buy-btn learn-btn" href="${kh.linkdrive || '#'}" target="_blank" rel="noopener noreferrer"><i class="fas fa-play-circle"></i> Học Ngay</a>`;
+                } else {
+                    nutHanhDong = `<a class="buy-btn" href="${zaloLink}" target="_blank" rel="noopener noreferrer"><i class="fas fa-shopping-cart"></i> Liên Hệ Mua</a>`;
+                }
+
+                card.innerHTML = `
+                    <div class="card-image-container">
+                        ${badgeHTML}
+                        <img src="${kh.hinh || 'https://via.placeholder.com/300x180?text=Hinh+Anh'}" alt="Hình ảnh khóa học ${kh.ten}" />
+                    </div>
+                    <div class="course-info">
+                        <h3>${kh.ten}</h3>
+                        ${metaHTML}
+                        ${priceHTML}
+                        ${nutHanhDong}
+                    </div>
+                `;
+                
+                // === SỬA 7: THÊM EVENT LISTENER ĐỂ MỞ MODAL ===
+                const cardImage = card.querySelector('.card-image-container');
+                const cardTitle = card.querySelector('h3');
+                
+                cardImage.addEventListener('click', () => openModal(kh, khuvuc));
+                cardTitle.addEventListener('click', () => openModal(kh, khuvuc));
+                
+                coursesDiv.appendChild(card);
+            });
+        }
+
+        // === CÁC HÀM KHỞI TẠO (Giữ nguyên) ===
+        function taoNutKhuVuc() {
+            danhSachKhuVuc.forEach((kv, index) => {
+                const createButton = (container) => {
+                    const btn = document.createElement("button");
+                    btn.textContent = kv;
+                    btn.addEventListener("click", () => {
+                        setActiveButton(index);
+                        hienThiKhoaHoc(kv);
+                        if (container.id === 'nav-mobile') {
+                            container.scroll({ left: btn.offsetLeft - (container.offsetWidth / 2) + (btn.offsetWidth / 2), behavior: 'smooth' });
+                        }
+                    });
+                    container.appendChild(btn);
+                };
+                createButton(navDesktop);
+                createButton(navMobile);
+            });
+        }
+        function setActiveButton(index) {
+             document.querySelectorAll("#nav-desktop button, #nav-mobile button").forEach(b => b.classList.remove("active"));
+             const desktopButton = document.querySelector(`#nav-desktop button:nth-child(${index + 1})`);
+             const mobileButton = document.querySelector(`#nav-mobile button:nth-child(${index + 1})`);
+             if (desktopButton) desktopButton.classList.add("active");
+             if (mobileButton) mobileButton.classList.add("active");
+        }
+        function init() {
+            taoNutKhuVuc();
+            if (danhSachKhuVuc.length > 0) {
+                setActiveButton(0);
+                hienThiKhoaHoc(danhSachKhuVuc[0]);
+            }
+        }
+        init();
+    </script>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T3HC34BE89"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-T3HC34BE89');
+    </script>
+    <script>
+    (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="RjrPO3Z_fyoAJ9oiVDKuk";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+    </script>
 
 </body>
 </html>
