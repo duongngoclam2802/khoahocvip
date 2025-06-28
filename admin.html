@@ -1,283 +1,505 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Quản Lý Khóa Học</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin quản lý khóa học</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --light-gray: #f8f9fa;
+            --dark-gray: #343a40;
+            --border-color: #dee2e6;
+        }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to right, #e0f7fa, #f1f8e9);
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 40px 20px;
-    }
-    h1 {
-      text-align: center;
-      color: #2c3e50;
-      margin-bottom: 40px;
-    }
-    form {
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      margin-bottom: 40px;
-    }
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #37474f;
-    }
-    input,
-    select,
-    textarea {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 20px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 14px;
-    }
-    button[type="submit"] {
-      background-color: #00796b;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    button[type="submit"]:hover {
-      background-color: #004d40;
-    }
-    .list-section {
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    }
-    .list-section h2 {
-      margin-bottom: 24px;
-      color: #2e7d32;
-      border-bottom: 2px solid #66bb6a;
-      padding-bottom: 8px;
-    }
-    .khuvuc-block {
-      margin-bottom: 30px;
-    }
-    .khuvuc-block h3 {
-      font-size: 20px;
-      margin-bottom: 12px;
-      color: #388e3c;
-    }
-    .course-item {
-      background-color: #f1f8e9;
-      border-radius: 10px;
-      padding: 16px;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .course-item .info {
-      max-width: 75%;
-    }
-    .course-item .info strong {
-      font-size: 16px;
-      color: #2e7d32;
-    }
-    .course-item .info span {
-      display: block;
-      font-size: 13px;
-      color: #616161;
-    }
-    .btn-delete {
-      background-color: #e53935;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .btn-delete:hover {
-      background-color: #b71c1c;
-    }
-  </style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-gray);
+            margin: 0;
+            padding: 20px;
+            color: var(--dark-gray);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1, h2 { text-align: center; margin-bottom: 30px; color: var(--dark-gray); }
+
+        /* --- FORM STYLING --- */
+        #course-form-section {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 40px;
+            scroll-margin-top: 20px;
+        }
+        #form-title { font-size: 1.5rem; margin-bottom: 25px; text-align: center; color: var(--primary-color); }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px 30px;
+        }
+        .form-group { grid-column: span 1; }
+        .full-width { grid-column: span 2; }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+            outline: none;
+        }
+        textarea { resize: vertical; min-height: 80px; }
+
+        .form-actions {
+            grid-column: span 2;
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        .btn {
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 15px;
+        }
+        .btn-submit { background-color: var(--primary-color); color: white; }
+        .btn-submit:hover { background-color: #0056b3; }
+        .btn-cancel { background-color: #6c757d; color: white; }
+        .btn-cancel:hover { background-color: #5a6268; }
+
+
+        /* --- LIST STYLING --- */
+        .list-section {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+         .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .list-header h2 {
+            margin: 0;
+        }
+        .course-item {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .course-header {
+            background-color: #f8f9fa;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .course-header h3 { margin: 0; font-size: 1.2rem; color: var(--dark-gray); }
+
+        .course-body { padding: 20px; }
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            font-size: 14px;
+        }
+        .detail-item span {
+            font-weight: 600;
+            color: #495057;
+        }
+        .detail-item { color: #212529; }
+        
+        .course-actions {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .btn-edit { background-color: var(--secondary-color); color: white; }
+        .btn-edit:hover { background-color: #1e7e34; }
+        .btn-delete { background-color: var(--danger-color); color: white; }
+        .btn-delete:hover { background-color: #b21f2d; }
+        .btn-update-all { background-color: var(--warning-color); color: black;}
+        .btn-update-all:hover { background-color: #e0a800; }
+    </style>
 </head>
 <body>
 
-<h1>Trang quản lý khóa học</h1>
+<div class="container">
+    <h1>Trang Quản Trị Khóa Học</h1>
 
-<form id="formAddCourse">
-  <label for="selectKhuVuc">Chọn khu vực</label>
-  <select id="selectKhuVuc" required></select>
+    <section id="course-form-section">
+        <h2 id="form-title">Thêm Khóa Học Mới</h2>
+        <form id="formAddCourse">
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label for="inputTen">Tên khóa học</label>
+                    <input type="text" id="inputTen" required placeholder="VD: Luyện thi cấp tốc DGNL" />
+                </div>
+                <div class="form-group full-width">
+                    <label for="inputmo_ta">Mô tả khóa học</label>
+                    <textarea id="inputmo_ta" required></textarea>
+                </div>
+                 <div class="form-group">
+                    <label for="selectKhuVuc">Phân loại</label>
+                    <select id="selectKhuVuc" required></select>
+                </div>
+                 <div class="form-group">
+                    <label for="inputHinh">Link hình ảnh (URL)</label>
+                    <input type="url" id="inputHinh" placeholder="https://example.com/image.jpg" />
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputGiaGoc">Giá gốc (chưa giảm)</label>
+                    <input type="number" id="inputGiaGoc" min="0" placeholder="Bỏ trống nếu không giảm giá" />
+                </div>
+                <div class="form-group">
+                    <label for="inputGia">Giá bán (sau khi giảm)</label>
+                    <input type="number" id="inputGia" required min="0" placeholder="Nhập 0 nếu miễn phí" />
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputRating">Điểm đánh giá</label>
+                    <input type="number" id="inputRating" step="0.1" min="0" max="5" placeholder="VD: 4.5" />
+                </div>
+                 <div class="form-group">
+                    <label for="inputRatingCount">Số lượt đánh giá</label>
+                    <input type="number" id="inputRatingCount" min="0" />
+                </div>
+                 <div class="form-group">
+                    <label for="inputLuotMua">Số lượt mua</label>
+                    <input type="number" id="inputLuotMua" min="0" />
+                </div>
+                <div class="form-group">
+                    <label for="inputBadge">Nhãn đặc biệt</label>
+                    <input type="text" id="inputBadge" placeholder="VD: Bán chạy, Mới nhất..." />
+                </div>
 
-  <label for="inputTen">Tên khóa học</label>
-  <input type="text" id="inputTen" required placeholder="Nhập tên khóa học" />
+                <div class="form-actions">
+                    <button type="submit" id="btn-submit" class="btn btn-submit">Thêm Khóa Học</button>
+                    <button type="button" id="btn-cancel-edit" class="btn btn-cancel" style="display: none;">Hủy Sửa</button>
+                </div>
+            </div>
+        </form>
+    </section>
 
-  <label for="inputMoTa">Mô tả khóa học</label>
-  <textarea id="inputMoTa" required placeholder="Nhập mô tả khóa học"></textarea>
-
-  <label for="inputGia">Giá khóa học (VND)</label>
-  <input type="number" id="inputGia" required min="0" placeholder="Nhập giá khóa học" />
-
-  <label for="inputHinh">Link hình ảnh minh họa (URL)</label>
-  <input type="text" id="inputHinh" placeholder="https://example.com/image.jpg" />
-
-  <button type="submit">Thêm khóa học</button>
-</form>
-
-<section class="list-section">
-  <h2>Các khóa học hiện có</h2>
-  <div id="listKhoaHoc"></div>
-</section>
+    <section class="list-section">
+        <div class="list-header">
+             <h2>Các Khóa Học Hiện Có</h2>
+             <button id="btn-update-all" class="btn btn-update-all">Cập nhật Dữ liệu cũ</button>
+        </div>
+        <div id="listKhoaHoc"></div>
+    </section>
+</div>
 
 <script>
-  // ======== PHẦN BẢO VỆ MẬT KHẨU ============
-  const PASSWORD = "lamlam2802"; // 🔐 Mật khẩu bạn có thể thay đổi tại đây
+    // ======== PHẦN BẢO VỆ MẬT KHẨU ============
+    const PASSWORD = "lamlam2802"; // 🔐 Thay đổi mật khẩu tại đây
 
-  function checkPassword() {
-    const input = prompt("🔐 Nhập mật khẩu để truy cập trang admin:");
-    if (input !== PASSWORD) {
-      alert("❌ Mật khẩu sai. Quay về trang chủ.");
-      window.location.href = "/"; // Có thể đổi thành URL bạn muốn
+    function checkPassword() {
+        const storedPassword = sessionStorage.getItem('adminPassword');
+        if (storedPassword === PASSWORD) return;
+
+        const input = prompt("🔐 Nhập mật khẩu để truy cập trang admin:");
+        if (input === PASSWORD) {
+            sessionStorage.setItem('adminPassword', input);
+        } else {
+            alert("❌ Mật khẩu sai. Quay về trang chủ.");
+            window.location.href = "/";
+        }
     }
-  }
-  checkPassword();
+    checkPassword();
 
-  // ======== ADMIN FUNCTIONALITY =============
-  
-  const SUPABASE_URL = "https://sdixqzzpggcxrbtaqqtf.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkaXhxenpwZ2djeHJidGFxcXRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg2MDQ4OTMsImV4cCI6MjA2NDE4MDg5M30.5nP_A5N6Jb2fDDNmRVcLva_znbrQhErt-xcpmm5V6S8";
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // ======== ADMIN FUNCTIONALITY =============
+    const SUPABASE_URL = "https://sdixqzzpggcxrbtaqqtf.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkaXhxenpwZ2djeHJidGFxcXRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg2MDQ4OTMsImV4cCI6MjA2NDE4MDg5M30.5nP_A5N6Jb2fDDNmRVcLva_znbrQhErt-xcpmm5V6S8";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  
-  const danhSachKhuVuc = [
-    "Khóa Combo", "Toán", "Lý", "Hóa", "Tiếng Anh", "Sinh", "Văn", "Sử", "Địa",
-    "DGNL (HSA)", "VATC - APT", "DGTD (TSA)", "TOEIC", "IELTS", "Đại học"
-  ];
+    const danhSachKhuVuc = ["Khóa Combo", "Khóa học miễn phí", "Tài liệu", "Toán", "Lý", "Hóa", "Tiếng Anh", "Sinh", "Văn", "Sử", "Địa", "DGNL (HSA)", "VATC - APT", "DGTD (TSA)", "TOEIC", "IELTS", "Đại học"];
+    
+    // DOM Elements
+    const form = document.getElementById("formAddCourse");
+    const listKhoaHocDiv = document.getElementById("listKhoaHoc");
+    const formTitle = document.getElementById("form-title");
+    const submitBtn = document.getElementById("btn-submit");
+    const cancelBtn = document.getElementById("btn-cancel-edit");
+    const updateAllBtn = document.getElementById("btn-update-all");
 
-  const selectKhuVuc = document.getElementById("selectKhuVuc");
-  const formAddCourse = document.getElementById("formAddCourse");
-  const listKhoaHocDiv = document.getElementById("listKhoaHoc");
+    let currentEditId = null; 
 
-  async function loadKhoaHoc() {
-    const { data, error } = await supabase.from("khoahoc").select("*");
-    if (error) {
-      alert("❌ Lỗi tải khóa học: " + error.message);
-      return [];
+    function taoOptionKhuVuc() {
+        const select = document.getElementById("selectKhuVuc");
+        select.innerHTML = '';
+        danhSachKhuVuc.forEach(kv => {
+            const option = document.createElement("option");
+            option.value = kv;
+            option.textContent = kv;
+            select.appendChild(option);
+        });
     }
-    return data;
-  }
-
-  function taoOptionKhuVuc() {
-    danhSachKhuVuc.forEach(kv => {
-      const option = document.createElement("option");
-      option.value = kv;
-      option.textContent = kv;
-      selectKhuVuc.appendChild(option);
-    });
-  }
+    
     async function hienThiDanhSachKhoaHoc() {
-      const data = await loadKhoaHoc();
-      listKhoaHocDiv.innerHTML = "";
+        const { data, error } = await supabase.from("khoahoc").select("*").order('loai').order('ten');
+        if (error) {
+            alert("❌ Lỗi tải khóa học: " + error.message);
+            return;
+        }
 
-      if (data.length === 0) {
-        listKhoaHocDiv.innerHTML = `<p style="font-style: italic; color: #666;">Chưa có khóa học nào.</p>`;
-        return;
-      }
+        listKhoaHocDiv.innerHTML = "";
+        if (data.length === 0) {
+            listKhoaHocDiv.innerHTML = `<p>Chưa có khóa học nào.</p>`;
+            return;
+        }
 
-      danhSachKhuVuc.forEach(khuvuc => {
-        const khoaHocKhu = data.filter(kh => kh.loai === khuvuc);
-        if (khoaHocKhu.length === 0) return;
+        data.forEach(kh => {
+            const itemDiv = document.createElement("div");
+            itemDiv.className = "course-item";
+            itemDiv.innerHTML = `
+                <div class="course-header"><h3>${kh.ten}</h3></div>
+                <div class="course-body">
+                    <div class="details-grid">
+                        <div class="detail-item"><span>Phân loại:</span> ${kh.loai}</div>
+                        <div class="detail-item"><span>Giá bán:</span> ${kh.gia?.toLocaleString('vi-VN')}đ</div>
+                        <div class="detail-item"><span>Giá gốc:</span> ${kh.gia_goc ? kh.gia_goc.toLocaleString('vi-VN') + 'đ' : 'N/A'}</div>
+                        <div class="detail-item"><span>Rating:</span> ${kh.rating || 'N/A'} (${kh.rating_count || 0} reviews)</div>
+                        <div class="detail-item"><span>Lượt mua:</span> ${kh.luot_mua || 0}</div>
+                        <div class="detail-item"><span>Badge:</span> ${kh.badge || 'N/A'}</div>
+                        <div class="detail-item" style="grid-column: span 2;"><span>Mô tả:</span> ${kh.mo_ta}</div>
+                    </div>
+                </div>
+                <div class="course-actions">
+                    <button class="btn btn-edit" data-id="${kh.id}">Sửa</button>
+                    <button class="btn btn-delete" data-id="${kh.id}" data-name="${kh.ten}">Xóa</button>
+                </div>
+            `;
+            listKhoaHocDiv.appendChild(itemDiv);
+        });
+    }
 
-        const block = document.createElement("div");
-        block.className = "khuvuc-block";
+    listKhoaHocDiv.addEventListener('click', async (e) => {
+        const target = e.target;
+        const id = target.dataset.id;
 
-        const h3 = document.createElement("h3");
-        h3.textContent = khuvuc;
-        block.appendChild(h3);
-
-        khoaHocKhu.forEach(kh => {
-          const item = document.createElement("div");
-          item.className = "course-item";
-
-          const info = document.createElement("div");
-          info.className = "info";
-          info.innerHTML = `
-            <strong>${kh.ten}</strong>
-            <span>Mô tả: ${kh.moTa}</span>
-            <span>Giá: ${kh.gia} VND</span>
-          `;
-
-          const btnXoa = document.createElement("button");
-          btnXoa.className = "btn-delete";
-          btnXoa.textContent = "Xóa";
-          btnXoa.onclick = () => {
-            if (confirm(`Bạn có chắc muốn xóa khóa học "${kh.ten}" không?`)) {
-              xoaKhoaHoc(kh.id);
+        if (target.classList.contains('btn-delete')) {
+            const name = target.dataset.name;
+            if (confirm(`Bạn có chắc muốn xóa khóa học "${name}" không?`)) {
+                const { error } = await supabase.from("khoahoc").delete().eq("id", id);
+                if (error) {
+                    alert("❌ Lỗi khi xóa: " + error.message);
+                } else {
+                    alert("✅ Đã xóa khóa học thành công!");
+                    hienThiDanhSachKhoaHoc();
+                }
             }
-          };
+        }
 
-          item.appendChild(info);
-          item.appendChild(btnXoa);
-          block.appendChild(item);
+        if (target.classList.contains('btn-edit')) {
+            const { data, error } = await supabase.from("khoahoc").select("*").eq("id", id).single();
+            if (error) {
+                alert("Lỗi không tìm thấy khóa học để sửa!");
+                return;
+            }
+            
+            document.getElementById("inputTen").value = data.ten;
+            document.getElementById("inputmo_ta").value = data.mo_ta;
+            document.getElementById("selectKhuVuc").value = data.loai;
+            document.getElementById("inputHinh").value = data.hinh;
+            document.getElementById("inputGiaGoc").value = data.gia_goc;
+            document.getElementById("inputGia").value = data.gia;
+            document.getElementById("inputRating").value = data.rating;
+            document.getElementById("inputRatingCount").value = data.rating_count;
+            document.getElementById("inputLuotMua").value = data.luot_mua;
+            document.getElementById("inputBadge").value = data.badge;
+
+            currentEditId = id;
+            formTitle.textContent = "Chỉnh Sửa Khóa Học";
+            submitBtn.textContent = "Cập Nhật";
+            cancelBtn.style.display = "inline-block";
+            
+            document.getElementById('course-form-section').scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+
+    function resetForm() {
+        form.reset();
+        currentEditId = null;
+        formTitle.textContent = "Thêm Khóa Học Mới";
+        submitBtn.textContent = "Thêm Khóa Học";
+        cancelBtn.style.display = "none";
+        document.getElementById("selectKhuVuc").selectedIndex = 0;
+    }
+
+    cancelBtn.addEventListener('click', resetForm);
+
+    form.addEventListener("submit", async e => {
+        e.preventDefault();
+        const courseData = {
+            ten: document.getElementById("inputTen").value.trim(),
+            mo_ta: document.getElementById("inputmo_ta").value.trim(),
+            loai: document.getElementById("selectKhuVuc").value,
+            hinh: document.getElementById("inputHinh").value.trim() || null,
+            gia_goc: document.getElementById("inputGiaGoc").value || null,
+            gia: document.getElementById("inputGia").value,
+            rating: document.getElementById("inputRating").value || null,
+            rating_count: document.getElementById("inputRatingCount").value || null,
+            luot_mua: document.getElementById("inputLuotMua").value || null,
+            badge: document.getElementById("inputBadge").value.trim() || null
+        };
+
+        let error;
+        if (currentEditId) {
+            const { error: updateError } = await supabase.from("khoahoc").update(courseData).eq("id", currentEditId);
+            error = updateError;
+        } else {
+            const { error: insertError } = await supabase.from("khoahoc").insert([courseData]);
+            error = insertError;
+        }
+
+        if (error) {
+            alert("❌ Lỗi: " + error.message);
+        } else {
+            alert(`✅ Đã ${currentEditId ? 'cập nhật' : 'thêm'} khóa học thành công!`);
+            resetForm();
+            hienThiDanhSachKhoaHoc();
+        }
+    });
+
+    // ============ ✨ CHỨC NĂNG CẬP NHẬT HÀNG LOẠT (ĐÃ CHỈNH SỬA) ✨ =================
+    async function updateExistingData() {
+        if (!confirm("⚠️ CẢNH BÁO ⚠️\n\nBạn có chắc muốn cập nhật lại toàn bộ dữ liệu cũ không? \nHành động này sẽ GHI ĐÈ giá gốc, sao, lượt mua, lượt đánh giá và nhãn của TẤT CẢ các khóa học hiện có.")) {
+            return;
+        }
+
+        updateAllBtn.disabled = true;
+        updateAllBtn.textContent = "Đang cập nhật...";
+
+        console.log("Bắt đầu quá trình cập nhật dữ liệu...");
+        const { data: courses, error } = await supabase.from("khoahoc").select("id, gia");
+
+        if (error) {
+            alert("❌ Lỗi khi tải dữ liệu để cập nhật: " + error.message);
+            updateAllBtn.disabled = false;
+            updateAllBtn.textContent = "Cập nhật Dữ liệu cũ";
+            return;
+        }
+
+        if (!courses || courses.length === 0) {
+            alert("Không có khóa học nào để cập nhật.");
+            updateAllBtn.disabled = false;
+            updateAllBtn.textContent = "Cập nhật Dữ liệu cũ";
+            return;
+        }
+
+        let successCount = 0;
+        let errorCount = 0;
+        
+        // Danh sách các nhãn đặc biệt theo yêu cầu
+        const specialBadges = ["ưu đãi", "bán chạy", "hot", "phù hợp"];
+
+        const updatePromises = courses.map(async (course) => {
+            try {
+                // 1. Chọn lượt mua ngẫu nhiên từ 100-500
+                const newLuotMua = Math.floor(Math.random() * (500 - 100 + 1)) + 100;
+
+                // 2. Chọn lượt đánh giá ngẫu nhiên (luôn nhỏ hơn lượt mua)
+                const maxRatingCount = newLuotMua > 1 ? newLuotMua - 1 : 1;
+                const newRatingCount = Math.floor(Math.random() * (maxRatingCount - 10 + 1)) + 10; // Đảm bảo có ít nhất 10 đánh giá nếu có thể
+                
+                // 3. Chọn số sao ngẫu nhiên từ 4.2-5.0
+                const newRating = (Math.random() * (5.0 - 4.2) + 4.2).toFixed(1);
+
+                // 4. Đổi giá gốc thành giá sau khi đã giảm
+                const currentPrice = course.gia;
+                let newOriginalPrice = null;
+
+                if (currentPrice && currentPrice > 0) {
+                    // Tính giá gốc tạm thời dựa trên một mức giảm giá ngẫu nhiên (ví dụ 15% đến 50%)
+                    const discountPercentage = Math.random() * (0.5 - 0.15) + 0.15;
+                    const tempOriginalPrice = currentPrice / (1 - discountPercentage);
+                    
+                    // Làm tròn giá gốc mới thành số nguyên chia hết cho 10
+                    newOriginalPrice = Math.round(tempOriginalPrice / 10) * 10;
+                }
+
+                // 5. Chọn nhãn đặc biệt ngẫu nhiên
+                const newBadge = specialBadges[Math.floor(Math.random() * specialBadges.length)];
+
+                // Chuẩn bị dữ liệu để cập nhật
+                const dataToUpdate = {
+                    rating: newRating,
+                    luot_mua: newLuotMua,
+                    rating_count: newRatingCount,
+                    gia_goc: newOriginalPrice,
+                    badge: newBadge,
+                };
+
+                const { error: updateError } = await supabase
+                    .from("khoahoc")
+                    .update(dataToUpdate)
+                    .eq("id", course.id);
+
+                if (updateError) {
+                    console.error(`❌ Lỗi cập nhật ID ${course.id}:`, updateError.message);
+                    errorCount++;
+                } else {
+                    console.log(`✅ Cập nhật thành công ID ${course.id}`);
+                    successCount++;
+                }
+            } catch (err) {
+                 console.error(`❌ Lỗi không xác định với ID ${course.id}:`, err);
+                 errorCount++;
+            }
         });
 
-        listKhoaHocDiv.appendChild(block);
-      });
+        await Promise.all(updatePromises);
+
+        alert(`✨ Hoàn tất! ✨\n- Cập nhật thành công: ${successCount} khóa học.\n- Gặp lỗi: ${errorCount} khóa học.`);
+        
+        updateAllBtn.disabled = false;
+        updateAllBtn.textContent = "Cập nhật Dữ liệu cũ";
+        hienThiDanhSachKhoaHoc(); // Tải lại danh sách để xem thay đổi
     }
 
-    formAddCourse.addEventListener("submit", async e => {
-      e.preventDefault();
+    // Gán sự kiện cho nút
+    updateAllBtn.addEventListener('click', updateExistingData);
 
-      const ten = document.getElementById("inputTen").value.trim();
-      const moTa = document.getElementById("inputMoTa").value.trim();
-      const gia = document.getElementById("inputGia").value.trim();
-      const loai = selectKhuVuc.value;
-      const hinh = document.getElementById("inputHinh").value.trim() || '';
+    // =================================================================================
 
-      const { error } = await supabase.from("khoahoc").insert([{ ten, moTa, gia, loai, hinh }]);
-
-      if (error) {
-        alert("❌ Lỗi thêm khóa học: " + error.message);
-        return;
-      }
-
-      alert("✅ Đã thêm khóa học thành công!");
-      formAddCourse.reset();
-      selectKhuVuc.selectedIndex = 0;
-      hienThiDanhSachKhoaHoc();
-    });
-
-    async function xoaKhoaHoc(id) {
-      const { error } = await supabase
-        .from("khoahoc")
-        .delete()
-        .eq("id", id);
-
-      if (error) {
-        alert("❌ Lỗi khi xóa: " + error.message);
-      } else {
-        alert("✅ Đã xóa khóa học thành công!");
-        hienThiDanhSachKhoaHoc(); // Cập nhật lại danh sách
-      }
-    }
-
-  taoOptionKhuVuc();
-  hienThiDanhSachKhoaHoc();
+    // Khởi chạy
+    taoOptionKhuVuc();
+    hienThiDanhSachKhoaHoc();
 </script>
 
 </body>
