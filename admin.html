@@ -190,6 +190,10 @@
                     <input type="number" id="inputGia" required min="0" placeholder="Nhập 0 nếu miễn phí" />
                 </div>
                 
+                <div class="form-group full-width" id="linkdrive-group" style="display: none;">
+                    <label for="inputLinkdrive">Link Drive (cho khóa học miễn phí/tài liệu)</label>
+                    <input type="url" id="inputLinkdrive" placeholder="Dán link Google Drive hoặc link tải trực tiếp vào đây" />
+                </div>
                 <div class="form-group">
                     <label for="inputRating">Điểm đánh giá</label>
                     <input type="number" id="inputRating" step="0.1" min="0" max="5" placeholder="VD: 4.5" />
@@ -256,17 +260,37 @@
     const submitBtn = document.getElementById("btn-submit");
     const cancelBtn = document.getElementById("btn-cancel-edit");
     const updateAllBtn = document.getElementById("btn-update-all");
-
+    
+    // ✨ MÃ MỚI: Lấy các element mới để xử lý ẩn/hiện
+    const selectKhuVuc = document.getElementById("selectKhuVuc");
+    const giaInput = document.getElementById("inputGia");
+    const linkdriveGroup = document.getElementById("linkdrive-group");
+    
     let currentEditId = null; 
 
+    // ✨ MÃ MỚI: Hàm kiểm tra và ẩn/hiện ô linkdrive
+    function toggleLinkdriveVisibility() {
+        const selectedValue = selectKhuVuc.value;
+        const currentPrice = giaInput.value;
+        if (selectedValue === 'Khóa học miễn phí' || selectedValue === 'Tài liệu' || currentPrice === '0') {
+            linkdriveGroup.style.display = 'block';
+        } else {
+            linkdriveGroup.style.display = 'none';
+        }
+    }
+    
+    // ✨ MÃ MỚI: Thêm sự kiện để tự động ẩn/hiện
+    selectKhuVuc.addEventListener('change', toggleLinkdriveVisibility);
+    giaInput.addEventListener('input', toggleLinkdriveVisibility);
+
     function taoOptionKhuVuc() {
-        const select = document.getElementById("selectKhuVuc");
-        select.innerHTML = '';
+        // const select = document.getElementById("selectKhuVuc"); - đã khai báo ở trên
+        selectKhuVuc.innerHTML = '';
         danhSachKhuVuc.forEach(kv => {
             const option = document.createElement("option");
             option.value = kv;
             option.textContent = kv;
-            select.appendChild(option);
+            selectKhuVuc.appendChild(option);
         });
     }
     
@@ -286,6 +310,9 @@
         data.forEach(kh => {
             const itemDiv = document.createElement("div");
             itemDiv.className = "course-item";
+            // Hiển thị thêm linkdrive nếu có
+            const linkdriveHTML = kh.linkdrive ? `<div class="detail-item" style="grid-column: span 2;"><span>Link Drive:</span> ${kh.linkdrive}</div>` : '';
+
             itemDiv.innerHTML = `
                 <div class="course-header"><h3>${kh.ten}</h3></div>
                 <div class="course-body">
@@ -297,6 +324,7 @@
                         <div class="detail-item"><span>Lượt mua:</span> ${kh.luot_mua || 0}</div>
                         <div class="detail-item"><span>Badge:</span> ${kh.badge || 'N/A'}</div>
                         <div class="detail-item" style="grid-column: span 2;"><span>Mô tả:</span> ${kh.mo_ta}</div>
+                        ${linkdriveHTML}
                     </div>
                 </div>
                 <div class="course-actions">
@@ -343,11 +371,17 @@
             document.getElementById("inputLuotMua").value = data.luot_mua;
             document.getElementById("inputBadge").value = data.badge;
 
+            // ✨ MÃ MỚI: Điền dữ liệu linkdrive vào form
+            document.getElementById("inputLinkdrive").value = data.linkdrive;
+
             currentEditId = id;
             formTitle.textContent = "Chỉnh Sửa Khóa Học";
             submitBtn.textContent = "Cập Nhật";
             cancelBtn.style.display = "inline-block";
             
+            // ✨ MÃ MỚI: Gọi hàm để kiểm tra và hiện ô linkdrive nếu cần
+            toggleLinkdriveVisibility();
+
             document.getElementById('course-form-section').scrollIntoView({ behavior: 'smooth' });
         }
     });
@@ -359,6 +393,9 @@
         submitBtn.textContent = "Thêm Khóa Học";
         cancelBtn.style.display = "none";
         document.getElementById("selectKhuVuc").selectedIndex = 0;
+        
+        // ✨ MÃ MỚI: Ẩn ô linkdrive khi reset form
+        linkdriveGroup.style.display = 'none';
     }
 
     cancelBtn.addEventListener('click', resetForm);
@@ -375,7 +412,10 @@
             rating: document.getElementById("inputRating").value || null,
             rating_count: document.getElementById("inputRatingCount").value || null,
             luot_mua: document.getElementById("inputLuotMua").value || null,
-            badge: document.getElementById("inputBadge").value.trim() || null
+            badge: document.getElementById("inputBadge").value.trim() || null,
+
+            // ✨ MÃ MỚI: Thêm linkdrive vào đối tượng gửi đi
+            linkdrive: document.getElementById("inputLinkdrive").value.trim() || null
         };
 
         let error;
@@ -396,67 +436,43 @@
         }
     });
 
-    // ============ ✨ CHỨC NĂNG CẬP NHẬT HÀNG LOẠT (ĐÃ CHỈNH SỬA) ✨ =================
+    // Chức năng cập nhật hàng loạt không thay đổi
     async function updateExistingData() {
         if (!confirm("⚠️ CẢNH BÁO ⚠️\n\nBạn có chắc muốn cập nhật lại toàn bộ dữ liệu cũ không? \nHành động này sẽ GHI ĐÈ giá gốc, sao, lượt mua, lượt đánh giá và nhãn của TẤT CẢ các khóa học hiện có.")) {
             return;
         }
-
         updateAllBtn.disabled = true;
         updateAllBtn.textContent = "Đang cập nhật...";
-
-        console.log("Bắt đầu quá trình cập nhật dữ liệu...");
         const { data: courses, error } = await supabase.from("khoahoc").select("id, gia");
-
         if (error) {
             alert("❌ Lỗi khi tải dữ liệu để cập nhật: " + error.message);
             updateAllBtn.disabled = false;
             updateAllBtn.textContent = "Cập nhật Dữ liệu cũ";
             return;
         }
-
         if (!courses || courses.length === 0) {
             alert("Không có khóa học nào để cập nhật.");
             updateAllBtn.disabled = false;
             updateAllBtn.textContent = "Cập nhật Dữ liệu cũ";
             return;
         }
-
         let successCount = 0;
         let errorCount = 0;
-        
-        // Danh sách các nhãn đặc biệt theo yêu cầu
         const specialBadges = ["Ưu đãi", "Bán chạy", "Hot", "Phù hợp"];
-
         const updatePromises = courses.map(async (course) => {
             try {
-                // 1. Chọn lượt mua ngẫu nhiên từ 100-500
                 const newLuotMua = Math.floor(Math.random() * (500 - 100 + 1)) + 100;
-
-                // 2. Chọn lượt đánh giá ngẫu nhiên (luôn nhỏ hơn lượt mua)
                 const maxRatingCount = newLuotMua > 1 ? newLuotMua - 1 : 1;
-                const newRatingCount = Math.floor(Math.random() * (maxRatingCount - 10 + 1)) + 10; // Đảm bảo có ít nhất 10 đánh giá nếu có thể
-                
-                // 3. Chọn số sao ngẫu nhiên từ 4.2-5.0
+                const newRatingCount = Math.floor(Math.random() * (maxRatingCount - 10 + 1)) + 10;
                 const newRating = (Math.random() * (5.0 - 4.2) + 4.2).toFixed(1);
-
-                // 4. Đổi giá gốc thành giá sau khi đã giảm
                 const currentPrice = course.gia;
                 let newOriginalPrice = null;
-
                 if (currentPrice && currentPrice > 0) {
-                    // Tính giá gốc tạm thời dựa trên một mức giảm giá ngẫu nhiên (ví dụ 15% đến 50%)
                     const discountPercentage = Math.random() * (0.5 - 0.15) + 0.15;
                     const tempOriginalPrice = currentPrice / (1 - discountPercentage);
-                    
-                    // Làm tròn giá gốc mới thành số nguyên chia hết cho 10
                     newOriginalPrice = Math.round(tempOriginalPrice / 10) * 10;
                 }
-
-                // 5. Chọn nhãn đặc biệt ngẫu nhiên
                 const newBadge = specialBadges[Math.floor(Math.random() * specialBadges.length)];
-
-                // Chuẩn bị dữ liệu để cập nhật
                 const dataToUpdate = {
                     rating: newRating,
                     luot_mua: newLuotMua,
@@ -464,17 +480,11 @@
                     gia_goc: newOriginalPrice,
                     badge: newBadge,
                 };
-
-                const { error: updateError } = await supabase
-                    .from("khoahoc")
-                    .update(dataToUpdate)
-                    .eq("id", course.id);
-
+                const { error: updateError } = await supabase.from("khoahoc").update(dataToUpdate).eq("id", course.id);
                 if (updateError) {
                     console.error(`❌ Lỗi cập nhật ID ${course.id}:`, updateError.message);
                     errorCount++;
                 } else {
-                    console.log(`✅ Cập nhật thành công ID ${course.id}`);
                     successCount++;
                 }
             } catch (err) {
@@ -482,20 +492,13 @@
                  errorCount++;
             }
         });
-
         await Promise.all(updatePromises);
-
         alert(`✨ Hoàn tất! ✨\n- Cập nhật thành công: ${successCount} khóa học.\n- Gặp lỗi: ${errorCount} khóa học.`);
-        
         updateAllBtn.disabled = false;
         updateAllBtn.textContent = "Cập nhật Dữ liệu cũ";
-        hienThiDanhSachKhoaHoc(); // Tải lại danh sách để xem thay đổi
+        hienThiDanhSachKhoaHoc();
     }
-
-    // Gán sự kiện cho nút
     updateAllBtn.addEventListener('click', updateExistingData);
-
-    // =================================================================================
 
     // Khởi chạy
     taoOptionKhuVuc();
