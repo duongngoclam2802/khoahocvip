@@ -78,9 +78,8 @@
         main { flex-grow: 1; max-width: 1200px; width: 100%; margin: 30px auto; padding: 0 20px; }
         .courses { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
 
-        /* === SỬA 1: CSS CHO THÔNG BÁO RỖNG === */
         .no-courses-message {
-            grid-column: 1 / -1; /* Quan trọng: Cho phép message chiếm toàn bộ chiều rộng grid */
+            grid-column: 1 / -1; 
             text-align: center;
             padding: 40px 20px;
             font-style: italic;
@@ -102,16 +101,57 @@
             overflow: hidden;
         }
         .course-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); }
-        .card-image-container { position: relative; cursor: pointer; } /* Thêm cursor pointer */
+        
+        .card-image-container { 
+            position: relative; 
+            cursor: pointer; 
+            overflow: hidden; /* Quan trọng để che đi phần mô tả ban đầu */
+        }
         .course-badge {
             position: absolute; top: 15px; left: -1px;
             background-color: var(--sale-color); color: var(--white-color);
             padding: 5px 12px; font-size: 13px; font-weight: 700;
             border-radius: 0 4px 4px 0; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            z-index: 2; /* Đảm bảo badge nổi lên trên */
         }
-        .course-card img { width: 100%; height: 180px; object-fit: cover; display: block; }
+        .course-card img { 
+            width: 100%; 
+            height: 180px; 
+            object-fit: cover; 
+            display: block; 
+            transition: transform 0.3s ease; /* Thêm hiệu ứng zoom nhẹ cho ảnh */
+        }
+        .course-card:hover img {
+            transform: scale(1.05); /* Zoom ảnh khi hover vào card */
+        }
+
+        /* CSS CHO MÔ TẢ HIỆN LÊN KHI HOVER */
+        .course-description-popup {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.75);
+            color: var(--white-color);
+            padding: 15px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 1;
+            font-size: 14px;
+            line-height: 1.5;
+            max-height: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 6; /* Giới hạn chỉ hiển thị 6 dòng */
+            -webkit-box-orient: vertical;
+        }
+        .course-card:hover .course-description-popup {
+            transform: translateY(0);
+        }
+
         .course-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
-        .course-info h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; line-height: 1.4; cursor: pointer; } /* Thêm cursor pointer */
+        .course-info h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; line-height: 1.4; cursor: pointer; } 
         .course-info h3:hover { color: var(--primary-color); }
         
         .course-meta {
@@ -140,71 +180,70 @@
         .normal-price {
             font-size: 1.8rem; font-weight: 700; color: var(--primary-color); margin-bottom: 15px;
         }
-        .course-info .buy-btn {
-            background: var(--primary-dark); color: var(--white-color);
-            padding: 12px 20px; border-radius: 8px; font-weight: 600;
-            text-decoration: none; transition: background-color 0.2s ease, transform 0.2s ease;
-            display: inline-flex; align-items: center; justify-content: center;
-            gap: 8px; margin-top: auto; width: 100%;
-        }
-        .course-info .buy-btn:hover { background-color: var(--primary-color); transform: scale(1.03); }
-        .course-info a.learn-btn { background: var(--secondary-dark); }
-        .course-info a.learn-btn:hover { background: var(--secondary-color); }
 
-        /* === SỬA 2: CSS CHO MODAL HIỂN THỊ MÔ TẢ === */
-        .modal {
-            display: none; /* Ẩn mặc định */
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
+        /* CSS CHO KHUNG CHỨA CÁC NÚT HÀNH ĐỘNG */
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto; /* Quan trọng: Đẩy các nút xuống cuối card */
             width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.6);
-            animation: fadeIn 0.3s ease;
+        }
+        .card-actions .buy-btn, .card-actions .details-btn {
+            padding: 12px 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-align: center;
+            flex-grow: 1; /* Cho các nút chia đều không gian */
+        }
+        .card-actions .buy-btn {
+            background: var(--primary-dark);
+            color: var(--white-color);
+        }
+        .card-actions .buy-btn:hover { background-color: var(--primary-color); transform: scale(1.03); }
+        .card-actions .learn-btn { background: var(--secondary-dark); }
+        .card-actions .learn-btn:hover { background: var(--secondary-color); }
+
+        .card-actions .details-btn {
+            background-color: #e9ecef;
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+        .card-actions .details-btn:hover {
+            background-color: #dee2e6;
+            transform: scale(1.03);
+        }
+
+        /* CSS CHO MODAL HIỂN THỊ MÔ TẢ */
+        .modal {
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%; overflow: auto;
+            background-color: rgba(0,0,0,0.6); animation: fadeIn 0.3s ease;
         }
         .modal-content {
-            background-color: var(--white-color);
-            margin: 10% auto;
-            padding: 30px 35px;
-            border-radius: var(--border-radius);
-            max-width: 700px;
-            width: 90%;
-            position: relative;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            background-color: var(--white-color); margin: 10% auto; padding: 30px 35px;
+            border-radius: var(--border-radius); max-width: 700px; width: 90%;
+            position: relative; box-shadow: 0 5px 25px rgba(0,0,0,0.3);
             animation: slideIn 0.4s ease;
         }
         .close-button {
-            color: #aaa;
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 32px;
-            font-weight: bold;
-            cursor: pointer;
+            color: #aaa; position: absolute; top: 15px; right: 20px;
+            font-size: 32px; font-weight: bold; cursor: pointer;
             transition: color 0.2s ease;
         }
-        .close-button:hover,
-        .close-button:focus {
-            color: var(--text-dark);
-        }
-        #modal-title {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            color: var(--primary-dark);
-        }
+        .close-button:hover, .close-button:focus { color: var(--text-dark); }
+        #modal-title { font-size: 1.8rem; margin-bottom: 20px; color: var(--primary-dark); }
         #modal-description {
-            margin-bottom: 30px;
-            line-height: 1.7;
-            color: var(--text-dark);
-            max-height: 40vh; /* Giới hạn chiều cao và cho phép cuộn */
-            overflow-y: auto;
-            padding-right: 15px; /* Tạo khoảng trống cho thanh cuộn */
+            margin-bottom: 30px; line-height: 1.7; color: var(--text-dark);
+            max-height: 40vh; overflow-y: auto; padding-right: 15px;
         }
-        #modal-buy-link {
-            width: auto; /* Để nút không chiếm toàn bộ chiều rộng */
-        }
+        #modal-buy-link { width: auto; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -268,7 +307,6 @@
         const navMobile = document.getElementById("nav-mobile");
         const coursesDiv = document.getElementById("courses");
 
-        // === SỬA 4: CÁC BIẾN VÀ HÀM ĐIỀU KHIỂN MODAL ===
         const modal = document.getElementById("course-modal");
         const modalTitle = document.getElementById("modal-title");
         const modalDescription = document.getElementById("modal-description");
@@ -278,10 +316,8 @@
         // Hàm mở modal với thông tin khóa học
         function openModal(course, khuVuc) {
             modalTitle.textContent = course.ten;
-            // Dùng innerHTML để có thể render các thẻ HTML như <br> trong mô tả
             modalDescription.innerHTML = course.mo_ta || 'Chưa có mô tả chi tiết cho khóa học này.';
             
-            // Cập nhật nút hành động trong modal
             if (khuVuc === "Khóa học miễn phí" || khuVuc === "Tài liệu" || course.gia === 0) {
                 modalBuyLink.href = course.linkdrive || '#';
                 modalBuyLink.innerHTML = `<i class="fas fa-play-circle"></i> Học Ngay`;
@@ -296,19 +332,15 @@
             modal.style.display = "block";
         }
 
-        // Đóng modal khi click nút (x)
         closeButton.onclick = function() {
             modal.style.display = "none";
         }
-        // Đóng modal khi click ra ngoài vùng content
         window.onclick = function(event) {
             if (event.target == modal) {
                 modal.style.display = "none";
             }
         }
-        // ===============================================
 
-        // Hàm tạo các ngôi sao đánh giá
         function generateStars(rating) {
             if (!rating || rating <= 0) return '';
             let starsHTML = '';
@@ -321,13 +353,11 @@
             return starsHTML;
         }
         
-        // Hàm chính để hiển thị khóa học
         async function hienThiKhoaHoc(khuvuc) {
             coursesDiv.innerHTML = `<p style="text-align:center; padding: 20px;">Đang tải khóa học...</p>`;
-            // === SỬA 5: LẤY THÊM CỘT 'mo_ta' TỪ SUPABASE ===
             const { data: khoaHocLoc, error } = await supabase
                 .from("khoahoc")
-                .select("*, mo_ta") // Thêm cột mo_ta vào đây
+                .select("*, mo_ta") 
                 .eq("loai", khuvuc)
                 .order('ten', { ascending: true });
 
@@ -337,7 +367,6 @@
                 return;
             }
             if (!khoaHocLoc || khoaHocLoc.length === 0) {
-                // === SỬA 6: SỬ DỤNG CLASS MỚI CHO THÔNG BÁO RỖNG ===
                 coursesDiv.innerHTML = `<div class="no-courses-message">Chưa có khóa học nào trong mục <strong>${khuvuc}</strong>.</div>`;
                 return;
             }
@@ -369,7 +398,7 @@
                 let priceHTML = '';
                 const gia = kh.gia;
                 const gia_goc = kh.gia_goc;
-                if (gia_goc && gia_goc > gia) {
+                if (gia_goc && gia_goc > gia && gia > 0) {
                     const discountPercent = Math.round(((gia_goc - gia) / gia_goc) * 100);
                     priceHTML = `<div class="course-pricing">
                                     <span class="current-price">${gia.toLocaleString('vi-VN')}đ</span>
@@ -379,39 +408,68 @@
                 } else {
                      priceHTML = `<div class="normal-price">${gia > 0 ? gia.toLocaleString('vi-VN') + 'đ' : 'Miễn phí'}</div>`;
                 }
+                
+                // TẠO KHUNG CHO CÁC NÚT HÀNH ĐỘNG
+                let nutHanhDongHTML;
+                const nutChiTiet = `<button class="details-btn">Xem chi tiết</button>`; // Nút mới
 
-                let nutHanhDong;
                 if (khuvuc === "Khóa học miễn phí" || khuvuc === "Tài liệu" || gia === 0) {
-                    nutHanhDong = `<a class="buy-btn learn-btn" href="${kh.linkdrive || '#'}" target="_blank" rel="noopener noreferrer"><i class="fas fa-play-circle"></i> Học Ngay</a>`;
+                     // Chỉ có nút Học Ngay
+                    const nutHocNgay = `<a class="buy-btn learn-btn" href="${kh.linkdrive || '#'}" target="_blank" rel="noopener noreferrer"><i class="fas fa-play-circle"></i> Học Ngay</a>`;
+                    nutHanhDongHTML = `
+                        <div class="card-actions">
+                            ${nutChiTiet}
+                            ${nutHocNgay}
+                        </div>`;
                 } else {
-                    nutHanhDong = `<a class="buy-btn" href="${zaloLink}" target="_blank" rel="noopener noreferrer"><i class="fas fa-shopping-cart"></i> Liên Hệ Mua</a>`;
+                    // Có cả nút Xem chi tiết và Liên hệ
+                    const nutMua = `<a class="buy-btn" href="${zaloLink}" target="_blank" rel="noopener noreferrer"><i class="fas fa-shopping-cart"></i> Liên Hệ Mua</a>`;
+                    nutHanhDongHTML = `
+                        <div class="card-actions">
+                             ${nutChiTiet}
+                             ${nutMua}
+                        </div>`;
                 }
+                
+                // Trích xuất mô tả ngắn gọn (loại bỏ thẻ HTML) cho tooltip
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = kh.mo_ta || 'Chưa có mô tả cho khóa học này.';
+                const plainTextDescription = tempDiv.textContent || tempDiv.innerText || '';
+
 
                 card.innerHTML = `
                     <div class="card-image-container">
                         ${badgeHTML}
                         <img src="${kh.hinh || 'https://via.placeholder.com/300x180?text=Hinh+Anh'}" alt="Hình ảnh khóa học ${kh.ten}" />
+                        
+                        <div class="course-description-popup">
+                           ${plainTextDescription}
+                        </div>
                     </div>
                     <div class="course-info">
                         <h3>${kh.ten}</h3>
                         ${metaHTML}
                         ${priceHTML}
-                        ${nutHanhDong}
+                        ${nutHanhDongHTML} 
                     </div>
                 `;
                 
-                // === SỬA 7: THÊM EVENT LISTENER ĐỂ MỞ MODAL ===
-                const cardImage = card.querySelector('.card-image-container');
+                // THÊM EVENT LISTENER CHO CÁC NÚT VÀ TIÊU ĐỀ
+                // Mở modal khi click vào tiêu đề
                 const cardTitle = card.querySelector('h3');
-                
-                cardImage.addEventListener('click', () => openModal(kh, khuvuc));
                 cardTitle.addEventListener('click', () => openModal(kh, khuvuc));
+
+                // Mở modal khi click vào nút "Xem chi tiết"
+                const detailsButton = card.querySelector('.details-btn');
+                if(detailsButton) {
+                    detailsButton.addEventListener('click', () => openModal(kh, khuvuc));
+                }
                 
                 coursesDiv.appendChild(card);
             });
         }
 
-        // === CÁC HÀM KHỞI TẠO (Giữ nguyên) ===
+        // CÁC HÀM KHỞI TẠO
         function taoNutKhuVuc() {
             danhSachKhuVuc.forEach((kv, index) => {
                 const createButton = (container) => {
