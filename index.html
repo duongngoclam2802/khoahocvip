@@ -48,6 +48,102 @@
             flex-direction: column;
         }
 
+        /* === BANNER THÔNG BÁO (MỚI) === */
+        .notification-banner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            animation: fadeInBanner 0.3s ease;
+        }
+
+        .notification-banner {
+            background: linear-gradient(135deg, #ffffff, #f9f9f9);
+            border-radius: 16px;
+            padding: 30px 35px;
+            max-width: 650px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            animation: slideInBanner 0.4s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .notification-banner .banner-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            animation: bounceIcon 1.5s infinite;
+        }
+
+        .notification-banner h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .notification-banner p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-light);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .notification-banner p i {
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+        }
+        .notification-banner p.highlight {
+            font-weight: 500;
+            font-style: italic;
+            color: var(--primary-dark);
+            margin-top: 25px;
+        }
+         .notification-banner p.highlight i {
+            color: var(--star-color);
+        }
+
+        .banner-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .banner-close-btn:hover {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            transform: rotate(90deg);
+        }
+
+        @keyframes fadeInBanner { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideInBanner { from { transform: translateY(-30px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+        @keyframes bounceIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
         /* === HEADER === */
         header { background-color: var(--white-color); box-shadow: 0 2px 8px rgba(0,0,0,0.07); position: sticky; top: 0; z-index: 1000; height: var(--header-height); display: flex; align-items: center; width: 100%; }
         .header-container { display: flex; align-items: center; gap: 20px; width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 25px; }
@@ -79,7 +175,7 @@
         /* === HERO BANNER === */
         .hero-banner { padding: 30px 25px; background-color: var(--bg-light); }
         .hero-banner-inner { max-width: 1400px; width: 100%; margin: 0 auto; }
-        .hero-banner-inner img { width: 100%; height: 500px; display: block; border-radius: var(--border-radius); object-fit: cover; }
+        .hero-banner-inner img { width: 100%; height: auto; display: block; border-radius: var(--border-radius); object-fit: cover; }
         
         /* === MAIN CONTENT === */
         main { background-color: var(--white-color); }
@@ -127,7 +223,6 @@
             border-color: var(--primary-dark);
         }
 
-
         .courses { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
         .no-courses-message { grid-column: 1 / -1; text-align: center; padding: 40px 20px; font-style: italic; color: var(--text-light); background-color: var(--bg-light); border-radius: var(--border-radius); box-shadow: var(--shadow); }
         
@@ -143,15 +238,41 @@
             .logo-container h1 { display: none; }
             .carousel-nav-btn { display: none; }
             .hero-banner { padding: 20px 15px; }
-            .hero-banner-inner img { height: 250px; width: 100%; }
+            .hero-banner-inner img { height: auto; width: 100%; }
             .main-container { padding: 20px 15px; }
             .page-title { font-size: 1.5rem; }
             .courses { grid-template-columns: 1fr; gap: 20px; } 
             .price-filters { font-size: 10px;}
+             /* Responsive cho banner */
+            .notification-banner { padding: 25px 20px; }
+            .notification-banner h2 { font-size: 1.4rem; }
+            .notification-banner p { font-size: 0.95rem; flex-direction: column; gap: 8px; }
         }
     </style>
 </head>
 <body>
+    
+    <div id="notification-banner-overlay" class="notification-banner-overlay">
+        <div class="notification-banner">
+            <button id="banner-close-btn" class="banner-close-btn" aria-label="Đóng thông báo">&times;</button>
+            <div class="banner-icon">
+                <i class="fas fa-bullhorn"></i>
+            </div>
+            <h2>Thông Báo Quan Trọng</h2>
+            <h4>
+                <i class="fas fa-info-circle"></i>
+                <span>Khoahocvip.io.vn chỉ là 1 web con cung cấp link video học, link tài liệu cho các hệ thống lớn khác, khoahocvip.io.vn <strong>không lưu trữ</strong> bất kì tài liệu và video nào của thầy cô.</span>
+            </h4>
+            <p>
+                <span>Nếu có nhiều kinh phí hãy đăng kí ủng hộ tại page của thầy cô.</span>
+            </p>
+            <p class="highlight">
+                <i class="fas fa-star"></i>
+                <span>Chúc bạn học tập hiệu quả!</span>
+            </p>
+        </div>
+    </div>
+
 
     <header>
         <div class="header-container">
@@ -182,7 +303,7 @@
 
     <section class="hero-banner">
         <div class="hero-banner-inner">
-            <img src="anh.png" alt="Giới thiệu các khóa học chất lượng cao">
+            <img src="https://i.imgur.com/B9V0G7h.png" alt="Giới thiệu các khóa học chất lượng cao">
         </div>
     </section>
 
@@ -251,6 +372,10 @@
         const modalDescription = document.getElementById("modal-description");
         const modalBuyLink = document.getElementById("modal-buy-link");
         const closeButton = document.querySelector(".close-button");
+        
+        // DOM Elements cho Banner (MỚI)
+        const bannerOverlay = document.getElementById('notification-banner-overlay');
+        const bannerCloseBtn = document.getElementById('banner-close-btn');
 
         // === State Management ===
         let currentCategory = null;
@@ -295,6 +420,16 @@
             const { data: khoaHocLoc, error } = await query;
             
             // ... (Phần cập nhật tiêu đề và xử lý lỗi giữ nguyên)
+            // Cập nhật tiêu đề trang
+            let titleText = "Tất cả khóa học";
+            if(currentCategory) {
+                titleText = `Khóa học ${currentCategory}`;
+            }
+            if(currentSearchTerm){
+                titleText = `Kết quả tìm kiếm cho "${currentSearchTerm}"`;
+            }
+            pageTitle.textContent = titleText;
+
 
             coursesDiv.innerHTML = "";
             if (error || !khoaHocLoc || khoaHocLoc.length === 0) {
@@ -392,6 +527,19 @@
             // Thêm listener cho âm thanh
             window.addEventListener('click', playWelcomeAudioOnce);
             window.addEventListener('scroll', playWelcomeAudioOnce); // Thêm cả scroll để tăng cơ hội kích hoạt
+
+            // Event listener cho banner (MỚI)
+            const closeBanner = () => {
+                bannerOverlay.style.display = 'none';
+                sessionStorage.setItem('bannerClosed', 'true');
+            };
+            bannerCloseBtn.addEventListener('click', closeBanner);
+            bannerOverlay.addEventListener('click', (e) => {
+                if (e.target === bannerOverlay) {
+                    closeBanner();
+                }
+            });
+
         }
 
         // --- Các hàm khác giữ nguyên (taoLuoiPhanLoai, setActiveCategoryItem) ---
@@ -413,6 +561,13 @@
             setActiveCategoryItem(null);
             hienThiKhoaHoc();
             setTimeout(() => categoryGrid.dispatchEvent(new Event('scroll')), 100);
+
+            // Logic hiển thị banner (MỚI)
+            if (sessionStorage.getItem('bannerClosed') === 'true') {
+                bannerOverlay.style.display = 'none';
+            } else {
+                bannerOverlay.style.display = 'flex';
+            }
         }
         
         init();
