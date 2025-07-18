@@ -326,14 +326,29 @@
         }
 
         function startAutoScroll() {
-            stopAutoScroll(); 
-            const SCROLL_INTERVAL = 1000; 
-            const SCROLL_STEP = 1;
-
+            stopAutoScroll();
+        
+            let SCROLL_INTERVAL;
+            let SCROLL_STEP;
+        
+            // Kiểm tra nếu là màn hình điện thoại (chiều rộng <= 768px)
+            if (window.matchMedia("(max-width: 768px)").matches) {
+                // Tốc độ cho điện thoại (nhanh hơn) 📱
+                SCROLL_INTERVAL = 200; // Giảm xuống để cuộn nhanh hơn
+                SCROLL_STEP = 1;
+            } else {
+                // Tốc độ cho máy tính (như cũ) 💻
+                SCROLL_INTERVAL = 800;
+                SCROLL_STEP = 1;
+            }
+        
             autoScrollInterval = setInterval(() => {
                 const grid = categoryGrid;
                 if (grid.scrollLeft + grid.clientWidth >= grid.scrollWidth) {
-                    grid.scrollTo({ left: 0, behavior: 'smooth' });
+                    grid.scrollTo({
+                        left: 0,
+                        behavior: 'smooth'
+                    });
                 } else {
                     grid.scrollBy(SCROLL_STEP, 0);
                 }
