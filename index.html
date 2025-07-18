@@ -599,7 +599,7 @@
             setActiveCategoryItem(null);
             hienThiKhoaHoc();
             setTimeout(() => categoryGrid.dispatchEvent(new Event('scroll')), 100);
-
+lis
             // Logic hiển thị banner (MỚI)
             if (sessionStorage.getItem('bannerClosed') === 'true') {
                 bannerOverlay.style.display = 'none';
@@ -607,7 +607,25 @@
                 bannerOverlay.style.display = 'flex';
             }
         }
-        
+        const welcomeAudio = new Audio('kinhchao.mp3');
+        function playWelcomeAudioOnce() {
+            // Chỉ phát nếu chưa từng phát trong session này
+            if (!sessionStorage.getItem('audioPlayed')) {
+                welcomeAudio.play()
+                    .then(() => {
+                        sessionStorage.setItem('audioPlayed', 'true');
+                        // Tự gỡ bỏ listener sau khi phát thành công
+                        window.removeEventListener('click', playWelcomeAudioOnce);
+                        window.removeEventListener('scroll', playWelcomeAudioOnce);
+                    })
+                    .catch(error => {
+                        console.log("Audio autoplay was prevented:", error);
+                        // Tự gỡ bỏ listener nếu bị lỗi để không thử lại
+                         window.removeEventListener('click', playWelcomeAudioOnce);
+                         window.removeEventListener('scroll', playWelcomeAudioOnce);
+                    });
+            }
+        }
         init();
 
         // --- Code rút gọn cho các hàm không đổi ---
