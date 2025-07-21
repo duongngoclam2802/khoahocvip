@@ -205,7 +205,7 @@
             <h2>Thông Báo Quan Trọng</h2>
             <h4>
                 <i class="fas fa-info-circle"></i>
-                <span>Tuyển CTV bán khóa học hoa hồng lên tới 40%/1 đơn.<strong>Được tạo website con bán khóa học miễn phí, </strong>khi CTV bán được đơn đầu tiên.</span>
+                <span>Mua khóa nào thì sẽ được học tất cả thầy cô - trung tâm dạy học có trong khóa đó<strong>Ví dụ: Mua khóa Toán bạn sẽ được học tất cả Thầy cô dậy Toán đó, </strong>chỉ với 99k được tất cả.</span>
             </h4>
             <p><span>Liên hệ qua zalo để được tư vấn.</span></p>
             <p class="highlight"><i class="fas fa-star"></i><span>Chúc bạn học tập hiệu quả!</span></p>
@@ -283,7 +283,7 @@
         const SUPABASE_URL = "https://sdixqzzpggcxrbtaqqtf.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkaXhxenpwZ2djeHJidGFxcXRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg2MDQ4OTMsImV4cCI6MjA2NDE4MDg5M30.5nP_A5N6Jb2fDDNmRVcLva_znbrQhErt-xcpmm5V6S8";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        const danhSachKhuVuc = ["Khóa Combo", "Khóa học miễn phí", "Tài liệu", "Toán", "Lý", "Hóa", "Tiếng Anh", "Sinh", "Văn", "Sử", "Địa", "DGNL (HSA)", "VATC - APT", "DGTD (TSA)", "TOEIC", "IELTS", "Đại học"];
+        const danhSachKhuVuc = ["Khóa Combo", "Toán", "Lý", "Hóa", "Tiếng Anh", "Sinh", "Văn", "Sử", "Địa", "HSA - TSA - VATC - APT", "TOEIC", "IELTS", "Đại học", "Khóa học miễn phí", "Tài liệu"];
         const zaloLink = "https://zalo.me/0333041525";
 
         // === DOM Elements ===
@@ -313,7 +313,7 @@
             'Toán': 'fa-calculator', 'Lý': 'fa-atom', 'Hóa': 'fa-flask', 'Tiếng Anh': 'fa-language',
             'Sinh': 'fa-dna', 'Văn': 'fa-pen-nib', 'Sử': 'fa-landmark', 'Địa': 'fa-globe-asia',
             'IELTS': 'fa-passport', 'TOEIC': 'fa-file-alt', 'Đại học': 'fa-graduation-cap',
-            'DGNL (HSA)': 'fa-brain', 'DGTD (TSA)': 'fa-brain', 'Khóa học miễn phí': 'fa-gift',
+            'HSA - TSA - VATC - APT': 'fa-brain', 'Khóa học miễn phí': 'fa-gift',
             'Tài liệu': 'fa-folder-open', 'Khóa Combo': 'fa-boxes-stacked'
         };
 
