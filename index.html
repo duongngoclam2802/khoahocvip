@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -180,6 +181,23 @@
         footer{background:#212529;color:#ced4da;text-align:center;padding:30px 20px;font-size:.9rem;margin-top:auto;}footer p{margin-bottom:10px}footer a{color:var(--primary-color);text-decoration:none;font-weight:500;transition:color .2s ease}footer a:hover{color:var(--white-color)}footer .fas,footer .fab{margin-right:5px}
 
         /* RESPONSIVE */
+        .nut-xem-sheet {
+            display: inline-block; /* Hiển thị như một khối nội tuyến */
+            background-color: #4CAF50; /* Màu nền xanh lá cây */
+            color: white; /* Màu chữ trắng */
+            padding: 14px 25px; /* Khoảng đệm bên trong nút */
+            text-align: center; /* Căn giữa văn bản */
+            text-decoration: none; /* Bỏ gạch chân mặc định của liên kết */
+            font-size: 16px; /* Cỡ chữ */
+            font-weight: bold; /* Chữ đậm */
+            border-radius: 8px; /* Bo tròn các góc */
+            cursor: pointer; /* Biến con trỏ thành hình bàn tay khi di chuột qua */
+            transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu nền mượt mà */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Thêm bóng đổ nhẹ */
+        }
+        .nut-xem-sheet:hover {
+            background-color: #45a049; /* Thay đổi màu nền khi di chuột qua */
+        }
         @media (max-width: 768px) { 
             .header-container { padding: 0 15px; gap: 15px; }
             .logo-container h1 { display: none; }
@@ -193,7 +211,9 @@
             .notification-banner { padding: 25px 20px; }
             .notification-banner h2 { font-size: 1.4rem; }
             .notification-banner p { font-size: 0.95rem; flex-direction: column; gap: 8px; }
+            .nut-xem-sheet {padding: 9px 15px; font-size: 9px; }
         }
+        
     </style>
 </head>
 <body>
@@ -215,8 +235,10 @@
     <header>
         <div class="header-container">
             <a href="/" class="logo-container" title="Trang chủ KHOAHOCVIP">
-                <img src="iogo.png" alt="Logo KHOAHOCVIP">
-                <h1>KHOAHOCVIP</h1>
+                <img src="iogo.png" alt="lg">
+                <a href="https://docs.google.com/spreadsheets/d/1kwcF_6vDUL80fyvpmSMFedubfFJs5bIum5SvTHmf86Q/edit?usp=sharing" target="_blank" class="nut-xem-sheet">
+                <div>XEM SHEET HỌC TẬP</div>
+                </a>
             </a>
             <div class="search-container">
                 <form id="search-form" role="search">
