@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Đăng Ký Học Thử Miễn Phí - KhoaHocVip</title>
+    <meta name="description" content="Nhận ngay 1 giờ học thử miễn phí các khóa học chất lượng cao tại KhoaHocVip. Đăng ký nhanh chóng, duyệt tự động, vào học ngay.">
+    <link rel="icon" type="image/png" href="logo.png">
+
+    <meta property="og:title" content="Đăng Ký Học Thử Miễn Phí - KhoaHocVip">
+    <meta property="og:description" content="Nhận ngay 1 giờ học thử miễn phí các khóa học chất lượng cao. Đăng ký nhanh chóng, duyệt tự động, vào học ngay.">
+    <meta property="og:image" content="logo.png"> <meta property="og:url" content="https://www.khoahocvip.io.vn">
+    <meta property="og:type" content="website">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #0066ff;
+            --primary-hover: #0052cc;
+            --secondary-color: #e8f0fe;
+            --text-color: #333;
+            --light-gray: #f4f7fa;
+            --border-color: #e0e0e0;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --white-color: #ffffff;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: var(--white-color);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .header .logo img {
+            height: 40px;
+        }
+
+        .header .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            border: 1px solid var(--secondary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #dbe7ff;
+        }
+
+        .btn-primary-buy {
+            background-color: var(--success-color);
+            color: var(--white-color);
+        }
+
+        .btn-primary-buy:hover {
+            background-color: #218838;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: var(--white-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+        
+        h1, h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--light-gray);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .notice {
+            background-color: #fff9e6;
+            border: 1px solid #ffedd1;
+            border-left: 5px solid var(--warning-color);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        form {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        input[type="email"] {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        input[type="email"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--secondary-color);
+        }
+
+        button[type="submit"] {
+            padding: 12px 25px;
+            background-image: linear-gradient(to right, #0066ff, #0052cc);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 255, 0.3);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--light-gray);
+            font-weight: 600;
+        }
+
+        .status-pending {
+            color: #f39c12;
+            font-weight: 500;
+        }
+
+        .status-approved {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+        
+        .approved-message {
+            font-size: 0.9em;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .container {
+                padding: 1.5rem;
+            }
+            form {
+                flex-direction: column;
+            }
+            .nav-buttons{
+                text-align: center;
+                font-size: small;
+            }
+            .logo{
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="logo">
+        <p>KHOAHOCVIP.io.vn</p>
+    </div>
+    <nav class="nav-buttons">
+        <a href="https://www.khoahocvip.io.vn/sheet" class="nav-btn btn-secondary">📚 Danh Sách Khóa Học</a>
+        <a href="https://www.khoahocvip.io.vn/bang-gia" class="nav-btn btn-secondary">💰 Bảng Giá</a>
+        <a href="https://zalo.me/0333041525" class="nav-btn btn-primary-buy">🛒 Mua Khóa Học Ngay</a>
+    </nav>
+</header>
+
+<div class="container">
+    <h1>Đăng Ký Học Thử Miễn Phí</h1>
+    <div class="notice">
+        <p>💡 <b>Lưu ý:</b> Bạn sẽ được học thử trong <b>1 giờ</b>. Mỗi địa chỉ email chỉ được đăng ký một lần duy nhất.</p>
+    </div>
+
+    <form id="trial-form">
+        <input type="email" id="email-input" placeholder="Nhập địa chỉ email của bạn..." required>
+        <button type="submit">Gửi Đăng Ký</button>
+    </form>
+    
+    <h2>Danh Sách Đăng Ký</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Trạng Thái</th>
+            </tr>
+        </thead>
+        <tbody id="user-list">
+            </tbody>
+    </table>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://evmxgmkhobgzncjykxyy.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2bXhnbWtob2Jnem5janlreHl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM2NjkwNTgsImV4cCI6MjA2OTI0NTA1OH0.NjXBGOLRNz9EK4t1ii81CqyBF7uXp4issekmXs4piNc';
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const form = document.getElementById('trial-form');
+    const emailInput = document.getElementById('email-input');
+    const userList = document.getElementById('user-list');
+
+    // Hàm tải và hiển thị danh sách người dùng
+    async function fetchUsers() {
+        const { data, error } = await supabaseClient
+            .from('trial_users')
+            .select('email, status, approved_at')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('Lỗi tải danh sách:', error);
+            return;
+        }
+
+        userList.innerHTML = ''; // Xóa danh sách cũ
+        data.forEach(user => {
+            const row = document.createElement('tr');
+            
+            let statusHtml = '';
+            if (user.status === 'đã duyệt') {
+                statusHtml = `<span class="status-approved">✅ Đã duyệt</span>
+                              <div class="approved-message">Vui lòng kiểm tra hộp thư. Quyền học thử có hiệu lực 1 giờ kể từ thời điểm duyệt.</div>`;
+            } else {
+                statusHtml = `<span class="status-pending">⌛ Chờ duyệt</span>`;
+            }
+
+            row.innerHTML = `
+                <td>${maskEmail(user.email)}</td>
+                <td>${statusHtml}</td>
+            `;
+            userList.appendChild(row);
+        });
+    }
+    
+    // Hàm che bớt email cho riêng tư
+    function maskEmail(email) {
+        const [name, domain] = email.split('@');
+        if (name.length <= 6) return `${name.substring(0, 1)}**@${domain}`;
+        return `${name.substring(0, 6)}**@${domain}`;
+    }
+
+    // Xử lý khi gửi form
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const emailValue = emailInput.value.trim();
+
+        // Chèn dữ liệu vào Supabase
+        const { data, error } = await supabaseClient
+            .from('trial_users')
+            .insert({ email: emailValue })
+            .select();
+
+        if (error) {
+            if (error.code === '23505') { // Lỗi trùng lặp email
+                alert('Lỗi: Email này đã được đăng ký rồi!');
+            } else {
+                alert('Đã xảy ra lỗi. Vui lòng thử lại.');
+                console.error('Lỗi chèn dữ liệu:', error);
+            }
+        } else {
+            alert('Đăng ký thành công! Vui lòng chờ quản trị viên duyệt.');
+            emailInput.value = '';
+            // TỰ ĐỘNG TẢI LẠI TRANG
+            location.reload(); 
+        }
+    });
+
+    // Lắng nghe thay đổi trong CSDL và tự động cập nhật lại danh sách (Realtime)
+    supabaseClient.channel('public:trial_users')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'trial_users' }, payload => {
+            console.log('Change received!', payload);
+            fetchUsers(); // Tải lại danh sách khi có thay đổi
+        })
+        .subscribe();
+
+    // Tải danh sách lần đầu khi trang được mở
+    fetchUsers();
+</script>
+
+</body>
+</html>

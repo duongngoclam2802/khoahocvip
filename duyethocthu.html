@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Quản Trị - KhoaHocVip</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #0066ff;
+            --success-color: #28a745;
+            --success-hover: #218838;
+            --warning-color: #ffc107;
+            --warning-hover: #e0a800;
+            --danger-color: #dc3545;
+            --light-gray: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-color: #212529;
+            --text-muted: #6c757d;
+            --white-color: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 2rem auto;
+            padding: 2.5rem;
+            background-color: var(--white-color);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        h1, h2 {
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.25rem;
+            margin-top: 0;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 40px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 1rem;
+            line-height: 1.6;
+            box-sizing: border-box; /* Important */
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.15);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        #approve-all-btn {
+            background-color: var(--success-color);
+            color: white;
+        }
+        #approve-all-btn:hover:not(:disabled) {
+            background-color: var(--success-hover);
+        }
+
+        #copy-btn {
+            background-color: var(--warning-color);
+            color: var(--text-color);
+        }
+        #copy-btn:hover:not(:disabled) {
+            background-color: var(--warning-hover);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        thead th {
+            background-color: var(--light-gray);
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+        
+        tbody tr:hover {
+            background-color: #f1f8ff;
+        }
+        
+        .status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.8rem;
+            text-transform: capitalize;
+            color: var(--white-color);
+        }
+        
+        .status-pending {
+            background-color: #fd7e14; /* Orange */
+        }
+        
+        .status-approved {
+            background-color: var(--success-color);
+        }
+        
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Bảng Điều Khiển Admin</h1>
+
+    <h2>Nội dung Email gửi cho người dùng</h2>
+    <textarea id="email-content" placeholder="Soạn nội dung email tại đây...">Xin chào,
+    
+Tài khoản học thử của bạn đã được duyệt!
+
+Bạn có 1 giờ để trải nghiệm các khóa học tại KhoaHocVip. Thời gian bắt đầu tính từ lúc bạn nhận được email này.
+
+Chúc bạn học tốt!</textarea>
+
+    <div class="controls">
+        <button id="copy-btn">📋 Sao chép DS chờ duyệt</button>
+        <button id="approve-all-btn">✅ Duyệt tất cả và Gửi Mail</button>
+    </div>
+
+    <h2>Danh sách Email đã đăng ký</h2>
+    <table id="admin-user-table">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Trạng thái</th>
+                <th>Ngày đăng ký</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+    </table>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://evmxgmkhobgzncjykxyy.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2bXhnbWtob2Jnem5janlreHl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM2NjkwNTgsImV4cCI6MjA2OTI0NTA1OH0.NjXBGOLRNz9EK4t1ii81CqyBF7uXp4issekmXs4piNc';
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const userTableBody = document.querySelector('#admin-user-table tbody');
+    const approveAllBtn = document.getElementById('approve-all-btn');
+    const copyBtn = document.getElementById('copy-btn');
+    const emailContent = document.getElementById('email-content');
+
+    let pendingEmails = [];
+
+    // Hàm tải và hiển thị danh sách
+    async function loadAdminUsers() {
+        const { data, error } = await supabase
+            .from('trial_users')
+            .select('*')
+            .order('created_at', { ascending: false }); // Hiển thị người mới nhất lên đầu
+
+        if (error) {
+            console.error('Lỗi:', error);
+            return;
+        }
+
+        userTableBody.innerHTML = '';
+        pendingEmails = []; 
+        data.forEach(user => {
+            if (user.status === 'chờ duyệt') {
+                pendingEmails.push(user.email);
+            }
+            const row = document.createElement('tr');
+            
+            // THAY ĐỔI: Thêm class cho thẻ span để tạo badge trạng thái
+            const statusClass = user.status === 'đã duyệt' ? 'status-approved' : 'status-pending';
+            const statusText = user.status === 'đã duyệt' ? 'Đã duyệt' : 'Chờ duyệt';
+            
+            row.innerHTML = `
+                <td>${user.email}</td>
+                <td><span class="status ${statusClass}">${statusText}</span></td>
+                <td>${new Date(user.created_at).toLocaleString('vi-VN')}</td>
+            `;
+            userTableBody.appendChild(row);
+        });
+    }
+
+    // Nút sao chép
+    copyBtn.addEventListener('click', () => {
+        if (pendingEmails.length === 0) {
+            alert('Không có email nào đang chờ duyệt để sao chép.');
+            return;
+        }
+        const textToCopy = pendingEmails.join('\n');
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            alert(`Đã sao chép ${pendingEmails.length} email vào clipboard!`);
+        }, (err) => {
+            alert('Sao chép thất bại!');
+            console.error('Lỗi sao chép: ', err);
+        });
+    });
+
+    // Nút duyệt tất cả
+    approveAllBtn.addEventListener('click', async () => {
+        if (pendingEmails.length === 0) {
+            alert('Không có email nào để duyệt.');
+            return;
+        }
+        
+        if (!confirm(`Bạn có chắc muốn duyệt ${pendingEmails.length} email và gửi mail không?`)) {
+            return;
+        }
+        
+        const mailContent = emailContent.value;
+        if (!mailContent) {
+            alert('Nội dung email không được để trống.');
+            return;
+        }
+        
+        approveAllBtn.disabled = true;
+        approveAllBtn.textContent = 'Đang xử lý...';
+
+        try {
+            // Gọi Edge Function
+            const { data, error } = await supabase.functions.invoke('send-approval-email', {
+                body: { emails: pendingEmails, mailContent: mailContent },
+            });
+            
+            if (error) throw error;
+
+            alert(`Thành công! Đã duyệt và gửi mail cho ${data.successCount} người dùng.`);
+
+        } catch (error) {
+            alert('Đã xảy ra lỗi khi duyệt. Vui lòng xem console.');
+            console.error('Lỗi khi gọi function:', error);
+        } finally {
+            approveAllBtn.disabled = false;
+            approveAllBtn.textContent = '✅ Duyệt tất cả và Gửi Mail';
+        }
+    });
+    
+    // Lắng nghe thay đổi real-time
+    supabase.channel('public:trial_users')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'trial_users' }, payload => {
+            loadAdminUsers();
+        })
+        .subscribe();
+        
+    // Tải dữ liệu lần đầu
+    loadAdminUsers();
+</script>
+
+</body>
+</html>
