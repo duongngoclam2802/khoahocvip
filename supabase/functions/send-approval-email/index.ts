@@ -49,7 +49,7 @@ serve(async (req) => {
     // 2. Gửi email đến các địa chỉ đã được cập nhật thành công
     for (const email of successfulEmails) {
       await resend.emails.send({
-        from: 'Hoc Thu <hocthu@resend.dev>', // Thay bằng email của bạn đã xác thực trên Resend
+        from: 'Hoc Thu <hocthu@khoahocvip.io.vn>', // Thay bằng email của bạn đã xác thực trên Resend
         to: email,
         subject: 'Thông báo duyệt học thử thành công!',
         html: mailContent.replace(/\n/g, '<br>')
