@@ -21,56 +21,50 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
-        /* THAY ĐỔI: Reset và thiết lập cơ bản */
         html, body {
             height: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Ngăn cuộn trang chính */
+            overflow: hidden;
             font-family: 'Be Vietnam Pro', sans-serif;
             background-color: #f0f2f5;
         }
-
-        /* THAY ĐỔI: Đẩy toàn bộ nội dung body xuống để chừa không gian cho header */
         body {
-            /* Header có class h-20 (5rem = 80px) */
             padding-top: 80px; 
             box-sizing: border-box;
         }
-
-        /* THAY ĐỔI: Sử dụng Flexbox để layout linh hoạt */
         #main-content {
             display: flex;
             flex-direction: column;
-            height: 100%; /* Chiếm toàn bộ chiều cao còn lại của body */
+            height: 100%;
         }
-
         #sheet-display-area {
-            flex-grow: 1; /* Cho phép vùng sheet co giãn để lấp đầy không gian */
-            min-height: 0; /* Rất quan trọng: để iframe không bị tràn trong môi trường flex */
+            flex-grow: 1;
+            min-height: 0;
             overflow: hidden;
-            border-radius: 0.75rem; /* rounded-xl */
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* shadow-xl */
-            border: 1px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e5e7eb;
         }
-        
         #sheet-iframe {
             width: 100%;
             height: 100%;
             border: none;
         }
-
         .nav-shadow {
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
         }
 
-        /* Giữ nguyên logic thu nhỏ trên điện thoại */
+        /* ========= THAY ĐỔI TẠI ĐÂY ========= */
         @media (max-width: 768px) {
             #sheet-iframe {
-                transform: scale(0.65);
+                /* THAY ĐỔI: Giảm tỷ lệ scale để "zoom out" nhiều hơn */
+                transform: scale(0.45); 
                 transform-origin: top left;
-                width: 153.85%;
-                height: 153.85%;
+                
+                /* THAY ĐỔI: Cập nhật width/height tương ứng (1 / 0.55 ≈ 1.8182) */
+                width: 222.62%;
+                height: 222.62%;
             }
         }
     </style>
@@ -81,7 +75,9 @@
         <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-full">
                 <div class="flex-shrink-0">
-                    <p class="text-2xl font-bold text-gray-900">VIPSTUDY</p>
+                    <a href="/" title="Trang chủ">
+                        <img class="h-12 w-auto" src="iogo.png" alt="Logo Khoahocvip">
+                    </a>
                 </div>
                 <div class="flex items-center space-x-2 md:space-x-4">
                     <a href="https://zalo.me/0333041525" class="p-2 text-gray-600 hover:text-blue-600 font-medium transition-colors flex items-center justify-center space-x-2 rounded-lg hover:bg-gray-100">
