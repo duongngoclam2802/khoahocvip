@@ -1,663 +1,655 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="iogo.png" type="image/png">
-    <title>KHOAHOCVIP - Nền Tảng Chia Sẻ Khóa Học Hàng Đầu</title>
-    <meta name="description" content="KHOAHOCVIP - Tìm kiếm và khám phá kho khóa học trực tuyến qua drive đa dạng các môn XPS cho 2K8 Toán, Lý, Hóa, Tiếng Anh, IELTS, TOEIC, Hocmai, Kyna, Unica, Edumall, Toppy, KhoaHocVIP, Moon, Tuyensinh247, Vted, Học24h, Onluyen, OLM, Azota, Zuni, VietJack, Cùng học, HOCMAI Express, Kiến Guru, Vinastudy, Học mãi Express, VUIHOC, Netabooks, Đại học số, XPS, Học Tài Liệu, Tài liệu Hay, Share Khóa Học,, Lớp Học Vui, Tinh Hoa TV, Edusa, Dạy Kèm Quy Nhơn, HocThat, E-learning THPT, Học Online TV, khóa học mới, bài giảng khóa học, tài liệu ôn thi, tlot, khóa chui drive, khóa xps 2k8, baxi khóa học, loigiaihay." />
-    <meta name="keywords" content="khóa học online, khóa học drive,khóa học drive XPS 2K8, ôn thi THPT QG học trực tuyến, chia sẻ khóa học, khoahocvip, toán, lý, hóa, tiếng anh, ielts, toeic, đgnl, dgtd, tài liệu học tập" />
-    <meta property="og:title" content="KHOAHOCVIP | Chia sẻ khóa học chất lượng cao" />
-    <meta property="og:description" content="Tìm kiếm và khám phá kho khóa học trực tuyến xps 2k8 qua drive đa dạng các môn Toán, Lý, Hóa, Tiếng Anh, IELTS, TOEIC. Lọc khóa học theo cả tên và mô tả." />
-    <meta property="og:image" content="https://www.khoahocvip.io.vn/iogo.png" />
-    <meta property="og:url" content="https://khoahocvip.io.vn" />
-    <meta property="og:type" content="website" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="iogo.png" type="image/png">
+<title>KHOAHOCVIP - Nền Tảng Chia Sẻ Khóa Học Hàng Đầu</title>
+<meta name="description" content="KHOAHOCVIP - Nền tảng chia sẻ kho khóa học chất lượng hàng đầu Việt Nam, giúp bạn tiếp cận tri thức đỉnh cao từ các chuyên gia với chi phí tối ưu nhất." />
+<meta name="keywords" content="khóa học online, khóa học drive,khóa học drive XPS 2K8, ôn thi THPT QG học trực tuyến, chia sẻ khóa học, khoahocvip, toán, lý, hóa, tiếng anh, ielts, toeic, đgnl, dgtd, tài liệu học tập" />
+<meta property="og:title" content="KHOAHOCVIP | Chia sẻ khóa học chất lượng cao" />
+<meta property="og:description" content="Khám phá kho khóa học trực tuyến đa dạng các môn Toán, Lý, Hóa, Tiếng Anh, IELTS, TOEIC. Học tập hiệu quả với chi phí tiết kiệm." />
+<meta property="og:image" content="https://www.khoahocvip.io.vn/iogo.png" />
+<meta property="og:url" content="https://khoahocvip.io.vn" />
+<meta property="og:type" content="website" />
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <style>
-        :root {
-            --primary-color: #007bff;
-            --primary-dark: #0056b3;
-            --secondary-color: #28a745;
-            --text-dark: #212529;
-            --text-light: #6c757d;
-            --bg-light: #f8f9fa;
-            --white-color: #ffffff;
-            --border-color: #e9ecef;
-            --star-color: #ffc107;
-            --sale-color: #dc3545;
-            --shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.1);
-            --border-radius: 12px;
-            --header-height: 70px;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--white-color);
-            color: var(--text-dark);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+<style>
+    /* --- CẤU HÌNH BIẾN TOÀN CỤC --- */
+    :root {
+        --primary-color: #4A90E2; /* Xanh dương hiện đại */
+        --primary-dark: #357ABD;
+        --secondary-color: #50E3C2; /* Xanh ngọc */
+        --text-dark: #2c3e50; /* Xanh đen */
+        --text-light: #7f8c8d;
+        --bg-light: #fdfdfd;
+        --white-color: #ffffff;
+        --border-color: #ecf0f1;
+        --sale-color: #e74c3c;
+        --shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+        --shadow-hover: 0 8px 25px rgba(74, 144, 226, 0.2);
+        --border-radius: 16px;
+        --header-height: 75px;
+        --font-family: 'Be Vietnam Pro', sans-serif;
+    }
 
-        /* === BANNER THÔNG BÁO === */
-        .notification-banner-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            z-index: 3000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-            animation: fadeInBanner 0.3s ease;
-        }
-        .notification-banner {
-            background: linear-gradient(135deg, #ffffff, #f9f9f9);
-            border-radius: 16px;
-            padding: 30px 35px;
-            max-width: 650px;
-            width: 100%;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            animation: slideInBanner 0.4s ease;
-            border: 1px solid var(--border-color);
-        }
-        .notification-banner .banner-icon {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            animation: bounceIcon 1.5s infinite;
-        }
-        .notification-banner h2 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.6rem;
-            margin-bottom: 20px;
-            color: var(--text-dark);
-        }
-        .notification-banner p {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: var(--text-light);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .notification-banner p i { font-size: 1.1rem; color: var(--secondary-color); }
-        .notification-banner p.highlight {
-            font-weight: 500; font-style: italic; color: var(--primary-dark); margin-top: 25px;
-        }
-         .notification-banner p.highlight i { color: var(--star-color); }
-        .banner-close-btn {
-            position: absolute; top: 15px; right: 15px; background: var(--bg-light); border: 1px solid var(--border-color);
-            color: var(--text-light); width: 35px; height: 35px; border-radius: 50%; cursor: pointer;
-            font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s ease; z-index: 10;
-        }
-        .banner-close-btn:hover { background-color: var(--primary-color); color: var(--white-color); transform: rotate(90deg); }
-        @keyframes fadeInBanner { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideInBanner { from { transform: translateY(-30px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
-        @keyframes bounceIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    /* --- THIẾT LẬP CƠ BẢN & HIỆU ỨNG NỀN ĐỘNG --- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+        font-family: var(--font-family);
+        background-color: var(--bg-light);
+        color: var(--text-dark);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden; /* Ngăn cuộn ngang */
+    }
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: linear-gradient(315deg, rgba(74, 144, 226, 0.05), rgba(80, 227, 194, 0.05), rgba(255, 255, 255, 0.1));
+        background-size: 400% 400%;
+        animation: backgroundGradient 20s ease infinite;
+        z-index: -2; /* Đẩy xuống sau cả nền hạt */
+    }
+    @keyframes backgroundGradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
 
-        /* === HEADER === */
-        header { background-color: var(--white-color); box-shadow: 0 2px 8px rgba(0,0,0,0.07); position: sticky; top: 0; z-index: 1000; height: var(--header-height); display: flex; align-items: center; width: 100%; }
-        .header-container { display: flex; align-items: center; gap: 20px; width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 25px; }
-        .logo-container { flex-shrink: 0; display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .logo-container img { height: 40px; display: block; }
-        .logo-container h1 { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; color: var(--text-dark); margin: 0; }
-        .search-container { flex-grow: 1; position: relative; max-width: 600px; }
-        .search-container .search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-light); pointer-events: none; }
-        #search-input { width: 100%; height: 44px; border-radius: 50px; border: 1px solid var(--border-color); background-color: var(--bg-light); padding: 10px 50px 10px 50px; font-size: 1rem; transition: all 0.2s ease; }
-        #search-input:focus { outline: none; border-color: var(--primary-color); background-color: var(--white-color); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15); }
-        .search-submit-btn { position: absolute; right: 5px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 50%; border: none; background-color: var(--primary-color); color: var(--white-color); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s ease; }
-        .search-submit-btn:hover { background-color: var(--primary-dark); }
+    /* --- HIỆU ỨNG HẠT NỔI (MỚI) --- */
+    .animated-shapes {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: -1;
+    }
+    .animated-shapes span {
+        position: absolute;
+        display: block;
+        list-style: none;
+        background: rgba(74, 144, 226, 0.15);
+        animation: float 25s linear infinite;
+        bottom: -150px;
+        border-radius: 50%;
+    }
+    .animated-shapes span:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+    .animated-shapes span:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; background: rgba(80, 227, 194, 0.2); }
+    .animated-shapes span:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
+    .animated-shapes span:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; background: rgba(80, 227, 194, 0.15); }
+    .animated-shapes span:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
+    .animated-shapes span:nth-child(6) { left: 75%; width: 110px; height: 110px; animation-delay: 3s; }
+    .animated-shapes span:nth-child(7) { left: 35%; width: 150px; height: 150px; animation-delay: 7s; background: rgba(80, 227, 194, 0.1); }
+    .animated-shapes span:nth-child(8) { left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; }
+    .animated-shapes span:nth-child(9) { left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; background: rgba(74, 144, 226, 0.25); }
+    .animated-shapes span:nth-child(10) { left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
+    
+    @keyframes float {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; }
+    }
 
-        /* === DANH MỤC CAROUSEL === */
-        .category-carousel-wrapper { padding: 20px 0; background-color: var(--bg-light); border-bottom: 1px solid var(--border-color); position: relative; }
-        .category-container { max-width: 1400px; margin: 0 auto; position: relative; }
-        .category-grid { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding: 5px 25px; -webkit-overflow-scrolling: touch; }
-        .category-grid::-webkit-scrollbar { display: none; }
-        .category-grid { -ms-overflow-style: none; scrollbar-width: none; }
-        .category-item { flex: 0 0 auto; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px 20px; background-color: var(--white-color); border: 1px solid var(--border-color); border-radius: 50px; text-decoration: none; color: var(--text-dark); font-weight: 500; font-size: 0.9rem; white-space: nowrap; cursor: pointer; transition: all 0.2s ease; }
-        .category-item:hover { border-color: var(--primary-color); color: var(--primary-color); box-shadow: var(--shadow); }
-        .category-item.active { background-color: var(--primary-color); color: var(--white-color); border-color: var(--primary-dark); }
-        .category-item i { font-size: 1rem; }
-        .carousel-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-color); background-color: var(--white-color); box-shadow: var(--shadow); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: opacity 0.2s ease; }
-        .carousel-nav-btn.hidden { opacity: 0; pointer-events: none; }
-        #scroll-left { left: 5px; }
-        #scroll-right { right: 5px; }
+    /* --- MÀN HÌNH CHỜ (PRELOADER) --- */
+    .preloader {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--white-color); z-index: 9999;
+        display: flex; align-items: center; justify-content: center;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .preloader.hidden { opacity: 0; visibility: hidden; }
+    .spinner {
+        width: 50px; height: 50px;
+        border: 5px solid var(--border-color);
+        border-top-color: var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* === HERO BANNER === */
-        .hero-banner { padding: 30px 25px; background-color: var(--bg-light); }
-        .hero-banner-inner { max-width: 1400px; width: 100%; margin: 0 auto; }
-        .hero-banner-inner img { width: 100%; height: auto; display: block; border-radius: var(--border-radius); object-fit: cover; }
-        
-        /* === MAIN CONTENT === */
-        main { background-color: var(--white-color); }
-        .main-container { max-width: 1400px; width: 100%; margin: 0 auto; padding: 30px 25px; }
-        .page-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 15px; }
-        
-        /* Bộ lọc giá */
-        .filters-toolbar {
-            display: flex; flex-wrap: wrap; align-items: center; gap: 15px 30px;
-            padding: 15px; background-color: var(--bg-light); border-radius: var(--border-radius);
-            margin-bottom: 25px;
-        }
-        .price-filters { display: flex; align-items: center; gap: 15px; }
-        .price-filters strong { font-weight: 600; }
-        .price-filters label {
-            display: inline-flex; align-items: center; gap: 5px; cursor: pointer; padding: 8px 15px;
-            border-radius: 50px; background-color: var(--white-color); border: 1px solid var(--border-color);
-            transition: all 0.2s ease;
-        }
-        .price-filters input[type="radio"] { display: none; }
-        .price-filters label:hover { border-color: var(--primary-color); }
-        .price-filters label.active {
-            background-color: var(--primary-color); color: var(--white-color); border-color: var(--primary-dark);
-        }
+    /* --- BANNER THÔNG BÁO --- */
+    .notification-banner-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.6); z-index: 3000;
+        display: flex; align-items: center; justify-content: center;
+        padding: 15px; animation: fadeIn 0.3s ease;
+    }
+    .notification-banner {
+        background: var(--white-color); border-radius: 20px;
+        padding: 30px 35px; max-width: 650px; width: 100%;
+        text-align: center; position: relative;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        animation: slideInUp 0.5s ease;
+    }
+    .notification-banner .banner-icon { font-size: 3rem; color: var(--primary-color); margin-bottom: 15px; animation: bounce 2s infinite; }
+    .notification-banner h2 { font-family: var(--font-family); font-weight: 800; font-size: 1.8rem; margin-bottom: 15px; }
+    .notification-banner p { font-size: 1rem; line-height: 1.6; color: var(--text-light); }
+    .notification-banner .info-text { display: flex; align-items: center; justify-content: center; gap: 10px; background-color: rgba(74, 144, 226, 0.08); padding: 12px; border-radius: 10px; margin: 20px 0; }
+    .notification-banner .info-text i { font-size: 1.1rem; color: var(--primary-color); }
+    .notification-banner p.highlight a { font-weight: 600; color: var(--primary-dark); text-decoration: none; border-bottom: 2px solid var(--secondary-color); padding-bottom: 2px; transition: all 0.3s ease; }
+    .notification-banner p.highlight a:hover { color: var(--primary-color); border-color: var(--primary-dark); }
+    .banner-close-btn { position: absolute; top: 15px; right: 15px; background: var(--bg-light); border: none; color: var(--text-light); width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; z-index: 10; }
+    .banner-close-btn:hover { background-color: var(--primary-color); color: var(--white-color); transform: rotate(180deg); }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideInUp { from { transform: translateY(50px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+    @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-20px); } 60% { transform: translateY(-10px); } }
+    
+    /* --- HEADER --- */
+    header { 
+        position: sticky; top: 0; z-index: 1000; 
+        height: var(--header-height); display: flex; align-items: center; 
+        width: 100%; background-color: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        transition: all 0.3s ease; 
+    }
+    header.scrolled {
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        height: 70px;
+        background-color: rgba(255, 255, 255, 0.95);
+    }
+    .header-container { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 25px; }
+    .logo-container { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo-container img { height: 45px; transition: transform 0.3s ease; }
+    .logo-container:hover img { transform: rotate(-10deg) scale(1.1); }
+    .logo-container h1 { font-family: var(--font-family); font-weight: 800; font-size: 1.7rem; color: var(--text-dark); }
+    .sheet-button {
+        display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)); 
+        color: var(--white-color); padding: 12px 24px; border-radius: 50px; text-decoration: none; 
+        font-weight: 600; font-size: 1rem; transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+    }
+    .sheet-button:hover { transform: translateY(-3px) scale(1.05); box-shadow: var(--shadow-hover); }
+    .sheet-button i { transition: transform 0.3s ease; }
+    .sheet-button:hover i { transform: rotate(15deg); }
 
-        .courses { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
-        .no-courses-message { grid-column: 1 / -1; text-align: center; padding: 40px 20px; font-style: italic; color: var(--text-light); background-color: var(--bg-light); border-radius: var(--border-radius); box-shadow: var(--shadow); }
-        
-        /* COURSE CARD & MODAL */
-        .course-card{background:var(--white-color);border-radius:var(--border-radius);box-shadow:var(--shadow);display:flex;flex-direction:column;transition:transform .3s ease,box-shadow .3s ease;position:relative;overflow:hidden}.course-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-hover)}.card-image-container{position:relative;cursor:pointer;overflow:hidden}.course-badge{position:absolute;top:15px;left:-1px;background-color:var(--sale-color);color:var(--white-color);padding:5px 12px;font-size:13px;font-weight:700;border-radius:0 4px 4px 0;box-shadow:2px 2px 5px rgba(0,0,0,.2);z-index:2}.course-card img{width:100%;height:180px;object-fit:cover;display:block;transition:transform .3s ease}.course-card:hover img{transform:scale(1.05)}.course-description-popup{position:absolute;bottom:0;left:0;right:0;background-color:rgba(0,0,0,.75);color:var(--white-color);padding:15px;transform:translateY(100%);transition:transform .3s ease-in-out;z-index:1;font-size:14px;line-height:1.5;max-height:100%;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical}.course-card:hover .course-description-popup{transform:translateY(0)}.course-info{padding:20px;display:flex;flex-direction:column;flex-grow:1;text-align: center}.course-info h3{font-size:1.2rem;font-weight:700;margin-bottom:12px;line-height:1.4;cursor:pointer}.course-info h3:hover{color:var(--primary-color)}.course-meta{display:flex;align-items:center;gap:15px;font-size:14px;color:var(--text-light);margin-bottom:15px}.course-rating{display:flex;align-items:center;gap:5px}.course-rating .stars{color:var(--star-color)}.course-rating .rating-count{color:var(--text-light);font-size:13px}.course-sales{display:flex;align-items:center;gap:5px}.course-sales i{color:var(--primary-color)}.course-pricing{display:flex;align-items:flex-end;gap:10px;margin-bottom:15px}.course-pricing .current-price{font-size:1.8rem;font-weight:700;color:var(--sale-color)}.course-pricing .original-price{font-size:1rem;color:var(--text-light);text-decoration:line-through}.course-pricing .discount-badge{background-color:var(--sale-color);color:var(--white-color);padding:3px 8px;border-radius:4px;font-size:12px;font-weight:600}.normal-price{font-size:1.8rem;font-weight:700;color:var(--primary-color);margin-bottom:15px}.card-actions{display:flex;gap:10px;margin-top:auto;width:100%}.card-actions .buy-btn,.card-actions .details-btn{padding:12px 10px;border-radius:8px;font-weight:600;text-decoration:none;transition:background-color .2s ease,transform .2s ease;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center;flex-grow:1}.card-actions .buy-btn{background:var(--primary-dark);color:var(--white-color)}.card-actions .buy-btn:hover{background-color:var(--primary-color);transform:scale(1.03)}.card-actions .learn-btn{background-color:var(--secondary-color); color: var(--white-color);}.card-actions .learn-btn:hover{background:var(--secondary-dark)}.card-actions .details-btn{background-color:#e9ecef;color:var(--text-dark);border:1px solid var(--border-color);cursor:pointer}.card-actions .details-btn:hover{background-color:#dee2e6;transform:scale(1.03)}.modal{display:none;position:fixed;z-index:2000;left:0;top:0;width:100%;height:100%;overflow:auto;background-color:rgba(0,0,0,.6);animation:fadeIn .3s ease}.modal-content{background-color:var(--white-color);margin:10% auto;padding:30px 35px;border-radius:var(--border-radius);max-width:700px;width:90%;position:relative;box-shadow:0 5px 25px rgba(0,0,0,.3);animation:slideIn .4s ease}.close-button{color:#aaa;position:absolute;top:15px;right:20px;font-size:32px;font-weight:bold;cursor:pointer;transition:color .2s ease}.close-button:hover,.close-button:focus{color:var(--text-dark)}#modal-title{font-size:1.8rem;margin-bottom:20px;color:var(--primary-dark)}#modal-description{margin-bottom:30px;line-height:1.7;color:var(--text-dark);max-height:40vh;overflow-y:auto;padding-right:15px}#modal-buy-link{width:auto}@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes slideIn{from{transform:translateY(-50px);opacity:0}to{transform:translateY(0);opacity:1}}
-        
-        /* FOOTER */
-        footer{background:#212529;color:#ced4da;text-align:center;padding:30px 20px;font-size:.9rem;margin-top:auto;}footer p{margin-bottom:10px}footer a{color:var(--primary-color);text-decoration:none;font-weight:500;transition:color .2s ease}footer a:hover{color:var(--white-color)}footer .fas,footer .fab{margin-right:5px}
+    /* --- CAROUSEL DANH MỤC TỰ CHẠY VÔ HẠN --- */
+    .category-carousel-wrapper {
+        padding: 20px 0; background-color: transparent;
+        position: relative; overflow: hidden;
+    }
+    .category-carousel-wrapper::before,
+    .category-carousel-wrapper::after {
+        content: ''; position: absolute; top: 0; width: 100px; height: 100%; z-index: 2;
+    }
+    .category-carousel-wrapper::before { left: 0; background: linear-gradient(to right, var(--bg-light), transparent); }
+    .category-carousel-wrapper::after { right: 0; background: linear-gradient(to left, var(--bg-light), transparent); }
+    
+    .category-grid {
+        display: flex;
+        width: max-content; /* Rất quan trọng cho animation */
+        animation: marquee 45s linear infinite;
+    }
+    .category-carousel-wrapper:hover .category-grid {
+        animation-play-state: paused; /* Dừng khi hover */
+    }
+    @keyframes marquee {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); } /* Di chuyển đến 1/2 chiều rộng (do đã nhân đôi) */
+    }
+    .category-item {
+        flex: 0 0 auto; display: flex; align-items: center;
+        gap: 10px; padding: 12px 24px; background-color: var(--white-color); 
+        border: 1px solid var(--border-color); border-radius: 50px;
+        text-decoration: none; color: var(--text-light); font-weight: 600;
+        font-size: 0.95rem; white-space: nowrap; cursor: pointer;
+        transition: all 0.3s ease; margin: 0 8px;
+    }
+    .category-item:hover {
+        border-color: var(--primary-color); color: var(--primary-color);
+        box-shadow: var(--shadow); transform: translateY(-3px);
+    }
+    .category-item.active { border-color: var(--primary-color); color: var(--primary-color); font-weight: 700;}
 
-        /* RESPONSIVE */
-        .nut-xem-sheet {
-            display: inline-block; /* Hiển thị như một khối nội tuyến */
-            background-color: #4CAF50; /* Màu nền xanh lá cây */
-            color: white; /* Màu chữ trắng */
-            padding: 14px 25px; /* Khoảng đệm bên trong nút */
-            text-align: center; /* Căn giữa văn bản */
-            text-decoration: none; /* Bỏ gạch chân mặc định của liên kết */
-            font-size: 16px; /* Cỡ chữ */
-            font-weight: bold; /* Chữ đậm */
-            border-radius: 8px; /* Bo tròn các góc */
-            cursor: pointer; /* Biến con trỏ thành hình bàn tay khi di chuột qua */
-            transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu nền mượt mà */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Thêm bóng đổ nhẹ */
-        }
-        .nut-xem-sheet:hover {
-            background-color: #45a049; /* Thay đổi màu nền khi di chuột qua */
-        }
-        @media (max-width: 768px) { 
-            .header-container { padding: 0 15px; gap: 15px; }
-            .logo-container h1 { display: none; }
-            .carousel-nav-btn { display: none; }
-            .hero-banner { padding: 20px 15px; }
-            .hero-banner-inner img { height: auto; width: 100%; }
-            .main-container { padding: 20px 15px; }
-            .page-title { font-size: 1.5rem; }
-            .courses { grid-template-columns: 1fr; gap: 20px; } 
-            .price-filters { font-size: 10px;}
-            .notification-banner { padding: 25px 20px; }
-            .notification-banner h2 { font-size: 1.4rem; }
-            .notification-banner p { font-size: 0.95rem; flex-direction: column; gap: 8px; }
-            .nut-xem-sheet {padding: 9px 15px; font-size: 9px; }
-        }
-        
-    </style>
+    /* --- HERO BANNER & HIỆU ỨNG PARALLAX --- */
+    .hero-banner { 
+        padding: 30px 25px; 
+        perspective: 1000px; /* Thêm perspective cho hiệu ứng 3D */
+    }
+    .hero-banner-inner { 
+        max-width: 1400px; margin: 0 auto; overflow: hidden; 
+        border-radius: var(--border-radius); 
+        transition: transform 0.3s ease-out; /* Làm mượt chuyển động parallax chuột */
+    }
+    .hero-banner-inner img { 
+        width: 100%; display: block; 
+        border-radius: var(--border-radius); object-fit: cover;
+        transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        will-change: transform; /* Báo cho trình duyệt tối ưu animation */
+    }
+    .hero-banner-inner:hover img {
+        transform: scale(1.05);
+    }
+
+    /* --- MAIN CONTENT & HIỆU ỨNG KHI CUỘN --- */
+    main { flex-grow: 1; }
+    .main-container { max-width: 1200px; margin: 0 auto; padding: 50px 25px; }
+    .about-us-section { text-align: center; padding: 40px 0; }
+
+    /* --- CÁC HIỆU ỨNG ĐỘNG KHI CUỘN (CẢI TIẾN) --- */
+    [data-scroll-effect] {
+        opacity: 0;
+        transition: opacity 0.8s cubic-bezier(0.645, 0.045, 0.355, 1), transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+    }
+    [data-scroll-effect].is-visible {
+        opacity: 1;
+        transform: none; /* Reset transform khi hiển thị */
+    }
+
+    /* Các biến thể hiệu ứng */
+    [data-scroll-effect="fade-up"] { transform: translateY(40px); }
+    [data-scroll-effect="fade-down"] { transform: translateY(-40px); }
+    [data-scroll-effect="fade-left"] { transform: translateX(40px); }
+    [data-scroll-effect="fade-right"] { transform: translateX(-40px); }
+    [data-scroll-effect="zoom-in"] { transform: scale(0.9); }
+    [data-scroll-effect="zoom-out"] { transform: scale(1.1); }
+    
+    /* Staggered animation delay */
+    .section-subtitle[data-scroll-effect] { transition-delay: 0.1s; }
+    .about-us-card:nth-child(1) { transition-delay: 0.1s; }
+    .about-us-card:nth-child(2) { transition-delay: 0.2s; }
+    .about-us-card:nth-child(3) { transition-delay: 0.3s; }
+    .about-us-card:nth-child(4) { transition-delay: 0.4s; }
+    .call-to-action[data-scroll-effect] { transition-delay: 0.2s; }
+
+
+    /* --- HIỆU ỨNG ÁNH KIM CHO TIÊU ĐỀ (MỚI) --- */
+    .section-title {
+        font-weight: 800; font-size: clamp(2.2rem, 5vw, 3.5rem); 
+        margin-bottom: 20px; line-height: 1.2;
+        background: linear-gradient(90deg, var(--primary-color), var(--text-dark), var(--primary-color));
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shimmer 5s linear infinite;
+    }
+    @keyframes shimmer {
+        to { background-position: -200% center; }
+    }
+
+    .section-subtitle {
+        font-size: clamp(1rem, 2.5vw, 1.2rem); color: var(--text-light); 
+        margin-bottom: 60px; max-width: 750px; 
+        margin-left: auto; margin-right: auto; line-height: 1.7;
+    }
+    .about-us-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+    }
+
+    /* --- HIỆU ỨNG VIỀN SÁNG CHO CARD (MỚI) --- */
+    .about-us-card {
+        background-color: var(--white-color); padding: 40px 30px; 
+        border-radius: var(--border-radius); border: 1px solid var(--border-color); 
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: center;
+        position: relative; /* Cần cho hiệu ứng viền sáng */
+        overflow: hidden; /* Cần cho hiệu ứng viền sáng */
+    }
+    .about-us-card::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 300%;
+        height: 300%;
+        background: conic-gradient(transparent, var(--primary-color), var(--secondary-color), transparent 30%);
+        transform: translate(-50%, -50%);
+        animation: rotate-glow 4s linear infinite;
+        transition: opacity 0.5s;
+        opacity: 0;
+        z-index: 1;
+    }
+    .about-us-card:hover::before {
+        opacity: 0.5;
+    }
+    .about-us-card .card-content {
+        position: relative;
+        z-index: 2;
+        background: var(--white-color);
+        padding: 40px 30px;
+        border-radius: calc(var(--border-radius) - 2px);
+        margin: 1px; /* Tạo khoảng hở cho viền sáng */
+    }
+    @keyframes rotate-glow {
+        from { transform: translate(-50%, -50%) rotate(0deg); }
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    
+    .about-us-card:hover {
+        transform: translateY(-12px); box-shadow: var(--shadow-hover);
+    }
+    .card-icon-wrapper {
+        width: 75px; height: 75px; margin: 0 auto 30px auto; 
+        border-radius: 20px; display: flex; align-items: center; justify-content: center;
+        background: linear-gradient(135deg, rgba(74, 144, 226, 0.15), rgba(80, 227, 194, 0.15));
+        transition: transform 0.3s ease;
+    }
+    .about-us-card:hover .card-icon-wrapper {
+        transform: rotate(10deg) scale(1.1);
+    }
+    .card-icon { font-size: 2.5rem; color: var(--primary-color); }
+    .about-us-card h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 15px; }
+    .about-us-card p { font-size: 1rem; line-height: 1.7; color: var(--text-light); }
+    .call-to-action {
+        margin-top: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .cta-button {
+        display: inline-flex; align-items: center; gap: 12px;
+        background: linear-gradient(45deg, var(--primary-color), #357ABD);
+        color: var(--white-color); padding: 18px 40px; border-radius: 50px;
+        text-decoration: none; font-weight: 700; font-size: 1.1rem;
+        box-shadow: 0 5px 20px rgba(74, 144, 226, 0.4);
+        transition: all 0.3s ease;
+        animation: pulse 2.5s infinite cubic-bezier(0.66, 0, 0, 1); /* HIỆU ỨNG PULSE (MỚI) */
+
+        justify-content: center; /* căn ngang */
+    }
+    .cta-button:hover { 
+        transform: translateY(-5px) scale(1.05); 
+        box-shadow: 0 8px 25px rgba(74, 144, 226, 0.5); 
+        animation-play-state: paused; /* Tạm dừng pulse khi hover */
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        10% { transform: scale(1.03); }
+        20% { transform: scale(1); }
+    }
+
+    .cta-button .fa-rocket { animation: rocketLaunch 2s infinite ease-in-out 1s; }
+    @keyframes rocketLaunch {
+        0% { transform: translateY(0) rotate(0); }
+        50% { transform: translateY(-5px) rotate(5deg); }
+        100% { transform: translateY(0) rotate(0); }
+    }
+
+    /* --- FOOTER --- */
+    footer {
+        background: var(--text-dark); color: #bdc3c7;
+        text-align: center; padding: 40px 20px;
+        font-size: 0.9rem; margin-top: auto;
+    }
+    footer p { margin-bottom: 10px; }
+    footer a { color: var(--secondary-color); text-decoration: none; font-weight: 500; transition: color 0.3s ease; }
+    footer a:hover { color: var(--white-color); }
+    
+    /* --- RESPONSIVE DESIGN --- */
+    @media (max-width: 768px) {
+        :root { --header-height: 70px; }
+        .header-container { padding: 0 15px; }
+        .logo-container h1 { display: none; }
+        .hero-banner { padding: 20px 15px; }
+        .main-container { padding: 30px 15px; }
+        .section-title { font-size: 2rem; }
+        .section-subtitle { font-size: 1rem; }
+        .notification-banner { padding: 25px 20px; }
+        .notification-banner h2 { font-size: 1.4rem; }
+        .category-carousel-wrapper::before,
+        .category-carousel-wrapper::after { width: 40px; }
+        .about-us-card .card-content { padding: 30px 20px; }
+        .animated-shapes { display: none; } /* Tắt nền hạt trên mobile để tối ưu hiệu năng */
+    }
+</style>
 </head>
 <body>
-    
-    <div id="notification-banner-overlay" class="notification-banner-overlay">
-        <div class="notification-banner">
-            <button id="banner-close-btn" class="banner-close-btn" aria-label="Đóng thông báo">&times;</button>
-            <div class="banner-icon"><i class="fas fa-bullhorn"></i></div>
-            <h2>Thông Báo Quan Trọng</h2>
-            <h4>
-                <i class="fas fa-info-circle"></i>
-                <span>Mua khóa nào thì sẽ được học tất cả thầy cô - trung tâm dạy học có trong khóa đó<strong>Ví dụ: Mua khóa Toán bạn sẽ được học tất cả Thầy cô dậy Toán đó, </strong>chỉ với 79k được tất cả.</span>
-            </h4>
-            <p><span>Liên hệ qua zalo để được tư vấn.</span></p>
-            <p class="highlight"><i class="fas fa-star"></i><a href="http://khoahocvip.io.vn/sheet">XEM NGAY SHEET HỌC TẬP TẠI ĐÂY</a></p>
+
+<div class="animated-shapes">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<div class="preloader">
+    <div class="spinner"></div>
+</div>
+
+<div id="notification-banner-overlay" class="notification-banner-overlay" style="display: none;">
+    <div class="notification-banner">
+        <button id="banner-close-btn" class="banner-close-btn" aria-label="Đóng thông báo">&times;</button>
+        <div class="banner-icon"><i class="fas fa-bullhorn"></i></div>
+        <h2>Thông Báo Quan Trọng</h2>
+        <p>Mua 1 khóa học bạn sẽ được truy cập TẤT CẢ các tài liệu và video từ nhiều thầy cô trong môn học đó.</p>
+        <div class="info-text">
+            <i class="fas fa-info-circle"></i>
+            <span><strong>Ví dụ:</strong> Mua khóa Toán 79k, bạn sẽ được học tất cả các thầy cô dạy Toán có trong danh sách.</span>
         </div>
+        <p class="highlight">
+            <i class="fas fa-star"></i>
+            <a href="http://khoahocvip.io.vn/sheet" target="_blank">XEM NGAY SHEET HỌC TẬP TẠI ĐÂY</a>
+        </p>
     </div>
+</div>
 
-    <header>
-        <div class="header-container">
-            <a href="/" class="logo-container" title="Trang chủ KHOAHOCVIP">
-                <img src="iogo.png" alt="lg">
-                <a href="http://khoahocvip.io.vn/sheet" target="_blank" class="nut-xem-sheet">
-                <div>XEM SHEET Ở ĐÂY !</div>
-                </a>
-            </a>
-            <div class="search-container">
-                <form id="search-form" role="search">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="search" id="search-input" placeholder="Tìm kiếm theo tên hoặc mô tả...">
-                    <button type="submit" class="search-submit-btn" aria-label="Tìm kiếm">
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </form>
-            </div>
-        </div>
-    </header>
+<header id="main-header">
+    <div class="header-container">
+        <a href="/" class="logo-container" title="Trang chủ KHOAHOCVIP">
+            <img src="iogo.png" alt="Logo KHOAHOCVIP">
+            <h1>KHOAHOCVIP</h1>
+        </a>
+        <a href="http://khoahocvip.io.vn/sheet" target="_blank" class="sheet-button">
+            <i class="fas fa-table-list"></i>
+            <span>Xem Sheet</span>
+        </a>
+    </div>
+</header>
 
-    <section class="category-carousel-wrapper">
-        <div class="category-container">
-            <button id="scroll-left" class="carousel-nav-btn hidden" aria-label="Cuộn sang trái"><i class="fas fa-chevron-left"></i></button>
-            <div id="category-grid" class="category-grid"></div>
-            <button id="scroll-right" class="carousel-nav-btn" aria-label="Cuộn sang phải"><i class="fas fa-chevron-right"></i></button>
-        </div>
-    </section>
+<div class="category-carousel-wrapper">
+    <div class="category-grid" id="category-grid">
+    </div>
+</div>
 
-    <section class="hero-banner">
-        <div class="hero-banner-inner">
-            <img src="anh.png" alt="Giới thiệu các khóa học chất lượng cao">
-        </div>
-    </section>
+<section class="hero-banner">
+    <div class="hero-banner-inner">
+        <img src="anh.png" alt="Giới thiệu các khóa học chất lượng cao" id="hero-banner-image">
+    </div>
+</section>
 
-    <main>
-        <div class="main-container">
-            <h1 id="page-title">Tất cả khoá học</h1>
-
-            <div class="filters-toolbar">
-                <div class="price-filters">
-                    <strong>Lọc giá:</strong>
-                    <label class="active"><input type="radio" name="price-filter" value="all" checked><span>Tất cả</span></label>
-                    <label><input type="radio" name="price-filter" value="free"><span>Miễn phí</span></label>
-                    <label><input type="radio" name="price-filter" value="paid"><span>Có phí</span></label>
+<main>
+    <div class="main-container">
+        <section class="about-us-section">
+            <h2 class="section-title" data-scroll-effect="fade-up">Chào Mừng Đến Với KHOAHOCVIP! ✨</h2>
+            <p class="section-subtitle" data-scroll-effect="fade-up">Nền tảng chia sẻ kho khóa học chất lượng hàng đầu Việt Nam, giúp bạn tiếp cận tri thức đỉnh cao với chi phí tối ưu nhất.</p>
+            
+            <div class="about-us-grid">
+                <div class="about-us-card" data-scroll-effect="zoom-in">
+                    <div class="card-content">
+                        <div class="card-icon-wrapper"><i class="fas fa-book-open card-icon"></i></div>
+                        <h3>XPS 2K8 Siêu Rẻ</h3>
+                        <p>Truy cập hàng ngàn khóa học từ các nền tảng uy tín và giáo viên hàng đầu. Từ Toán, Lý, Hóa, DGNL, DGTD... đến IELTS, TOEIC, chúng tôi có tất cả.</p>
+                    </div>
+                </div>
+                <div class="about-us-card" data-scroll-effect="zoom-in">
+                    <div class="card-content">
+                        <div class="card-icon-wrapper"><i class="fas fa-tags card-icon"></i></div>
+                        <h3>Chi Phí Siêu Tiết Kiệm</h3>
+                        <p>Ví dụ chỉ từ 99k/môn bạn sẽ được học "Tất Cả" thầy cô dạy Toán,... trên Việt Nam chỉ với 99K.</p>
+                    </div>
+                </div>
+                <div class="about-us-card" data-scroll-effect="zoom-in">
+                    <div class="card-content">
+                        <div class="card-icon-wrapper"><i class="fas fa-cloud-arrow-down card-icon"></i></div>
+                        <h3>Truy Cập Dễ Dàng & Vĩnh Viễn</h3>
+                        <p>Tất cả khóa học CHUI Drive, cho phép bạn học mọi lúc, mọi nơi vĩnh viễn cho đến lúc thi.</p>
+                    </div>
                 </div>
             </div>
-
-            <div id="courses" class="courses"></div>
-        </div>
-    </main>
-
-    <div id="course-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <h2 id="modal-title"></h2>
-            <div id="modal-description"></div>
-            <a id="modal-buy-link" class="buy-btn" href="#" target="_blank" rel="noopener noreferrer"></a>
-        </div>
+            <!-- Đưa nút ra ngoài .about-us-grid để căn giữa -->
+            <div class="call-to-action" data-scroll-effect="fade-up">
+                <a href="http://khoahocvip.io.vn/sheet" target="_blank" class="cta-button">
+                    <i class="fas fa-rocket"></i> Xem Sheet Học Tập Ngay
+                </a>
+            </div>
+        </section>
     </div>
+</main>
 
-    <footer>
-        <p>© 2025 KHOAHOCVIP - Chia sẻ khóa học và tài liệu trực tuyến.</p>
-        <p>
-            <i class="fas fa-map-marker-alt"></i> Phú Bình - Thái Nguyên |
-            <i class="fas fa-envelope"></i> <a href="mailto:lamduongngoc935@gmail.com">lamduongngoc935@gmail.com</a>
-        </p>
-        <p><i class="fas fa-laptop-code"></i> Website được phát triển bởi Ngọc Lâm</p>
-    </footer>
+<footer>
+    <p>© 2025 KHOAHOCVIP - Chia sẻ khóa học và tài liệu trực tuyến.</p>
+    <p>
+        <i class="fas fa-map-marker-alt"></i> Phú Bình - Thái Nguyên |
+        <i class="fas fa-envelope"></i> <a href="mailto:lamduongngoc935@gmail.com">lamduongngoc935@gmail.com</a>
+    </p>
+    <p><i class="fas fa-laptop-code"></i> Website được phát triển bởi Ngọc Lâm</p>
+</footer>
 
-    <script>
-        const SUPABASE_URL = "https://sdixqzzpggcxrbtaqqtf.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkaXhxenpwZ2djeHJidGFxcXRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg2MDQ4OTMsImV4cCI6MjA2NDE4MDg5M30.5nP_A5N6Jb2fDDNmRVcLva_znbrQhErt-xcpmm5V6S8";
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        const danhSachKhuVuc = ["Khóa Combo", "Toán", "Lý", "Hóa", "Tiếng Anh", "Sinh", "Văn", "Sử", "Địa", "HSA - TSA - VATC - APT", "TOEIC", "IELTS", "Đại học", "Khóa học miễn phí", "Tài liệu"];
-        const zaloLink = "https://zalo.me/0333041525";
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // --- CẤU HÌNH ---
+        const SHEET_URL = "http://khoahocvip.io.vn/sheet";
+        const CATEGORIES = [
+            { name: "Tất cả", icon: "fa-border-all", active: true },
+            { name: "Khóa Combo", icon: "fa-boxes-stacked" },
+            { name: "Toán", icon: "fa-calculator" },
+            { name: "Lý", icon: "fa-atom" },
+            { name: "Hóa", icon: "fa-flask" },
+            { name: "Tiếng Anh", icon: "fa-language" },
+            { name: "Sinh", icon: "fa-dna" },
+            { name: "Văn", icon: "fa-pen-nib" },
+            { name: "Sử", icon: "fa-landmark" },
+            { name: "Địa", icon: "fa-globe-asia" },
+            { name: "HSA - TSA - ...", icon: "fa-brain" },
+            { name: "TOEIC", icon: "fa-file-alt" },
+            { name: "IELTS", icon: "fa-passport" },
+            { name: "Đại học", icon: "fa-graduation-cap" },
+            { name: "Miễn phí", icon: "fa-gift" },
+            { name: "Tài liệu", icon: "fa-folder-open" },
+        ];
 
-        // === DOM Elements ===
-        const searchForm = document.getElementById("search-form");
-        const searchInput = document.getElementById("search-input");
-        const categoryGrid = document.getElementById("category-grid");
-        const scrollLeftBtn = document.getElementById("scroll-left");
-        const scrollRightBtn = document.getElementById("scroll-right");
-        const pageTitle = document.getElementById("page-title");
-        const priceFilterRadios = document.querySelectorAll('input[name="price-filter"]');
-        const coursesDiv = document.getElementById("courses");
-        const modal = document.getElementById("course-modal");
-        const modalTitle = document.getElementById("modal-title");
-        const modalDescription = document.getElementById("modal-description");
-        const modalBuyLink = document.getElementById("modal-buy-link");
-        const closeButton = document.querySelector(".close-button");
+        // --- LẤY CÁC THÀNH PHẦN DOM ---
         const bannerOverlay = document.getElementById('notification-banner-overlay');
         const bannerCloseBtn = document.getElementById('banner-close-btn');
+        const mainHeader = document.getElementById('main-header');
+        const categoryGrid = document.getElementById("category-grid");
+        const animatedElements = document.querySelectorAll("[data-scroll-effect]");
+        const preloader = document.querySelector('.preloader');
+        const heroBanner = document.querySelector('.hero-banner-inner'); 
+        const heroBannerImage = document.getElementById('hero-banner-image'); // Lấy ảnh banner
 
-        // === State Management ===
-        let currentCategory = "";
-        let currentSearchTerm = "";
-        let currentPriceFilter = "all";
-        let autoScrollInterval = null; // Biến cho tự động cuộn
-
-        const categoryIcons = {
-            'Toán': 'fa-calculator', 'Lý': 'fa-atom', 'Hóa': 'fa-flask', 'Tiếng Anh': 'fa-language',
-            'Sinh': 'fa-dna', 'Văn': 'fa-pen-nib', 'Sử': 'fa-landmark', 'Địa': 'fa-globe-asia',
-            'IELTS': 'fa-passport', 'TOEIC': 'fa-file-alt', 'Đại học': 'fa-graduation-cap',
-            'HSA - TSA - VATC - APT': 'fa-brain', 'Khóa học miễn phí': 'fa-gift',
-            'Tài liệu': 'fa-folder-open', 'Khóa Combo': 'fa-boxes-stacked'
-        };
-
-        // === Auto-scroll Functions (NEW) ===
-        function stopAutoScroll() {
-            if (autoScrollInterval) {
-                clearInterval(autoScrollInterval);
-                autoScrollInterval = null;
-            }
-        }
-
-        function startAutoScroll() {
-            stopAutoScroll();
+        // --- KHỞI TẠO CÁC CHỨC NĂNG ---
         
-            let SCROLL_INTERVAL;
-            let SCROLL_STEP;
-        
-            // Kiểm tra nếu là màn hình điện thoại (chiều rộng <= 768px)
-            if (window.matchMedia("(max-width: 768px)").matches) {
-                // Tốc độ cho điện thoại (nhanh hơn) 📱
-                SCROLL_INTERVAL = 45; // Giảm xuống để cuộn nhanh hơn
-                SCROLL_STEP = 1.3;
-            } else {
-                // Tốc độ cho máy tính (như cũ) 💻
-                SCROLL_INTERVAL = 800;
-                SCROLL_STEP = 1;
-            }
-        
-            autoScrollInterval = setInterval(() => {
-                const grid = categoryGrid;
-                if (grid.scrollLeft + grid.clientWidth >= grid.scrollWidth) {
-                    grid.scrollTo({
-                        left: 0,
-                        behavior: 'smooth'
-                    });
-                } else {
-                    grid.scrollBy(SCROLL_STEP, 0);
-                }
-            }, SCROLL_INTERVAL);
-        }
-
-        // === Core Functions ===
-        function openModal(course) {
-            modalTitle.textContent = course.ten;
-            modalDescription.innerHTML = course.mo_ta || "Chưa có mô tả chi tiết cho khóa học này.";
-            
-            const isFreeOrMaterial = course.loai === "Khóa học miễn phí" || course.loai === "Tài liệu" || course.gia === 0;
-            if (isFreeOrMaterial) {
-                modalBuyLink.href = course.linkdrive || '#';
-                modalBuyLink.innerHTML = `<i class="fas fa-play-circle"></i> Học Ngay`;
-                modalBuyLink.classList.add('learn-btn');
-            } else {
-                modalBuyLink.href = zaloLink;
-                modalBuyLink.innerHTML = `<i class="fas fa-shopping-cart"></i> Liên Hệ Mua`;
-                modalBuyLink.classList.remove('learn-btn');
-            }
-            modal.style.display = "block";
-        }
-
-        function generateStars(rating) {
-            if (!rating || rating <= 0) return '';
-            let stars = '';
-            const fullStars = Math.floor(rating);
-            const halfStar = rating % 1 >= 0.5;
-            for (let i = 0; i < fullStars; i++) stars += '<i class="fas fa-star"></i>';
-            if (halfStar) stars += '<i class="fas fa-star-half-alt"></i>';
-            const emptyStars = 5 - Math.ceil(rating);
-            for (let i = 0; i < emptyStars; i++) stars += '<i class="far fa-star"></i>';
-            return stars;
-        }
-
-        async function hienThiKhoaHoc() {
-            coursesDiv.innerHTML = `<p style="text-align:center; padding: 20px;">Đang tải khóa học...</p>`;
-            let query = supabase.from("khoahoc").select("*, mo_ta");
-
-            if (currentCategory) query = query.eq("loai", currentCategory);
-            if (currentSearchTerm) {
-                const searchTerm = `%${currentSearchTerm}%`;
-                query = query.or(`ten.ilike.${searchTerm},mo_ta.ilike.${searchTerm}`);
-            }
-            if (currentPriceFilter === 'free') query = query.eq('gia', 0);
-            else if (currentPriceFilter === 'paid') query = query.gt('gia', 0);
-            
-            query = query.order('ten', { ascending: true });
-            const { data: khoaHocLoc, error } = await query;
-
-            let titleText = "Tất cả khóa học";
-            if (currentCategory) titleText = `Khóa học ${currentCategory}`;
-            if (currentSearchTerm) titleText = `Kết quả tìm kiếm cho "${currentSearchTerm}"`;
-            pageTitle.textContent = titleText;
-
-            coursesDiv.innerHTML = "";
-            if (error || !khoaHocLoc || khoaHocLoc.length === 0) {
-                 coursesDiv.innerHTML = `<div class="no-courses-message">Không tìm thấy khóa học nào phù hợp.</div>`;
-                 return;
-            }
-
-            khoaHocLoc.forEach(kh => {
-                const card = document.createElement("div");
-                card.className = "course-card";
-                const gia = kh.gia;
-                const gia_goc = kh.gia_goc;
-                
-                let nutHanhDongHTML;
-                const nutChiTiet = `<button class="details-btn">Xem chi tiết</button>`;
-                
-                if (kh.loai === "Khóa học miễn phí" || kh.loai === "Tài liệu" || gia === 0) {
-                    const nutHocNgay = `<a class="buy-btn learn-btn" href="${kh.linkdrive || '#'}" target="_blank" rel="noopener noreferrer"><i class="fas fa-play-circle"></i> Học Ngay</a>`;
-                    nutHanhDongHTML = `<div class="card-actions">${nutChiTiet}${nutHocNgay}</div>`;
-                } else {
-                    const nutMua = `<a class="buy-btn" href="${zaloLink}" target="_blank" rel="noopener noreferrer"><i class="fas fa-shopping-cart"></i> Liên Hệ Mua</a>`;
-                    nutHanhDongHTML = `<div class="card-actions">${nutChiTiet}${nutMua}</div>`;
-                }
-                
-                const badgeHTML = kh.badge ? `<div class="course-badge">${kh.badge}</div>` : '';
-                const starsHTML = generateStars(kh.rating);
-                let metaHTML = '';
-                if(starsHTML||kh.luot_mua>0){metaHTML=`<div class="course-meta">${starsHTML?`<div class="course-rating"><span class="stars">${starsHTML}</span><span class="rating-count">(${kh.rating_count||0})</span></div>`:''}${kh.luot_mua>0?`<div class="course-sales"><i class="fas fa-user-group"></i><span>${kh.luot_mua.toLocaleString('vi-VN')}</span></div>`:''}</div>`;}
-                
-                let priceHTML='';
-                if(gia_goc && gia_goc > gia && gia > 0){
-                    const d = Math.round(((gia_goc - gia) / gia_goc) * 100);
-                    priceHTML=`<div class="course-pricing"><span class="current-price">${gia.toLocaleString('vi-VN')}đ</span><span class="original-price">${gia_goc.toLocaleString('vi-VN')}đ</span><span class="discount-badge">-${d}%</span></div>`;
-                } else {
-                    priceHTML=`<div class="normal-price">${gia > 0 ? gia.toLocaleString('vi-VN') + 'đ' : 'Miễn phí'}</div>`;
-                }
-                
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = kh.mo_ta || 'Chưa có mô tả cho khóa học này.';
-                const plainTextDescription = tempDiv.textContent || tempDiv.innerText || '';
-                
-                card.innerHTML=`
-                    <div class="card-image-container">
-                        ${badgeHTML}
-                        <img src="${kh.hinh || 'https://via.placeholder.com/300x180?text=Hinh+Anh'}" alt="Hình ảnh khóa học ${kh.ten}" />
-                        <div class="course-description-popup">${plainTextDescription}</div>
-                    </div>
-                    <div class="course-info">
-                        <h3>${kh.ten}</h3>
-                        ${metaHTML}
-                        ${priceHTML}
-                        ${nutHanhDongHTML}
-                    </div>`;
-                
-                card.querySelector('h3').addEventListener('click', () => openModal(kh));
-                card.querySelector('.details-btn')?.addEventListener('click', () => openModal(kh));
-                coursesDiv.appendChild(card);
-            });
-        }
-
-        async function hienThiDanhMuc() {
-            categoryGrid.innerHTML = '';
-            
-            danhSachKhuVuc.forEach(khuVuc => {
-                const item = document.createElement("a");
-                item.href = "#";
-                item.className = "category-item";
-                item.innerHTML = `<i class="fas ${categoryIcons[khuVuc] || 'fa-tag'}"></i> ${khuVuc}`;
-                
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    stopAutoScroll(); 
-                    item.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-                    
-                    document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
-                    item.classList.add('active');
-                    currentCategory = khuVuc;
-                    currentSearchTerm = ""; 
-                    searchInput.value = "";
-                    hienThiKhoaHoc();
-                });
-                categoryGrid.appendChild(item);
-            });
-
-            const allItem = document.createElement("a");
-            allItem.href = "#";
-            allItem.className = "category-item active";
-            allItem.innerHTML = `<i class="fas fa-grip-horizontal"></i> Tất cả`;
-            allItem.addEventListener('click', (e) => {
-                e.preventDefault();
-                stopAutoScroll(); 
-                document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
-                allItem.classList.add('active');
-                currentCategory = null;
-                hienThiKhoaHoc();
-            });
-            categoryGrid.prepend(allItem);
-        }
-        
-        function setupEventListeners() {
-            closeButton.onclick = () => modal.style.display = "none";
-            window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; };
-            
-            searchForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                stopAutoScroll();
-                currentSearchTerm = searchInput.value.trim();
-                hienThiKhoaHoc();
-                searchInput.blur();
-            });
-            
-            priceFilterRadios.forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    currentPriceFilter = e.target.value;
-                    document.querySelectorAll('.price-filters label').forEach(label => label.classList.remove('active'));
-                    e.target.parentElement.classList.add('active');
-                    hienThiKhoaHoc();
-                });
-            });
-
-            bannerCloseBtn.addEventListener('click', () => bannerOverlay.style.display = 'none');
-            
-            // Carousel Controls
-            categoryGrid.addEventListener('mouseenter', stopAutoScroll);
-            categoryGrid.addEventListener('mouseleave', startAutoScroll);
-
-            scrollLeftBtn.addEventListener('click', () => {
-                stopAutoScroll();
-                categoryGrid.scrollBy({ left: -300, behavior: 'smooth' });
-            });
-            scrollRightBtn.addEventListener('click', () => {
-                stopAutoScroll();
-                categoryGrid.scrollBy({ left: 300, behavior: 'smooth' });
-            });
-
-            // Show/hide scroll buttons based on scroll position
-            categoryGrid.addEventListener('scroll', () => {
-                scrollLeftBtn.classList.toggle('hidden', categoryGrid.scrollLeft === 0);
-                scrollRightBtn.classList.toggle('hidden', categoryGrid.scrollLeft + categoryGrid.clientWidth >= categoryGrid.scrollWidth);
-            });
-        }
-        
-        // Initial Load
-        document.addEventListener("DOMContentLoaded", async () => {
-            setupEventListeners();
-            await hienThiDanhMuc();
-            await hienThiKhoaHoc();
-            startAutoScroll(); // Start scrolling after everything is loaded
+        // 1. Màn hình chờ
+        window.addEventListener('load', () => {
+            preloader.classList.add('hidden');
         });
-         // Listener cho carousel
-            const scrollAmount = 300;
-            scrollLeftBtn.onclick = () => categoryGrid.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-            scrollRightBtn.onclick = () => categoryGrid.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-            categoryGrid.onscroll = () => {
-                const pos = categoryGrid.scrollLeft;
-                const max = categoryGrid.scrollWidth - categoryGrid.clientWidth;
-                scrollLeftBtn.classList.toggle('hidden', pos <= 0);
-                scrollRightBtn.classList.toggle('hidden', pos >= max - 1);
-            };
-            
-            // Thêm listener cho âm thanh
-            window.addEventListener('click', playWelcomeAudioOnce);
-            window.addEventListener('scroll', playWelcomeAudioOnce); // Thêm cả scroll để tăng cơ hội kích hoạt
 
-            // Event listener cho banner (MỚI)
-            const closeBanner = () => {
-                bannerOverlay.style.display = 'none';
-                sessionStorage.setItem('bannerClosed', 'true');
-            };
-            bannerCloseBtn.addEventListener('click', closeBanner);
-            bannerOverlay.addEventListener('click', (e) => {
-                if (e.target === bannerOverlay) {
-                    closeBanner();
+        // 2. Banner thông báo
+        function handleNotificationBanner() {
+            if (!sessionStorage.getItem('bannerShown')) {
+                setTimeout(() => { // Hiện banner sau 1 chút để không quá đột ngột
+                    bannerOverlay.style.display = 'flex';
+                }, 1500);
+            }
+            bannerCloseBtn.addEventListener('click', () => {
+                bannerOverlay.style.animation = 'fadeOut 0.3s ease forwards';
+                bannerOverlay.addEventListener('animationend', () => {
+                    bannerOverlay.style.display = 'none';
+                }, { once: true });
+                sessionStorage.setItem('bannerShown', 'true');
+            });
+        }
+
+        // 3. Hiệu ứng header khi cuộn
+        function handleHeaderScroll() {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    mainHeader.classList.add('scrolled');
+                } else {
+                    mainHeader.classList.remove('scrolled');
                 }
             });
+        }
 
-        // --- Các hàm khác giữ nguyên (taoLuoiPhanLoai, setActiveCategoryItem) ---
-        function taoLuoiPhanLoai() {
-            categoryGrid.innerHTML = '';
-            const allItem=document.createElement('a');allItem.className='category-item';allItem.innerHTML=`<i class="fas fa-border-all"></i><span>Tất cả</span>`;allItem.onclick=()=>{currentCategory=null;currentSearchTerm='';searchInput.value='';setActiveCategoryItem(null);hienThiKhoaHoc();};categoryGrid.appendChild(allItem);
-            danhSachKhuVuc.forEach(kv=>{const iconClass=categoryIcons[kv]||'fa-book';const catItem=document.createElement('a');catItem.className='category-item';catItem.dataset.category=kv;catItem.innerHTML=`<i class="fas ${iconClass}"></i><span>${kv}</span>`;catItem.onclick=()=>{currentCategory=kv;currentSearchTerm='';searchInput.value='';setActiveCategoryItem(kv);hienThiKhoaHoc();};categoryGrid.appendChild(catItem);});
+        // 4. Tạo Carousel Danh mục tự chạy vô hạn
+        function initInfiniteCarousel() {
+            let categoryHTML = '';
+            CATEGORIES.forEach(cat => {
+                categoryHTML += `
+                    <a href="${SHEET_URL}" target="_blank" class="category-item ${cat.active ? 'active' : ''}">
+                        <i class="fas ${cat.icon || 'fa-tag'}"></i>
+                        <span>${cat.name}</span>
+                    </a>
+                `;
+            });
+            
+            // Nhân đôi nội dung để tạo hiệu ứng lặp vô hạn
+            categoryGrid.innerHTML = categoryHTML + categoryHTML; 
         }
-        function setActiveCategoryItem(categoryName) {
-             document.querySelectorAll(".category-item").forEach(item=>item.classList.remove("active"));
-             if(categoryName){const activeItem=document.querySelector(`.category-item[data-category='${categoryName}']`);if(activeItem)activeItem.classList.add("active");}
-             else{const allItem=document.querySelector('.category-item:first-child');if(allItem)allItem.classList.add('active');}
-        }
-        // --- Hết ---
+        
+        // 5. Hiệu ứng xuất hiện khi cuộn (dùng Intersection Observer)
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target); // Chạy 1 lần rồi ngừng theo dõi
+                    }
+                });
+            }, {
+                threshold: 0.1 // Kích hoạt khi 10% phần tử hiện ra
+            });
 
-        function init() {
-            setupEventListeners();
-            taoLuoiPhanLoai();
-            setActiveCategoryItem(null);
-            hienThiKhoaHoc();
-            setTimeout(() => categoryGrid.dispatchEvent(new Event('scroll')), 100);
-lis
-            // Logic hiển thị banner (MỚI)
-            if (sessionStorage.getItem('bannerClosed') === 'true') {
-                bannerOverlay.style.display = 'none';
-            } else {
-                bannerOverlay.style.display = 'flex';
-            }
+            animatedElements.forEach(el => observer.observe(el));
         }
-        const welcomeAudio = new Audio('kinhchao.mp3');
-        function playWelcomeAudioOnce() {
-            // Chỉ phát nếu chưa từng phát trong session này
-            if (!sessionStorage.getItem('audioPlayed')) {
-                welcomeAudio.play()
-                    .then(() => {
-                        sessionStorage.setItem('audioPlayed', 'true');
-                        // Tự gỡ bỏ listener sau khi phát thành công
-                        window.removeEventListener('click', playWelcomeAudioOnce);
-                        window.removeEventListener('scroll', playWelcomeAudioOnce);
-                    })
-                    .catch(error => {
-                        console.log("Audio autoplay was prevented:", error);
-                        // Tự gỡ bỏ listener nếu bị lỗi để không thử lại
-                         window.removeEventListener('click', playWelcomeAudioOnce);
-                         window.removeEventListener('scroll', playWelcomeAudioOnce);
+
+        // 6. HIỆU ỨNG PARALLAX BANNER THEO CHUỘT (CHO DESKTOP)
+        function handleMouseMoveParallax() {
+            // Chỉ chạy hiệu ứng trên màn hình lớn để tối ưu mobile
+            if (window.innerWidth < 1024) return;
+
+            const parallaxFactor = 15; // Điều chỉnh độ "sâu" của hiệu ứng
+            document.addEventListener('mousemove', (e) => {
+                const x = (e.clientX - window.innerWidth / 2) / window.innerWidth;
+                const y = (e.clientY - window.innerHeight / 2) / window.innerHeight;
+
+                requestAnimationFrame(() => {
+                    heroBanner.style.transform = `rotateY(${x * parallaxFactor}deg) rotateX(${-y * parallaxFactor}deg)`;
+                });
+            });
+        }
+
+        // 7. (MỚI) HIỆU ỨNG PARALLAX KHI CUỘN (TỐI ƯU CHO MOBILE)
+        function handleScrollParallax() {
+            window.addEventListener('scroll', () => {
+                // Lấy vị trí cuộn hiện tại
+                const scrollY = window.scrollY;
+                
+                // Chỉ áp dụng hiệu ứng khi banner còn trong tầm nhìn để tối ưu
+                if (scrollY < window.innerHeight) {
+                    requestAnimationFrame(() => {
+                        // Di chuyển ảnh lên với tốc độ bằng 1/3 tốc độ cuộn
+                        // Tạo cảm giác ảnh bị "trôi" chậm lại so với trang
+                        heroBannerImage.style.transform = `translateY(${scrollY * 0.3}px)`;
                     });
-            }
+                }
+            });
         }
-        init();
 
-        // --- Code rút gọn cho các hàm không đổi ---
-        openModal = function(course, khuVuc){modalTitle.textContent=course.ten;modalDescription.innerHTML=course.mo_ta||'Chưa có mô tả chi tiết cho khóa học này.';if(khuVuc==="Khóa học miễn phí"||khuVuc==="Tài liệu"||course.gia===0){modalBuyLink.href=course.linkdrive||'#';modalBuyLink.innerHTML=`<i class="fas fa-play-circle"></i> Học Ngay`;modalBuyLink.classList.add("learn-btn");}else{modalBuyLink.href=zaloLink;modalBuyLink.innerHTML=`<i class="fas fa-shopping-cart"></i> Liên Hệ Mua`;modalBuyLink.classList.remove("learn-btn");}modal.style.display="block";}
-        generateStars = function(rating){if(!rating||rating<=0)return"";let s="",f=Math.floor(rating),h=rating%1!=0,e=5-f-(h?1:0);for(let i=0;i<f;i++)s+='<i class="fas fa-star"></i>';if(h)s+='<i class="fas fa-star-half-alt"></i>';for(let i=0;i<e;i++)s+='<i class="far fa-star"></i>';return s;}
-    </script>
-    
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T3HC34BE89"></script>
-    <script>
-      window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-T3HC34BE89');
-    </script>
+
+        // --- CHẠY CÁC HÀM KHỞI TẠO ---
+        handleNotificationBanner();
+        handleHeaderScroll();
+        initInfiniteCarousel();
+        initScrollAnimations();
+        handleMouseMoveParallax(); // Hiệu ứng cho desktop
+        handleScrollParallax(); // Hiệu ứng mới cho scroll
+    });
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T3HC34BE89"></script>
+<script>
+    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-T3HC34BE89');
+</script>
 </body>
 </html>
-
