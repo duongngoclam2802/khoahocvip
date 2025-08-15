@@ -118,34 +118,6 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* --- BANNER THÔNG BÁO --- */
-    .notification-banner-overlay {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background-color: rgba(0, 0, 0, 0.6); z-index: 3000;
-        display: flex; align-items: center; justify-content: center;
-        padding: 15px; animation: fadeIn 0.3s ease;
-    }
-    .notification-banner {
-        background: var(--white-color); border-radius: 20px;
-        padding: 30px 35px; max-width: 650px; width: 100%;
-        text-align: center; position: relative;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-        animation: slideInUp 0.5s ease;
-    }
-    .notification-banner .banner-icon { font-size: 3rem; color: var(--primary-color); margin-bottom: 15px; animation: bounce 2s infinite; }
-    .notification-banner h2 { font-family: var(--font-family); font-weight: 800; font-size: 1.8rem; margin-bottom: 15px; }
-    .notification-banner p { font-size: 1rem; line-height: 1.6; color: var(--text-light); }
-    .notification-banner .info-text { display: flex; align-items: center; justify-content: center; gap: 10px; background-color: rgba(74, 144, 226, 0.08); padding: 12px; border-radius: 10px; margin: 20px 0; }
-    .notification-banner .info-text i { font-size: 1.1rem; color: var(--primary-color); }
-    .notification-banner p.highlight a { font-weight: 600; color: var(--primary-dark); text-decoration: none; border-bottom: 2px solid var(--secondary-color); padding-bottom: 2px; transition: all 0.3s ease; }
-    .notification-banner p.highlight a:hover { color: var(--primary-color); border-color: var(--primary-dark); }
-    .banner-close-btn { position: absolute; top: 15px; right: 15px; background: var(--bg-light); border: none; color: var(--text-light); width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; z-index: 10; }
-    .banner-close-btn:hover { background-color: var(--primary-color); color: var(--white-color); transform: rotate(180deg); }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes slideInUp { from { transform: translateY(50px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
-    @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-20px); } 60% { transform: translateY(-10px); } }
-    
-    /* --- HEADER --- */
     header { 
         position: sticky; top: 0; z-index: 1000; 
         height: var(--header-height); display: flex; align-items: center; 
@@ -415,6 +387,7 @@
 <div class="preloader">
     <div class="spinner"></div>
 </div>
+
 <header id="main-header">
     <div class="header-container">
         <a href="/" class="logo-container" title="Trang chủ KHOAHOCVIP">
@@ -511,8 +484,6 @@
         ];
 
         // --- LẤY CÁC THÀNH PHẦN DOM ---
-        const bannerOverlay = document.getElementById('notification-banner-overlay');
-        const bannerCloseBtn = document.getElementById('banner-close-btn');
         const mainHeader = document.getElementById('main-header');
         const categoryGrid = document.getElementById("category-grid");
         const animatedElements = document.querySelectorAll("[data-scroll-effect]");
@@ -526,22 +497,6 @@
         window.addEventListener('load', () => {
             preloader.classList.add('hidden');
         });
-
-        // 2. Banner thông báo
-        function handleNotificationBanner() {
-            if (!sessionStorage.getItem('bannerShown')) {
-                setTimeout(() => { // Hiện banner sau 1 chút để không quá đột ngột
-                    bannerOverlay.style.display = 'flex';
-                }, 1500);
-            }
-            bannerCloseBtn.addEventListener('click', () => {
-                bannerOverlay.style.animation = 'fadeOut 0.3s ease forwards';
-                bannerOverlay.addEventListener('animationend', () => {
-                    bannerOverlay.style.display = 'none';
-                }, { once: true });
-                sessionStorage.setItem('bannerShown', 'true');
-            });
-        }
 
         // 3. Hiệu ứng header khi cuộn
         function handleHeaderScroll() {
@@ -621,7 +576,6 @@
 
 
         // --- CHẠY CÁC HÀM KHỞI TẠO ---
-        handleNotificationBanner();
         handleHeaderScroll();
         initInfiniteCarousel();
         initScrollAnimations();
@@ -635,4 +589,3 @@
 </script>
 </body>
 </html>
-
