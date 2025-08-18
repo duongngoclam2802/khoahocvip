@@ -48,6 +48,11 @@
       width:34px; height:34px; border-radius:999px; border:3px solid #dbe3f0; border-top-color:#2563eb;
       animation:spin .8s linear infinite;
     }
+    html, body {
+  /* Cho phép kéo ngang/dọc, KHÔNG cho pinch-zoom */
+      touch-action: pan-x pan-y;
+    }
+
     @keyframes spin{ to{ transform:rotate(360deg);} }
 
     /* nav bóng nhẹ */
@@ -177,6 +182,17 @@
       }, 5000);
     }
     window.addEventListener('load', ()=> setTimeout(showHintOnce, 350));
+  </script>
+  <script>
+    // Chặn gesture của Safari iOS (non-standard nhưng cần thiết)
+    window.addEventListener('gesturestart',  e => e.preventDefault(), {passive:false});
+    window.addEventListener('gesturechange', e => e.preventDefault(), {passive:false});
+    window.addEventListener('gestureend',    e => e.preventDefault(), {passive:false});
+  
+    // Phòng trường hợp một số trình duyệt vẫn cố pinch -> chặn khi có 2 ngón
+    document.addEventListener('touchmove', (e) => {
+      if (e.touches && e.touches.length > 1) e.preventDefault();
+    }, {passive:false});
   </script>
 
   <!-- Google Analytics -->
