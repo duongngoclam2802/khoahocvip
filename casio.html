@@ -396,6 +396,53 @@
         });
 
     </script>
+    <script>
+        // 1. Chặn Click chuột phải
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            alert('Nội dung này đã được bảo vệ!'); // Bạn có thể bỏ dòng này nếu không muốn hiện thông báo
+            return false;
+        });
+    
+        // 2. Chặn các phím tắt bàn phím
+        document.addEventListener('keydown', function(e) {
+            // Chặn F12
+            if (e.key === 'F12' || e.keyCode === 123) {
+                e.preventDefault();
+                return false;
+            }
+    
+            // Chặn Ctrl + U (Xem source code)
+            if (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.keyCode === 85)) {
+                e.preventDefault();
+                return false;
+            }
+    
+            // Chặn Ctrl + Shift + I (Inspect Element)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'i' || e.key === 'I' || e.keyCode === 73)) {
+                e.preventDefault();
+                return false;
+            }
+    
+            // Chặn Ctrl + Shift + J (Console)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'j' || e.key === 'J' || e.keyCode === 74)) {
+                e.preventDefault();
+                return false;
+            }
+    
+            // Chặn Ctrl + Shift + C (Inspect Element Mode)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'c' || e.key === 'C' || e.keyCode === 67)) {
+                e.preventDefault();
+                return false;
+            }
+    
+            // Chặn Ctrl + S (Lưu trang web)
+            if (e.ctrlKey && (e.key === 's' || e.key === 'S' || e.keyCode === 83)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-T3HC34BE89"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
