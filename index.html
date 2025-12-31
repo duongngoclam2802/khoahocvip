@@ -932,134 +932,133 @@
 </footer>
 
 <script>
-    document.addEventListener("DOMContentLoaded", () => { -->
+    document.addEventListener("DOMContentLoaded", () => {
         // --- CẤU HÌNH ---
-//         const SHEET_URL = "http://khoahocvip.io.vn/sheet";
-//         const CATEGORIES = [
-//             { name: "Tất cả", icon: "fa-border-all", active: true },
-//             { name: "Khóa Combo", icon: "fa-boxes-stacked" },
-//             { name: "Toán", icon: "fa-calculator" },
-//             { name: "Lý", icon: "fa-atom" },
-//             { name: "Hóa", icon: "fa-flask" },
-//             { name: "Tiếng Anh", icon: "fa-language" },
-//             { name: "Sinh", icon: "fa-dna" },
-//             { name: "Văn", icon: "fa-pen-nib" },
-//             { name: "Sử", icon: "fa-landmark" },
-//             { name: "Địa", icon: "fa-globe-asia" },
-//             { name: "HSA - TSA - ...", icon: "fa-brain" },
-//             { name: "TOEIC", icon: "fa-file-alt" },
-//             { name: "IELTS", icon: "fa-passport" },
-//             { name: "Đại học", icon: "fa-graduation-cap" },
-//             { name: "Miễn phí", icon: "fa-gift" },
-//             { name: "Tài liệu", icon: "fa-folder-open" },
-//         ];
+        const SHEET_URL = "http://khoahocvip.io.vn/sheet";
+        const CATEGORIES = [
+            { name: "Tất cả", icon: "fa-border-all", active: true },
+            { name: "Khóa Combo", icon: "fa-boxes-stacked" },
+            { name: "Toán", icon: "fa-calculator" },
+            { name: "Lý", icon: "fa-atom" },
+            { name: "Hóa", icon: "fa-flask" },
+            { name: "Tiếng Anh", icon: "fa-language" },
+            { name: "Sinh", icon: "fa-dna" },
+            { name: "Văn", icon: "fa-pen-nib" },
+            { name: "Sử", icon: "fa-landmark" },
+            { name: "Địa", icon: "fa-globe-asia" },
+            { name: "HSA - TSA - ...", icon: "fa-brain" },
+            { name: "TOEIC", icon: "fa-file-alt" },
+            { name: "IELTS", icon: "fa-passport" },
+            { name: "Đại học", icon: "fa-graduation-cap" },
+            { name: "Miễn phí", icon: "fa-gift" },
+            { name: "Tài liệu", icon: "fa-folder-open" },
+        ];
 
-//         // --- LẤY CÁC THÀNH PHẦN DOM ---
-//         const mainHeader = document.getElementById('main-header');
-//         const categoryGrid = document.getElementById("category-grid");
-//         const animatedElements = document.querySelectorAll("[data-scroll-effect]");
-//         const preloader = document.querySelector('.preloader');
-//         const heroBanner = document.querySelector('.hero-banner-inner'); 
-//         const heroBannerImage = document.getElementById('hero-banner-image'); // Lấy ảnh banner
+        // --- LẤY CÁC THÀNH PHẦN DOM ---
+        const mainHeader = document.getElementById('main-header');
+        const categoryGrid = document.getElementById("category-grid");
+        const animatedElements = document.querySelectorAll("[data-scroll-effect]");
+        const preloader = document.querySelector('.preloader');
+        const heroBanner = document.querySelector('.hero-banner-inner'); 
+        const heroBannerImage = document.getElementById('hero-banner-image'); // Lấy ảnh banner
 
-//         // --- KHỞI TẠO CÁC CHỨC NĂNG ---
+        // --- KHỞI TẠO CÁC CHỨC NĂNG ---
         
-//         // 1. Màn hình chờ
-//         window.addEventListener('load', () => {
-//             preloader.classList.add('hidden');
-//         });
+        // 1. Màn hình chờ
+        window.addEventListener('load', () => {
+            preloader.classList.add('hidden');
+        });
 
-//         // 3. Hiệu ứng header khi cuộn
-//         function handleHeaderScroll() {
-//             window.addEventListener('scroll', () => {
-//                 if (window.scrollY > 50) {
-//                     mainHeader.classList.add('scrolled');
-//                 } else {
-//                     mainHeader.classList.remove('scrolled');
-//                 }
-//             });
-//         }
+        // 3. Hiệu ứng header khi cuộn
+        function handleHeaderScroll() {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    mainHeader.classList.add('scrolled');
+                } else {
+                    mainHeader.classList.remove('scrolled');
+                }
+            });
+        }
 
-//         // 4. Tạo Carousel Danh mục tự chạy vô hạn
-//         function initInfiniteCarousel() {
-//             let categoryHTML = '';
-//             CATEGORIES.forEach(cat => {
-//                 categoryHTML += `
-//                     <a href="${SHEET_URL}" target="_blank" class="category-item ${cat.active ? 'active' : ''}">
-//                         <i class="fas ${cat.icon || 'fa-tag'}"></i>
-//                         <span>${cat.name}</span>
-//                     </a>
-//                 `;
-//             });
+        // 4. Tạo Carousel Danh mục tự chạy vô hạn
+        function initInfiniteCarousel() {
+            let categoryHTML = '';
+            CATEGORIES.forEach(cat => {
+                categoryHTML += `
+                    <a href="${SHEET_URL}" target="_blank" class="category-item ${cat.active ? 'active' : ''}">
+                        <i class="fas ${cat.icon || 'fa-tag'}"></i>
+                        <span>${cat.name}</span>
+                    </a>
+                `;
+            });
             
-//             // Nhân đôi nội dung để tạo hiệu ứng lặp vô hạn
-//             categoryGrid.innerHTML = categoryHTML + categoryHTML; 
-//         }
+            // Nhân đôi nội dung để tạo hiệu ứng lặp vô hạn
+            categoryGrid.innerHTML = categoryHTML + categoryHTML; 
+        }
         
-//         // 5. Hiệu ứng xuất hiện khi cuộn (dùng Intersection Observer)
-//         function initScrollAnimations() {
-//             const observer = new IntersectionObserver((entries) => {
-//                 entries.forEach(entry => {
-//                     if (entry.isIntersecting) {
-//                         entry.target.classList.add('is-visible');
-//                         observer.unobserve(entry.target); // Chạy 1 lần rồi ngừng theo dõi
-//                     }
-//                 });
-//             }, {
-//                 threshold: 0.1 // Kích hoạt khi 10% phần tử hiện ra
-//             });
+        // 5. Hiệu ứng xuất hiện khi cuộn (dùng Intersection Observer)
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target); // Chạy 1 lần rồi ngừng theo dõi
+                    }
+                });
+            }, {
+                threshold: 0.1 // Kích hoạt khi 10% phần tử hiện ra
+            });
 
-//             animatedElements.forEach(el => observer.observe(el));
-//         }
+            animatedElements.forEach(el => observer.observe(el));
+        }
 
-//         // 6. HIỆU ỨNG PARALLAX BANNER THEO CHUỘT (CHO DESKTOP)
-//         function handleMouseMoveParallax() {
-//             // Chỉ chạy hiệu ứng trên màn hình lớn để tối ưu mobile
-//             if (window.innerWidth < 1024) return;
+        // 6. HIỆU ỨNG PARALLAX BANNER THEO CHUỘT (CHO DESKTOP)
+        function handleMouseMoveParallax() {
+            // Chỉ chạy hiệu ứng trên màn hình lớn để tối ưu mobile
+            if (window.innerWidth < 1024) return;
 
-//             const parallaxFactor = 15; // Điều chỉnh độ "sâu" của hiệu ứng
-//             document.addEventListener('mousemove', (e) => {
-//                 const x = (e.clientX - window.innerWidth / 2) / window.innerWidth;
-//                 const y = (e.clientY - window.innerHeight / 2) / window.innerHeight;
+            const parallaxFactor = 15; // Điều chỉnh độ "sâu" của hiệu ứng
+            document.addEventListener('mousemove', (e) => {
+                const x = (e.clientX - window.innerWidth / 2) / window.innerWidth;
+                const y = (e.clientY - window.innerHeight / 2) / window.innerHeight;
 
-//                 requestAnimationFrame(() => {
-//                     heroBanner.style.transform = `rotateY(${x * parallaxFactor}deg) rotateX(${-y * parallaxFactor}deg)`;
-//                 });
-//             });
-//         }
+                requestAnimationFrame(() => {
+                    heroBanner.style.transform = `rotateY(${x * parallaxFactor}deg) rotateX(${-y * parallaxFactor}deg)`;
+                });
+            });
+        }
 
-//         // 7. (MỚI) HIỆU ỨNG PARALLAX KHI CUỘN (TỐI ƯU CHO MOBILE)
-//         function handleScrollParallax() {
-//             window.addEventListener('scroll', () => {
-//                 // Lấy vị trí cuộn hiện tại
-//                 const scrollY = window.scrollY;
+        // 7. (MỚI) HIỆU ỨNG PARALLAX KHI CUỘN (TỐI ƯU CHO MOBILE)
+        function handleScrollParallax() {
+            window.addEventListener('scroll', () => {
+                // Lấy vị trí cuộn hiện tại
+                const scrollY = window.scrollY;
                 
-//                 // Chỉ áp dụng hiệu ứng khi banner còn trong tầm nhìn để tối ưu
-//                 if (scrollY < window.innerHeight) {
-//                     requestAnimationFrame(() => {
-//                         // Di chuyển ảnh lên với tốc độ bằng 1/3 tốc độ cuộn
-//                         // Tạo cảm giác ảnh bị "trôi" chậm lại so với trang
-//                         heroBannerImage.style.transform = `translateY(${scrollY * 0.3}px)`;
-//                     });
-//                 }
-//             });
-//         }
+                // Chỉ áp dụng hiệu ứng khi banner còn trong tầm nhìn để tối ưu
+                if (scrollY < window.innerHeight) {
+                    requestAnimationFrame(() => {
+                        // Di chuyển ảnh lên với tốc độ bằng 1/3 tốc độ cuộn
+                        // Tạo cảm giác ảnh bị "trôi" chậm lại so với trang
+                        heroBannerImage.style.transform = `translateY(${scrollY * 0.3}px)`;
+                    });
+                }
+            });
+        }
 
 
-//         // --- CHẠY CÁC HÀM KHỞI TẠO ---
-//         handleHeaderScroll();
-//         initInfiniteCarousel();
-//         initScrollAnimations();
-//         handleMouseMoveParallax(); // Hiệu ứng cho desktop
-//         handleScrollParallax(); // Hiệu ứng mới cho scroll
-//     });
-// </script>
-// <script async src="https://www.googletagmanager.com/gtag/js?id=G-T3HC34BE89"></script>
-// <script>
-//     window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-T3HC34BE89');
-// </script>
-// </body>
-// </html> -->
-
+        // --- CHẠY CÁC HÀM KHỞI TẠO ---
+        handleHeaderScroll();
+        initInfiniteCarousel();
+        initScrollAnimations();
+        handleMouseMoveParallax(); // Hiệu ứng cho desktop
+        handleScrollParallax(); // Hiệu ứng mới cho scroll
+    });
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T3HC34BE89"></script>
+<script>
+    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-T3HC34BE89');
+</script>
+</body>
+</html> -->
 
 
