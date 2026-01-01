@@ -95,36 +95,35 @@
     }
     .loading-sub { color: #fff; margin-top: 10px; font-size: 0.9rem; opacity: 0.9; text-align: center; padding: 0 10px; }
 
-    /* --- HEADER (ĐÃ SỬA LỖI MÀU SẮC) --- */
+    /* --- HEADER (ĐÃ SỬA: KHÔNG ĐỔI MÀU LOGO) --- */
     header { 
         position: sticky; top: 0; z-index: 1000; 
         height: var(--header-height); display: flex; align-items: center; 
         width: 100%; 
-        /* Mặc định: Nền trắng mờ, Chữ đỏ */
         background: rgba(255, 255, 255, 0.85);
         border-bottom: 1px solid rgba(215, 0, 24, 0.1);
         backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
     }
     
-    /* Khi cuộn: Nền Đỏ Đậm, Chữ Vàng */
+    /* Khi cuộn: Nền Đỏ Đậm */
     header.scrolled {
         background: var(--primary-dark);
         box-shadow: 0 4px 20px rgba(152, 0, 14, 0.4);
         border-bottom: 1px solid var(--secondary-color);
     }
     
-    /* Xử lý Logo và Chữ khi cuộn */
+    /* Logo Chữ: Chuyển vàng khi cuộn */
     .logo-container h1 { 
         font-weight: 800; font-size: 1.5rem; color: var(--primary-color); 
         text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s;
     }
     header.scrolled .logo-container h1 { color: var(--secondary-color); text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
     
-    /* Logo ảnh: Mặc định bình thường, cuộn xuống thì chuyển sang trắng/sáng */
+    /* Logo Ảnh: GIỮ NGUYÊN MÀU GỐC, chỉ thêm bóng nhẹ */
     .logo-container img { height: 45px; transition: all 0.3s; }
     header.scrolled .logo-container img { 
-        filter: brightness(0) invert(1) drop-shadow(0 0 2px rgba(255,215,0,0.8)); 
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); /* Không invert màu nữa */
     }
 
     .header-container { 
@@ -189,7 +188,6 @@
         border-radius: var(--border-radius); 
         box-shadow: 0 0 0 4px var(--secondary-color), 0 20px 50px rgba(0,0,0,0.2);
         transition: transform 0.1s ease-out; position: relative;
-        /* Hiệu ứng trôi bồng bềnh */
         animation: floating 6s ease-in-out infinite;
     }
     @keyframes floating {
@@ -312,7 +310,7 @@
         .hero-banner { padding: 20px 10px; }
         .section-title { font-size: 2rem; }
         .cta-button { width: 100%; justify-content: center; font-size: 1rem; padding: 15px; }
-        .decor-lantern { width: 50px; } /* Lồng đèn nhỏ lại trên mobile */
+        .decor-lantern { width: 50px; } 
     }
 </style>
 </head>
@@ -396,7 +394,7 @@
 </footer>
 
 <script>
-    // 1. HÀM TẮT MÀN HÌNH CHỜ
+    // 1. HÀM TẮT MÀN HÌNH CHỜ (AN TOÀN)
     function removeLoader() {
         const loader = document.getElementById('tet-loader');
         if (loader && !loader.classList.contains('hidden')) {
@@ -409,12 +407,9 @@
     const THOI_GIAN_CHO = 4000; // Đợi 4 giây sau khi tải xong mới tắt
     const TOI_DA = 10000;       // Tối đa 10 giây phải tắt (đề phòng mạng lag)
 
-    // Logic: Khi trang tải xong -> Đợi thêm THOI_GIAN_CHO -> Tắt
     window.addEventListener('load', () => {
         setTimeout(removeLoader, THOI_GIAN_CHO);
     });
-
-    // Dự phòng: Nếu trang web bị lỗi không báo tải xong, thì cứ hết giờ TOI_DA là tự tắt
     setTimeout(removeLoader, TOI_DA);
 
 
@@ -562,6 +557,7 @@
         } catch(e) { console.error("Lỗi Canvas:", e); }
     })();
 </script>
+
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-T3HC34BE89"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -1161,6 +1157,4 @@
 </script>
 </body>
 </html> -->
-
-
 
