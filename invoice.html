@@ -2,6 +2,404 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hóa Đơn Vuông - Tết 2026</title>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Be+Vietnam+Pro:wght@400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --red-primary: #b91c1c; /* Đỏ đô */
+      --red-light: #ef4444;   /* Đỏ tươi */
+      --gold: #FCD34D;        /* Vàng kim */
+      --cream: #FFFBEB;       /* Màu kem */
+    }
+
+    body {
+      background-color: #f3f4f6;
+      font-family: 'Be Vietnam Pro', sans-serif;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Khung nhập liệu */
+    .input-panel {
+      background: white;
+      width: 100%;
+      max-width: 800px;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    h2 { color: var(--red-primary); text-align: center; margin-bottom: 1.5rem; text-transform: uppercase; }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    
+    label { font-weight: 600; font-size: 0.9rem; color: #4b5563; margin-bottom: 4px; display: block; }
+    input { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.95rem; }
+    input:focus { border-color: var(--red-primary); outline: none; box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.1); }
+
+    .btn {
+      background: linear-gradient(to right, var(--red-primary), var(--red-light));
+      color: white; border: none; padding: 12px 24px; border-radius: 8px;
+      font-weight: 600; cursor: pointer; transition: 0.2s; width: 100%; margin-top: 15px;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(185, 28, 28, 0.3); }
+    .btn-outline { background: white; border: 1px solid var(--red-primary); color: var(--red-primary); }
+    .btn-outline:hover { background: #fef2f2; }
+
+    /* --- HÓA ĐƠN VUÔNG (TRỌNG TÂM) --- */
+    #invoice-container {
+      display: none; /* Ẩn lúc đầu */
+      margin-top: 20px;
+    }
+
+    #invoice {
+      width: 600px;
+      height: 600px; /* Hình vuông tuyệt đối */
+      background: linear-gradient(135deg, #8B0000 0%, #D20F22 100%);
+      position: relative;
+      padding: 20px;
+      box-sizing: border-box;
+      color: var(--cream);
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+
+    /* Hoa văn nền chìm */
+    #invoice::before {
+      content: "";
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background-image: radial-gradient(#FFD700 1px, transparent 1px);
+      background-size: 30px 30px;
+      opacity: 0.1;
+      z-index: 0;
+    }
+
+    /* Khung viền vàng trang trí */
+    .border-frame {
+      width: 100%; height: 100%;
+      border: 3px double var(--gold);
+      border-radius: 12px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 15px;
+      box-sizing: border-box;
+      background: rgba(0,0,0,0.1); /* Làm tối nhẹ nền để nổi chữ */
+    }
+
+    /* 4 Góc trang trí */
+    .corner {
+      position: absolute; width: 40px; height: 40px;
+      border: 3px solid var(--gold);
+      border-radius: 50%; /* Tròn ở góc */
+    }
+    .tl { top: -15px; left: -15px; border-right: none; border-bottom: none; }
+    .tr { top: -15px; right: -15px; border-left: none; border-bottom: none; }
+    .bl { bottom: -15px; left: -15px; border-right: none; border-top: none; }
+    .br { bottom: -15px; right: -15px; border-left: none; border-top: none; }
+
+    /* Nội dung bên trong */
+    .header { text-align: center; margin-top: 10px; }
+    .brand { 
+      font-family: 'Playfair Display', serif; 
+      font-size: 28px; font-weight: 900; 
+      color: var(--gold); text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      letter-spacing: 2px;
+    }
+    .sub-brand { font-size: 10px; text-transform: uppercase; letter-spacing: 3px; opacity: 0.8; }
+
+    .title-invoice {
+      text-align: center;
+      font-family: 'Dancing Script', cursive;
+      font-size: 42px;
+      color: var(--gold);
+      margin: 10px 0;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .main-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 0 10px;
+      color: #333;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .info-col { flex: 1; padding-right: 10px; font-size: 13px; }
+    .info-line { 
+      margin-bottom: 8px; border-bottom: 1px dashed #ddd; 
+      padding-bottom: 2px; display: flex; justify-content: space-between;
+    }
+    .info-label { font-weight: 600; color: #666; }
+    .info-val { font-weight: bold; color: #000; text-align: right; }
+
+    .qr-col { 
+      width: 140px; text-align: center; 
+      border-left: 2px dashed var(--red-primary); padding-left: 10px;
+    }
+    .qr-img { width: 120px; height: 120px; object-fit: contain; }
+    .qr-note { font-size: 10px; color: var(--red-primary); font-weight: bold; margin-top: 5px; }
+
+    .total-section {
+      text-align: center;
+      margin: 10px 0;
+    }
+    .total-label { color: var(--cream); font-size: 14px; opacity: 0.9; }
+    .total-amount { 
+      font-size: 40px; font-weight: 800; color: var(--gold);
+      font-family: 'Be Vietnam Pro', sans-serif;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--cream);
+      opacity: 0.8;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      padding-top: 10px;
+    }
+    .horse-icon { font-size: 24px; margin-bottom: 5px; color: var(--gold); }
+
+    /* Actions */
+    .action-bar {
+      margin-top: 20px;
+      display: flex; gap: 10px;
+    }
+    .action-bar button { width: auto; flex: 1; }
+
+    /* History */
+    .history-section { width: 100%; max-width: 800px; margin-top: 2rem; }
+    .history-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+    .history-table th { background: var(--red-primary); color: white; padding: 12px; font-size: 0.9rem; text-align: left; }
+    .history-table td { padding: 10px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+
+  <div class="input-panel">
+    <h2><i class="fas fa-edit"></i> Thông Tin Hóa Đơn</h2>
+    <div class="form-grid">
+      <div>
+        <label>Email khách hàng</label>
+        <input type="email" id="email" placeholder="khachhang@gmail.com">
+      </div>
+      <div>
+        <label>Số điện thoại</label>
+        <input type="text" id="phone" placeholder="0912...">
+      </div>
+    </div>
+    <div class="form-grid" style="margin-top: 10px;">
+      <div>
+        <label>Tên khóa học / Sản phẩm</label>
+        <input type="text" id="course" placeholder="Combo Khóa Học 2K8">
+      </div>
+      <div>
+        <label>Giá tiền (VNĐ)</label>
+        <input type="number" id="price" placeholder="199000">
+      </div>
+    </div>
+    <div class="form-grid" style="margin-top: 10px;">
+      <div>
+        <label>Chủ tài khoản (người nhận)</label>
+        <input type="text" id="account" placeholder="NGUYEN VAN A">
+      </div>
+      <div>
+        <label>Ngày thanh toán</label>
+        <input type="date" id="date">
+      </div>
+    </div>
+    <div style="margin-top: 10px;">
+      <label>Ảnh QR Code (Bắt buộc)</label>
+      <input type="file" id="qr" accept="image/*">
+    </div>
+    <button class="btn" onclick="createInvoice()">
+      <i class="fas fa-wand-magic-sparkles"></i> TẠO HÓA ĐƠN VUÔNG
+    </button>
+  </div>
+
+  <div id="invoice-container">
+    <div id="invoice">
+      <div class="border-frame">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+
+        <div class="header">
+          <div class="brand">KHOAHOCVIP.IO.VN</div>
+          <div class="sub-brand">PREMIUM EDUCATION</div>
+          <div class="title-invoice">Hóa Đơn Thanh Toán</div>
+        </div>
+
+        <div class="main-content">
+          <div class="info-col">
+            <div class="info-line"><span class="info-label">Mã GD:</span> <span class="info-val" id="outCode">#TET2026</span></div>
+            <div class="info-line"><span class="info-label">Gmail:</span> <span class="info-val" id="outEmail">...</span></div>
+            <div class="info-line"><span class="info-label">SĐT:</span> <span class="info-val" id="outPhone">...</span></div>
+            <div class="info-line"><span class="info-label">Tên Khóa:</span> <span class="info-val" id="outCourse">...</span></div>
+            <div class="info-line"><span class="info-label">Ngày:</span> <span class="info-val" id="outDate">...</span></div>
+            <div class="info-line"><span class="info-label">Chủ TK:</span> <span class="info-val" id="outAccount" style="color:#b91c1c">...</span></div>
+          </div>
+          <div class="qr-col">
+            <img id="outQR" class="qr-img" src="" alt="QR">
+            <div class="qr-note">MÃ QR THANH TOÁN</div>
+          </div>
+        </div>
+
+        <div class="total-section">
+          <div class="total-label">TỔNG CỘNG</div>
+          <div class="total-amount"><span id="outPrice">0</span> <small style="font-size:20px">₫</small></div>
+        </div>
+
+        <div class="footer">
+          <i class="fas fa-horse-head horse-icon"></i><br>
+          Cảm ơn bạn đã tin tưởng KHOAHOCVIP<br>
+          Chúc mừng năm mới Xuân Bính Ngọ 2026 - Vạn sự như ý
+        </div>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn" onclick="downloadImage()"><i class="fas fa-download"></i> Tải Ảnh (PNG)</button>
+      <button class="btn btn-outline" onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> Tải PDF</button>
+    </div>
+  </div>
+
+  <div class="history-section">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h3><i class="fas fa-clock"></i> Lịch sử tạo</h3>
+        <button class="btn" style="width:auto; margin:0; padding:8px 15px; font-size:0.8rem;" onclick="exportExcel()">Xuất Excel</button>
+    </div>
+    <table class="history-table" id="historyTable">
+      <thead>
+        <tr>
+          <th>Mã</th>
+          <th>Email</th>
+          <th>Khóa học</th>
+          <th>Giá trị</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+<script>
+  // Set default date
+  document.getElementById('date').valueAsDate = new Date();
+  
+  const historyData = JSON.parse(localStorage.getItem("invHistory") || "[]");
+
+  function createInvoice() {
+    // Get values
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const course = document.getElementById('course').value;
+    const price = document.getElementById('price').value;
+    const date = document.getElementById('date').value;
+    const account = document.getElementById('account').value;
+    const qrInput = document.getElementById('qr');
+
+    if(!qrInput.files[0]) return alert("Bạn chưa chọn ảnh QR!");
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const code = "GD" + Math.floor(100000 + Math.random() * 900000);
+      
+      // Fill Data
+      document.getElementById('outCode').innerText = code;
+      document.getElementById('outEmail').innerText = email;
+      document.getElementById('outPhone').innerText = phone;
+      document.getElementById('outCourse').innerText = course;
+      document.getElementById('outDate').innerText = date.split('-').reverse().join('/');
+      document.getElementById('outAccount').innerText = account.toUpperCase();
+      document.getElementById('outPrice').innerText = parseInt(price).toLocaleString('vi-VN');
+      document.getElementById('outQR').src = e.target.result;
+
+      // Show Invoice
+      document.getElementById('invoice-container').style.display = 'block';
+      document.getElementById('invoice-container').scrollIntoView({ behavior: 'smooth' });
+
+      // Save History
+      const record = { code, email, phone, course, price, date };
+      historyData.push(record);
+      localStorage.setItem("invHistory", JSON.stringify(historyData));
+      renderHistory();
+    };
+    reader.readAsDataURL(qrInput.files[0]);
+  }
+
+  function renderHistory() {
+    const tbody = document.querySelector("#historyTable tbody");
+    tbody.innerHTML = "";
+    [...historyData].reverse().slice(0, 10).forEach(item => { // Show last 10
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td style="font-weight:bold; color:#b91c1c">${item.code}</td>
+        <td>${item.email}</td>
+        <td>${item.course}</td>
+        <td>${parseInt(item.price).toLocaleString()} đ</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function downloadImage() {
+    const node = document.getElementById('invoice');
+    html2canvas(node, { scale: 2 }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = `HoaDonVuong-${Date.now()}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
+  }
+
+  function downloadPDF() {
+    const element = document.getElementById('invoice');
+    // Với hóa đơn vuông, ta set khổ giấy custom
+    const opt = {
+      margin: 0,
+      filename: `HoaDon-${Date.now()}.pdf`,
+      image: { type: 'jpeg', quality: 1 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'px', format: [600, 600], orientation: 'portrait' } 
+    };
+    html2pdf().set(opt).from(element).save();
+  }
+
+  function exportExcel() {
+    const ws = XLSX.utils.json_to_sheet(historyData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "DanhSach");
+    XLSX.writeFile(wb, "History_HoaDon.xlsx");
+  }
+
+  // Init
+  renderHistory();
+</script>
+
+</body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
   <title>Hóa đơn thanh toán</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -113,7 +511,7 @@
 </head>
 <body>
 
-<!-- <script>
+<script>
   const PASSWORD = "lamlam2802";
   const input = prompt("🔐 Nhập mật khẩu để truy cập tạo hóa đơn:");
   if (input !== PASSWORD) {
@@ -122,7 +520,7 @@
   }
 </script> -->
 
-<main>
+<!-- <main>
   <h2><i class="fas fa-file-invoice-dollar"></i> Tạo hóa đơn thanh toán</h2>
 
   <div class="invoice-form">
@@ -270,4 +668,4 @@
 </script>
 
 </body>
-</html>
+</html> -->
