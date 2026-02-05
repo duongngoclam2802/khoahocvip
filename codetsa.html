@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mã Thi Thử TSA Miễn Phí</title>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;600;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --space-bg: #020205; /* Đen tuyền */
+            --glass-bg: rgba(20, 20, 30, 0.65);
+            --neon-red: #ff0055;
+            --neon-orange: #ff5e00;
+            --diamond-white: #ffffff;
+            --gold-text: #FFD700;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            /* Nền vũ trụ sâu thẳm */
+            background: radial-gradient(circle at center, #1a1a2e 0%, var(--space-bg) 100%);
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            color: #fff;
+        }
+
+        /* --- CANVAS --- */
+        #galaxy-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+        }
+
+        /* --- MAIN BOARD --- */
+        .main-board {
+            position: relative; z-index: 10;
+            width: 90%; max-width: 500px;
+            /* Kính tối, viền sáng trắng nhẹ */
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.3); /* Viền trên sáng hơn */
+            border-radius: 24px; padding: 40px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            text-align: center;
+            display: flex; flex-direction: column; gap: 25px;
+        }
+
+        /* Header */
+        .tet-year {
+            font-family: 'Dancing Script', cursive;
+            color: var(--gold-text); font-size: 2rem;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+        }
+        .main-title {
+            font-family: 'Anton', sans-serif; font-size: 3.2rem;
+            background: linear-gradient(to bottom, #ffffff, #b3b3b3);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: 3px; filter: drop-shadow(0 0 15px rgba(255,255,255,0.4));
+            margin-top: -10px;
+        }
+
+        /* Khung Code */
+        .code-container {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 16px; padding: 25px 15px;
+            position: relative;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+        }
+        .label-code {
+            position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+            background: var(--neon-red); color: white;
+            padding: 4px 15px; font-weight: 800; font-size: 0.75rem;
+            border-radius: 20px; text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 0 15px var(--neon-red);
+        }
+        .code-display {
+            font-family: 'Anton', sans-serif; font-size: 2.6rem; color: var(--gold-text);
+            letter-spacing: 3px; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        .status-text { font-size: 0.85rem; color: #aaa; margin-top: 5px; }
+
+        /* --- NÚT BẤM (CỰC KỲ NỔI BẬT) --- */
+        .btn-lixi {
+            /* Gradient Đỏ Cam cực mạnh */
+            background: linear-gradient(90deg, #ff416c, #ff4b2b); 
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 20px; border-radius: 50px;
+            font-size: 1.3rem; font-weight: 900; color: white;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
+            position: relative; overflow: visible; /* Để hiện hiệu ứng pulse ra ngoài */
+            transition: all 0.3s;
+            /* Bóng đổ phát sáng */
+            box-shadow: 0 0 25px rgba(255, 75, 43, 0.6);
+            animation: pulseGlow 2s infinite;
+        }
+
+        .btn-lixi:hover {
+            transform: scale(1.05);
+            background: linear-gradient(90deg, #ff4b2b, #ff416c);
+            box-shadow: 0 0 40px rgba(255, 75, 43, 0.9);
+        }
+
+        /* Hiệu ứng nhịp tim lan tỏa */
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 75, 43, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0); }
+        }
+
+        /* Info & Footer */
+        .info-panel {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 15px; text-align: left;
+        }
+        .info-content { color: #ccc; font-size: 0.85rem; line-height: 1.5; text-align: center;}
+        .highlight-text {
+            color: var(--neon-orange); font-weight: 700; display: block;
+            margin-top: 5px; text-transform: uppercase; font-size: 0.9rem;
+            animation: blinkText 2s infinite;
+        }
+        @keyframes blinkText { 50% { opacity: 0.6; } }
+
+        .home-btn {
+            background: white; color: black;
+            padding: 12px; border-radius: 30px; font-weight: 700;
+            text-decoration: none; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: 0.3s; box-shadow: 0 5px 15px rgba(255,255,255,0.2);
+        }
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255,255,255,0.4);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: white; color: #b71c1c;
+            padding: 12px 30px; border-radius: 50px;
+            box-shadow: 0 0 30px rgba(255,255,255,0.5); font-weight: bold;
+            transition: 0.4s; opacity: 0; z-index: 100;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <canvas id="galaxy-canvas"></canvas>
+
+    <div class="main-board">
+        <header>
+            <div class="tet-year">Xuân Bính Ngọ 2026</div>
+            <div class="main-title">KHOAHOCVIP</div>
+        </header>
+
+        <div class="code-container">
+            <span class="label-code">Mã Thi Thử Miễn Phí</span>
+            <div class="code-display" id="codeResult">-------</div>
+            <div class="status-text" id="statusText">Lấy Mã Thi Thử TSA Free</div>
+        </div>
+
+        <button class="btn-lixi" id="btnGet" onclick="getLuckyCode()">
+            RÚT MÃ NGAY
+        </button>
+
+        <div class="info-panel">
+            <div class="info-content">
+                Mã do Admin sưu tầm & chia sẻ miễn phí. Nếu mã đã được sử dụng vui lòng lấy lại.<br>
+                <span class="highlight-text">★ Chắc chắn dùng được sau 2-3 lần lấy ★</span>
+            </div>
+        </div>
+
+        <a href="https://khoahocvip.io.vn/sheet" class="home-btn">
+            ⬅️ Trở về trang chủ
+        </a>
+    </div>
+
+    <div id="toast" class="toast">Đã sao chép mã thành công!</div>
+
+    <script>
+        // --- CẤU HÌNH HIỆU ỨNG SAO TRẮNG SÁNG ---
+        const canvas = document.getElementById('galaxy-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray;
+        const numberOfParticles = 160; 
+        const connectionDistance = 110; 
+        const mouseRadius = 160; 
+
+        let mouse = { x: null, y: null, radius: mouseRadius }
+        window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
+        window.addEventListener('mouseout', () => { mouse.x = undefined; mouse.y = undefined; });
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size) {
+                this.x = x; this.y = y;
+                this.directionX = directionX; this.directionY = directionY;
+                this.size = size;
+                // MÀU TRẮNG TINH KHIẾT
+                this.color = 'rgba(255, 255, 255, ' + (Math.random() * 0.7 + 0.3) + ')';
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                
+                // HIỆU ỨNG PHÁT SÁNG MẠNH (GLOW)
+                ctx.shadowBlur = 15; // Độ nhòe sáng cao
+                ctx.shadowColor = 'white'; // Màu sáng trắng
+                
+                ctx.fillStyle = this.color; 
+                ctx.fill();
+                
+                // Reset shadow để không ảnh hưởng performance quá nhiều
+                ctx.shadowBlur = 0; 
+            }
+            update() {
+                // Tương tác chuột (Đẩy ra)
+                if (mouse.x && mouse.y) {
+                    let dx = mouse.x - this.x; let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx*dx + dy*dy);
+                    if (distance < mouse.radius + this.size) {
+                        if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 3;
+                        if (mouse.x > this.x && this.x > this.size * 10) this.x -= 3;
+                        if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 3;
+                        if (mouse.y > this.y && this.y > this.size * 10) this.y -= 3;
+                    }
+                }
+                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+                this.x += this.directionX; this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1; // Sao to hơn chút
+                let x = Math.random() * innerWidth;
+                let y = Math.random() * innerHeight;
+                let dx = (Math.random() * 0.4) - 0.2;
+                let dy = (Math.random() * 0.4) - 0.2;
+                particlesArray.push(new Particle(x, y, dx, dy, size));
+            }
+        }
+
+        function connect() {
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let dist = ((particlesArray[a].x - particlesArray[b].x) ** 2) + ((particlesArray[a].y - particlesArray[b].y) ** 2);
+                    if (dist < (connectionDistance ** 2)) {
+                        let opacity = 1 - (dist / (connectionDistance ** 2));
+                        // DÂY NỐI MÀU TRẮNG
+                        ctx.strokeStyle = 'rgba(255, 255, 255,' + opacity * 0.4 + ')';
+                        ctx.lineWidth = 0.8;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+                // Nối với chuột
+                if (mouse.x && mouse.y) {
+                     let dx = mouse.x - particlesArray[a].x;
+                     let dy = mouse.y - particlesArray[a].y;
+                     let dist = dx*dx + dy*dy;
+                     if (dist < mouseRadius**2) {
+                         let opacity = 1 - (dist / mouseRadius**2);
+                         // Dây nối chuột sáng hơn
+                         ctx.strokeStyle = 'rgba(255, 255, 255,' + opacity + ')'; 
+                         ctx.lineWidth = 1;
+                         ctx.beginPath(); ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                         ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
+                     }
+                }
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            for (let i = 0; i < particlesArray.length; i++) particlesArray[i].update();
+            connect();
+        }
+        window.addEventListener('resize', () => { canvas.width = innerWidth; canvas.height = innerHeight; init(); });
+        init(); animate();
+
+        // --- LOGIC LẤY MÃ ---
+        async function getLuckyCode() {
+            const display = document.getElementById('codeResult');
+            const btn = document.getElementById('btnGet');
+            const status = document.getElementById('statusText');
+            
+            btn.disabled = true; btn.style.transform = "scale(0.95)";
+            display.style.opacity = "0.5"; status.innerText = "Đang kết nối...";
+
+            try {
+                const res = await fetch('code.txt?v=' + Date.now());
+                if (!res.ok) throw new Error();
+                const text = await res.text();
+                const codes = text.split('\n').map(c => c.trim()).filter(c => c.length > 0);
+                
+                setTimeout(() => {
+                    const code = codes.length > 0 ? codes[Math.floor(Math.random() * codes.length)] : "HẾT MÃ";
+                    display.innerText = code; display.style.opacity = "1";
+                    status.innerText = "Đã sao chép!";
+                    navigator.clipboard.writeText(code).then(() => showToast(code));
+                    btn.disabled = false; btn.innerText = "LẤY LẠI MÃ"; btn.style.transform = "scale(1)";
+                }, 500);
+            } catch {
+                display.innerText = "LỖI"; btn.disabled = false;
+            }
+        }
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = "✅ Đã copy: " + msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T3HC34BE89"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-T3HC34BE89');
+    </script>
+</body>
+</html>
