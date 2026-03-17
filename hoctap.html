@@ -231,6 +231,12 @@
         .doc-viewer-header h3 { color: white; font-family: 'Quicksand'; margin: 0; font-size: 1.2rem; }
         .doc-viewer-modal iframe { flex: 1; width: 100%; height: 100%; border: none; background: #e5e5e5; }
 
+        /* Toast Notification */
+        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast { background: var(--glass-bg); backdrop-filter: blur(10px); border-left: 4px solid var(--success); color: var(--text-main); padding: 15px 25px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transform: translateX(120%); opacity: 0; transition: all 0.3s ease; display: flex; align-items: center; gap: 10px; font-weight: 600; pointer-events: auto; }
+        .toast.show { transform: translateX(0); opacity: 1; }
+        .toast.error { border-left-color: var(--accent); }
+
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-thumb { background: rgba(0, 242, 254, 0.5); border-radius: 10px; }
     </style>
@@ -446,6 +452,9 @@
         </section>
     </div>
 
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
     <audio id="alarmSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
     <audio id="bgMusic" src="https://assets.mixkit.co/music/preview/mixkit-chill-bro-89.mp3" loop></audio>
 
@@ -513,13 +522,33 @@
             db.collection('users').doc(currentUser.uid).get().then((doc) => {
                 if (doc.exists) {
                     const data = doc.data();
-                    if(data.categories) categories = data.categories;
-                    if(data.documents) documents = data.documents;
-                    if(data.todos) todos = data.todos;
-                    if(data.schedule) { document.getElementById('scheduleBody').innerHTML = data.schedule; loadSchedule(); }
-                    if(data.notes) document.querySelector('.note-area').value = data.notes;
+                    
+                    if(data.categories) {
+                        categories = data.categories;
+                        localStorage.setItem('savedCategories', JSON.stringify(categories));
+                    }
+                    if(data.documents) {
+                        documents = data.documents;
+                        localStorage.setItem('savedDocs', JSON.stringify(documents));
+                    }
+                    if(data.todos) {
+                        todos = data.todos;
+                        localStorage.setItem('todos', JSON.stringify(todos));
+                    }
+                    if(data.schedule) { 
+                        document.getElementById('scheduleBody').innerHTML = data.schedule; 
+                        localStorage.setItem('savedSchedule', data.schedule);
+                        loadSchedule(); 
+                    }
+                    if(data.notes) {
+                        document.querySelector('.note-area').value = data.notes;
+                        localStorage.setItem('savedNotes', data.notes);
+                    }
                     
                     renderCategories(); renderTodos();
+                } else {
+                    // Nếu user mới tinh chưa có data trên Cloud, hãy đẩy data hiện có ở LocalStorage lên Firebase
+                    syncDataToFirebase();
                 }
             }).catch(err => console.log(err));
         }
@@ -547,6 +576,23 @@
             renderTodos();
             renderCategories();
         });
+
+        // --- Toast Notification ---
+        function showToast(message, isError = false) {
+            const container = document.getElementById('toastContainer');
+            if(!container) return;
+            const toast = document.createElement('div');
+            toast.className = `toast ${isError ? 'error' : ''}`;
+            toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}" style="color: ${isError ? 'var(--accent)' : 'var(--success)'}"></i> ${message}`;
+            container.appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
         // --- Navigation ---
         function switchTab(tabId) { document.querySelectorAll('.mode-section').forEach(el => el.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active')); document.getElementById(tabId).classList.add('active'); event.currentTarget.classList.add('active'); }
         function toggleFullScreen() { if(!document.fullscreenElement) { document.documentElement.requestFullscreen(); document.getElementById('fsIcon').className='fas fa-compress'; } else { document.exitFullscreen(); document.getElementById('fsIcon').className='fas fa-expand'; } }
@@ -889,28 +935,57 @@
             syncDataToFirebase();
         }
 
-        function addDocument() {
+        async function addDocument() {
             const title = document.getElementById('docTitle').value.trim();
             const type = document.getElementById('docType').value;
             let url = '';
+            let storagePath = null;
             
             if(!title) return alert("Vui lòng nhập tên tài liệu!");
+
+            const saveBtn = document.getElementById('saveDocBtn');
+            const originalBtnText = saveBtn.innerHTML;
+
             if(type === 'link') {
                 url = document.getElementById('docLink').value.trim();
                 if(!url) return alert("Vui lòng nhập link tài liệu!");
+                showToast("Đã thêm liên kết tài liệu!");
             } else {
                 const fileInput = document.getElementById('docFile');
                 if(fileInput.files.length === 0) return alert("Vui lòng chọn file tải lên!");
-                // Dùng createObjectURL để tạo link ảo cho file xem trực tiếp trong phiên hiện tại
-                url = URL.createObjectURL(fileInput.files[0]);
+                const file = fileInput.files[0];
+
+                if (currentUser && storage) {
+                    try {
+                        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải lên...';
+                        saveBtn.disabled = true;
+                        storagePath = `documents/${currentUser.uid}/${Date.now()}_${file.name}`;
+                        const fileRef = storage.ref(storagePath);
+                        await fileRef.put(file);
+                        url = await fileRef.getDownloadURL();
+                        showToast("Đã tải tài liệu lên đám mây thành công!");
+                    } catch (error) {
+                        console.error("Lỗi upload file:", error);
+                        showToast("Lỗi tải file lên Storage. Vui lòng kiểm tra kết nối/quyền truy cập.", true);
+                        saveBtn.innerHTML = originalBtnText;
+                        saveBtn.disabled = false;
+                        return;
+                    }
+                } else {
+                    // Chế độ chưa đăng nhập (Local Mode): dùng object URL nội bộ
+                    url = URL.createObjectURL(file);
+                    showToast("Đã lưu tài liệu trên thiết bị (Local Mode)!");
+                }
             }
 
-            documents.push({ id: Date.now(), categoryId: currentCategoryId, title, type, url, date: new Date().toLocaleDateString('vi-VN') });
+            documents.push({ id: Date.now(), categoryId: currentCategoryId, title, type, url, storagePath, date: new Date().toLocaleDateString('vi-VN') });
             
             document.getElementById('docTitle').value = '';
             document.getElementById('docLink').value = '';
             document.getElementById('docFile').value = '';
             document.getElementById('fileNameDisplay').innerText = 'Chưa chọn file';
+            saveBtn.innerHTML = originalBtnText;
+            saveBtn.disabled = false;
             renderDocs();
         }
 
@@ -928,8 +1003,23 @@
             document.getElementById('docViewerIframe').src = '';
         }
 
-        function deleteDoc(id) {
+        async function deleteDoc(id) {
             if(confirm("Bạn có chắc chắn muốn xóa tài liệu này không?")) {
+                const docToDelete = documents.find(d => d.id === id);
+                
+                // Xóa file trên Storage nếu có
+                if (docToDelete && docToDelete.storagePath && storage) {
+                    try {
+                        await storage.ref(docToDelete.storagePath).delete();
+                        showToast("Đã xóa file trên đám mây thành công!");
+                    } catch (error) {
+                        console.error("Lỗi xóa file trên Storage:", error);
+                        showToast("Không thể xóa file trên đám mây!", true);
+                    }
+                } else {
+                    showToast("Đã xóa tài liệu!");
+                }
+
                 documents = documents.filter(d => d.id !== id);
                 renderDocs(); // Rerender current category
             }
