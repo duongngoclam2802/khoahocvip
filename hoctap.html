@@ -473,22 +473,36 @@
         
         let auth = null;
         let db = null;
+        let storage = null;
         try {
             if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
             auth = firebase.auth();
             db = firebase.firestore();
+            storage = firebase.storage();
         } catch (error) {
             console.warn("Cấu hình Firebase chưa hợp lệ, đang chạy chế độ Local.", error);
         }
         
         let currentUser = null;
 
+        function updateAuthUI() {
+            if (currentUser) {
+                document.getElementById('loginBtn').style.display = 'none';
+                document.getElementById('userProfile').style.display = 'flex';
+                document.getElementById('userAvatar').src = currentUser.photoURL || 'https://via.placeholder.com/32';
+                document.getElementById('userName').innerText = currentUser.displayName || 'Người dùng';
+            } else {
+                document.getElementById('loginBtn').style.display = 'inline-block';
+                document.getElementById('userProfile').style.display = 'none';
+            }
+        }
+
         function toggleLogin() {
             if (!auth) return alert("Hệ thống Firebase chưa được cấu hình đúng. Vui lòng kiểm tra mã nguồn.");
             if (currentUser) {
                 auth.signOut().then(() => {
                     currentUser = null;
-                    document.getElementById('loginBtn').innerHTML = `<i class="fab fa-google"></i> Login`;
+                    updateAuthUI();
                     alert("Đã đăng xuất thành công.");
                 });
             } else {
@@ -498,7 +512,7 @@
                     const provider = new firebase.auth.GoogleAuthProvider();
                     auth.signInWithPopup(provider).then((result) => {
                         currentUser = result.user;
-                        document.getElementById('loginBtn').innerHTML = `<i class="fas fa-sign-out-alt"></i> Đăng xuất`;
+                        updateAuthUI();
                         alert(`Xin chào ${currentUser.displayName}! Dữ liệu của bạn sẽ tự động được đồng bộ lên đám mây.`);
                         loadDataFromFirebase();
                     }).catch(error => console.error("Lỗi đăng nhập:", error));
@@ -566,7 +580,7 @@
                 auth.onAuthStateChanged(user => {
                     if(user) {
                         currentUser = user;
-                        document.getElementById('loginBtn').innerHTML = `<i class="fas fa-sign-out-alt"></i> Đăng xuất`;
+                        updateAuthUI();
                         loadDataFromFirebase();
                     }
                 });
