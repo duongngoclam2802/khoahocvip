@@ -812,8 +812,12 @@
         function getSafeData(key, fallback) {
             try {
                 const data = localStorage.getItem(key);
-                const parsed = data ? JSON.parse(data) : fallback;
-                return Array.isArray(parsed) ? parsed : fallback;
+                if (!data) return fallback;
+                const parsed = JSON.parse(data);
+                if (Array.isArray(fallback)) {
+                    return Array.isArray(parsed) ? parsed : fallback;
+                }
+                return parsed;
             } catch(e) { return fallback; }
         }
 
