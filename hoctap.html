@@ -274,6 +274,11 @@
                 <button class="icon-btn" onclick="toggleMusic()" title="Phát nhạc Lofi Focus"><i class="fas fa-music" id="musicIcon"></i></button>
                 <button class="icon-btn" onclick="toggleTheme()" title="Đổi giao diện"><i class="fas fa-moon" id="themeIcon"></i></button>
                 <button class="icon-btn" onclick="toggleFullScreen()" title="Toàn màn hình"><i class="fas fa-expand" id="fsIcon"></i></button>
+                <div id="userProfile" style="display: none; align-items: center; gap: 10px; background: rgba(0,0,0,0.2); padding: 4px 12px 4px 4px; border-radius: 30px; border: 1px solid var(--glass-border);">
+                    <img id="userAvatar" src="" alt="Avatar" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--primary);">
+                    <span id="userName" style="font-weight: 600; font-size: 0.9rem; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Name</span>
+                    <button onclick="toggleLogin()" style="background: transparent; border: none; color: var(--accent); cursor: pointer; margin-left: 5px; font-size: 1.1rem; transition: 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" title="Đăng xuất"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
                 <button class="action-btn" id="loginBtn" style="background: white; color: black; border-radius: 20px;" onclick="toggleLogin()"><i class="fab fa-google"></i> Login</button>
             </div>
         </header>
@@ -444,7 +449,7 @@
                             <input type="file" id="docFile" onchange="updateFileName(this)">
                         </div>
                         <span id="fileNameDisplay" style="font-size: 0.9rem; color: var(--text-muted); display: none;">Chưa chọn file</span>
-                        <button class="action-btn" style="background: var(--success); color: white; border: none;" onclick="addDocument()"><i class="fas fa-save"></i> Lưu</button>
+                    <button id="saveDocBtn" class="action-btn" style="background: var(--success); color: white; border: none;" onclick="addDocument()"><i class="fas fa-save"></i> Lưu</button>
                     </div>
                     <div class="docs-grid" id="docsGrid"></div>
                 </div>
