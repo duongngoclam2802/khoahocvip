@@ -1000,6 +1000,11 @@
                 if(fileInput.files.length === 0) return alert("Vui lòng chọn file tải lên!");
                 const file = fileInput.files[0];
 
+                if (!authReady) {
+                    alert("Đang kiểm tra trạng thái đăng nhập. Vui lòng đợi một lát rồi thử lại!");
+                    return;
+                }
+
                 if (currentUser && storage) {
                     try {
                         saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải lên...';
