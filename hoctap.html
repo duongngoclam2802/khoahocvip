@@ -1038,8 +1038,17 @@
         function openDocViewer(url, title) {
             if(url.includes('drive.google.com/file/d/')) {
                 url = url.replace(/\/view(\?usp=sharing)?/, '/preview'); // Chuyển link drive sang chế độ preview để nhúng iframe
+            } else if (url.includes('firebasestorage.googleapis.com')) {
+                // Nếu là link Firebase, mượn Google Docs để xem trực tiếp các file Word/Excel/PPT (trừ PDF và ảnh)
+                const isPdfOrImg = url.toLowerCase().includes('.pdf') || url.toLowerCase().includes('.png') || url.toLowerCase().includes('.jpg') || url.toLowerCase().includes('.jpeg');
+                if (!isPdfOrImg) {
+                    url = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
+                }
+            } else if (url.startsWith('blob:')) {
+                alert("Lỗi: Đây là file tạm lưu trên máy tính cũ. Vui lòng Xóa file này và tải lên lại (đảm bảo lúc tải lên bạn đang đăng nhập thành công)!");
+                return;
             }
-            document.getElementById('docViewerTitle').innerHTML = `<i class="fas fa-file-pdf"></i> ${title}`;
+            document.getElementById('docViewerTitle').innerHTML = `<i class="fas fa-file-alt"></i> ${title}`;
             document.getElementById('docViewerIframe').src = url;
             document.getElementById('docViewerModal').style.display = 'flex';
         }
