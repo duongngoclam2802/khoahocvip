@@ -598,12 +598,18 @@
             // Tự động kiểm tra đăng nhập khi vào trang nếu có Firebase
             if (auth) {
                 auth.onAuthStateChanged(user => {
+                    authReady = true; // Đã kiểm tra xong trạng thái
                     if(user) {
                         currentUser = user;
                         updateAuthUI();
                         loadDataFromFirebase();
+                    } else {
+                        currentUser = null;
+                        updateAuthUI();
                     }
                 });
+            } else {
+                authReady = true; // Không có Firebase, tự động chạy chế độ Local
             }
 
             loadSchedule();
