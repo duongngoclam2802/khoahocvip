@@ -486,14 +486,18 @@
         let currentUser = null;
 
         function updateAuthUI() {
+            const loginBtn = document.getElementById('loginBtn');
+            const userProfile = document.getElementById('userProfile');
+            if (!loginBtn || !userProfile) return;
+            
             if (currentUser) {
-                document.getElementById('loginBtn').style.display = 'none';
-                document.getElementById('userProfile').style.display = 'flex';
+                loginBtn.style.display = 'none';
+                userProfile.style.display = 'flex';
                 document.getElementById('userAvatar').src = currentUser.photoURL || 'https://via.placeholder.com/32';
                 document.getElementById('userName').innerText = currentUser.displayName || 'Người dùng';
             } else {
-                document.getElementById('loginBtn').style.display = 'inline-block';
-                document.getElementById('userProfile').style.display = 'none';
+                loginBtn.style.display = 'inline-block';
+                userProfile.style.display = 'none';
             }
         }
 
@@ -527,8 +531,10 @@
                 documents: documents,
                 schedule: document.getElementById('scheduleBody').innerHTML,
                 notes: document.querySelector('.note-area').value,
-                todos: todos
-            }).catch(err => console.log("Lỗi đồng bộ:", err));
+                todos: todos,
+                flashcards: flashcards,
+                focusMins: focusMins
+            }, { merge: true }).catch(err => console.log("Lỗi đồng bộ:", err));
         }
 
         function loadDataFromFirebase() {
@@ -558,8 +564,16 @@
                         document.querySelector('.note-area').value = data.notes;
                         localStorage.setItem('savedNotes', data.notes);
                     }
+                    if(data.flashcards) {
+                        flashcards = data.flashcards;
+                        localStorage.setItem('flashcards', JSON.stringify(flashcards));
+                    }
+                    if(data.focusMins !== undefined) {
+                        focusMins = data.focusMins;
+                        localStorage.setItem('focusMins', focusMins);
+                    }
                     
-                    renderCategories(); renderTodos();
+                    renderCategories(); renderTodos(); renderFlashcards();
                 } else {
                     // Nếu user mới tinh chưa có data trên Cloud, hãy đẩy data hiện có ở LocalStorage lên Firebase
                     syncDataToFirebase();
@@ -589,6 +603,7 @@
             loadSchedule();
             renderTodos();
             renderCategories();
+            renderFlashcards();
         });
 
         // --- Toast Notification ---
@@ -712,7 +727,14 @@
                 if (timerSeconds <= 0) {
                     pauseTimer(); setProgress(0);
                     if(document.getElementById('soundToggle').checked) document.getElementById('alarmSound').play();
-                    alert("ĐÃ HẾT THỜI GIAN LÀM BÀI!");
+                    
+                    let minsCompleted = Math.floor(totalSeconds / 60);
+                    focusMins += minsCompleted;
+                    localStorage.setItem('focusMins', focusMins);
+                    document.getElementById('focusMinsDisplay').innerText = focusMins;
+                    syncDataToFirebase();
+                    
+                    alert(`ĐÃ HẾT THỜI GIAN LÀM BÀI! Đã cộng ${minsCompleted} phút vào Thống kê.`);
                 }
             }, 1000);
         }
@@ -1015,6 +1037,57 @@
         function closeDocViewer() {
             document.getElementById('docViewerModal').style.display = 'none';
             document.getElementById('docViewerIframe').src = '';
+        }
+
+        // --- Flashcards Logic ---
+        let flashcards = getSafeData('flashcards', []);
+        let currentFcIndex = 0;
+        let focusMins = getSafeData('focusMins', 0);
+
+        function renderFlashcards() {
+            const front = document.getElementById('fcFront');
+            const back = document.getElementById('fcBack');
+            const counter = document.getElementById('fcCounter');
+            document.getElementById('activeFlashcard').classList.remove('flipped');
+            
+            if(flashcards.length === 0) {
+                front.innerText = 'Bấm nút Tạo Thẻ để thêm flashcard đầu tiên!';
+                back.innerText = 'Nhấp vào thẻ để lật qua lại.';
+                counter.innerText = '0 / 0';
+            } else {
+                front.innerText = flashcards[currentFcIndex].front;
+                back.innerText = flashcards[currentFcIndex].back;
+                counter.innerText = `${currentFcIndex + 1} / ${flashcards.length}`;
+            }
+            document.getElementById('focusMinsDisplay').innerText = focusMins;
+        }
+
+        function flipCard() { if(flashcards.length > 0) document.getElementById('activeFlashcard').classList.toggle('flipped'); }
+        function nextFlashcard() { if(flashcards.length > 0) { currentFcIndex = (currentFcIndex + 1) % flashcards.length; renderFlashcards(); } }
+        function prevFlashcard() { if(flashcards.length > 0) { currentFcIndex = (currentFcIndex - 1 + flashcards.length) % flashcards.length; renderFlashcards(); } }
+
+        function addFlashcard() {
+            const front = document.getElementById('newFlashcardFront').value.trim();
+            const back = document.getElementById('newFlashcardBack').value.trim();
+            if(!front || !back) return alert("Vui lòng nhập đầy đủ mặt trước và mặt sau!");
+            
+            flashcards.push({ front, back });
+            document.getElementById('newFlashcardFront').value = '';
+            document.getElementById('newFlashcardBack').value = '';
+            currentFcIndex = flashcards.length - 1;
+            
+            localStorage.setItem('flashcards', JSON.stringify(flashcards));
+            syncDataToFirebase(); renderFlashcards(); showToast("Đã thêm thẻ mới!");
+        }
+
+        function deleteCurrentFlashcard() {
+            if(flashcards.length === 0) return;
+            if(confirm("Bạn có chắc chắn muốn xóa thẻ này?")) {
+                flashcards.splice(currentFcIndex, 1);
+                if(currentFcIndex >= flashcards.length && currentFcIndex > 0) currentFcIndex--;
+                localStorage.setItem('flashcards', JSON.stringify(flashcards));
+                syncDataToFirebase(); renderFlashcards(); showToast("Đã xóa thẻ!");
+            }
         }
 
         async function deleteDoc(id) {
