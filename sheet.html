@@ -33,23 +33,25 @@
             
             --cell-bg: rgba(15, 23, 42, 0.5); --cell-border: rgba(255, 255, 255, 0.05);
             --header-bg: rgba(56, 189, 248, 0.1);
+            --header-bar-bg: rgba(0, 0, 0, 0.2);
         }
 
         /* --- Light Mode Variables --- */
         [data-theme="light"] {
-            /* Modern Light Theme (Hài hòa, thanh lịch như Apple UI) */
-            --bg-grad-1: #fdfbfb; --bg-grad-2: #ebedee; --bg-grad-3: #f5f7fa;
-            --orb-1: rgba(102, 126, 234, 0.15); --orb-2: rgba(255, 117, 140, 0.15); --orb-3: rgba(67, 233, 123, 0.15);
+            /* Sáng sủa, sống động, loại bỏ hoàn toàn màu xám */
+            --bg-grad-1: #a18cd1; --bg-grad-2: #fbc2eb; --bg-grad-3: #84fab0;
+            --orb-1: rgba(255, 255, 255, 0.6); --orb-2: rgba(255, 255, 255, 0.5); --orb-3: rgba(255, 255, 255, 0.4);
             
-            --glass-bg: rgba(255, 255, 255, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.6);
-            --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.08);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(161, 140, 209, 0.25);
             
-            --text-main: #2c3e50; --text-muted: #7f8c8d;
-            --primary: #007aff; --accent: #ff2d55; --success: #34c759;
+            --text-main: #1e1e2f; --text-muted: #4a4a68;
+            --primary: #4338ca; --accent: #e11d48; --success: #059669;
             
-            --cell-bg: rgba(255, 255, 255, 0.85); --cell-border: rgba(0, 0, 0, 0.06);
-            --header-bg: rgba(0, 122, 255, 0.1);
+            --cell-bg: rgba(255, 255, 255, 0.9); --cell-border: rgba(67, 56, 202, 0.2);
+            --header-bg: rgba(67, 56, 202, 0.1);
+            --header-bar-bg: rgba(255, 255, 255, 0.65);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -88,29 +90,33 @@
         /* --- Header --- */
         header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 30px; border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.2);
+            padding: 15px 30px; border-bottom: 1px solid var(--glass-border); background: var(--header-bar-bg);
+            flex-shrink: 0; position: relative; z-index: 50;
         }
     .header-left { display: flex; align-items: center; gap: 20px; }
     .site-brand { display: flex; align-items: center; gap: 10px; color: var(--text-main); text-decoration: none; }
     .site-brand img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
     .site-brand-text { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.1rem; line-height: 1.2; }
     .site-brand-text span { color: var(--primary); font-size: 0.8rem; display: block; font-family: 'Quicksand', sans-serif; font-weight: 600; text-transform: uppercase; }
-        .nav-tabs { display: flex; gap: 15px; }
+        .nav-tabs { display: flex; gap: 15px; overflow-x: auto; padding: 20px 5px; margin: -20px 0; scrollbar-width: none; -ms-overflow-style: none; align-items: center; }
+        .nav-tabs::-webkit-scrollbar { display: none; }
         .header-clock { font-size: 1.2rem; font-weight: 700; color: var(--primary); font-family: 'Orbitron', sans-serif; margin-right: auto; margin-left: 20px; }
         .quote-container { text-align: center; margin: 0 auto 30px; font-style: italic; color: var(--text-muted); max-width: 650px; padding: 15px 25px; background: rgba(0,0,0,0.2); border-radius: 10px; border-left: 4px solid var(--accent); }
-        [data-theme="light"] .quote-container { background: rgba(0,0,0,0.05); }
+        [data-theme="light"] .quote-container { background: rgba(255,255,255,0.7); }
         .nav-btn {
-            background: transparent; border: 1px solid var(--glass-border); color: white;
-            padding: 10px 25px; border-radius: 30px; cursor: pointer; font-weight: 700; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background: transparent; border: 1px solid var(--glass-border); color: var(--text-main);
+            padding: 10px 25px; border-radius: 30px; cursor: pointer; font-weight: 700; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); white-space: nowrap; flex-shrink: 0;
         }
         .nav-btn:hover, .nav-btn.active { background: rgba(0, 242, 254, 0.2); border-color: var(--primary); box-shadow: 0 0 15px rgba(0,242,254,0.3); transform: translateY(-2px); }
+        [data-theme="light"] .nav-btn:hover, [data-theme="light"] .nav-btn.active { background: var(--primary); color: white; box-shadow: 0 0 15px rgba(67, 56, 202, 0.4); }
         .right-controls { display: flex; align-items: center; gap: 15px; }
         .icon-btn {
-            background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: white;
+            background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: var(--text-main);
             width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
             cursor: pointer; transition: 0.3s;
         }
-        .icon-btn:hover { background: var(--primary); color: #000; transform: scale(1.1); }
+        [data-theme="light"] .icon-btn { background: rgba(255,255,255,0.6); }
+        .icon-btn:hover { background: var(--primary); color: white; transform: scale(1.1); }
 
         /* --- Sections --- */
         .mode-section { display: none; flex: 1; padding: 30px; overflow-y: auto; overflow-x: hidden; animation: fadeUp 0.4s ease; }
@@ -187,6 +193,7 @@
         .btn-start { background: linear-gradient(135deg, #11998e, #38ef7d); box-shadow: 0 5px 15px rgba(56, 239, 125, 0.4); }
         .btn-pause { background: linear-gradient(135deg, #f12711, #f5af19); box-shadow: 0 5px 15px rgba(245, 175, 25, 0.4); }
         .btn-add { background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border) !important; color: white; }
+        [data-theme="light"] .btn-add { color: var(--text-main); background: rgba(255,255,255,0.5); }
         .btn-add:hover { background: rgba(255,255,255,0.2); }
 
         /* --- 3. Schedule Mode --- */
@@ -200,7 +207,7 @@
         .color-dot.active { border-color: white; transform: scale(1.2); box-shadow: 0 0 10px currentColor; }
         
         .action-btn { background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); padding: 8px 15px; color: var(--text-main); border-radius: 10px; cursor: pointer; font-weight: 700; transition: 0.2s; }
-        .action-btn:hover { background: var(--primary); color: #000; }
+        .action-btn:hover { background: var(--primary); color: white; }
         .btn-export { background: linear-gradient(45deg, #8E2DE2, #4A00E0); border: none; }
         
         table { width: 100%; border-collapse: separate; border-spacing: 6px; }
@@ -241,9 +248,20 @@
 
         /* Toast Notification */
         .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-        .toast { background: var(--glass-bg); backdrop-filter: blur(10px); border-left: 4px solid var(--success); color: var(--text-main); padding: 15px 25px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transform: translateX(120%); opacity: 0; transition: all 0.3s ease; display: flex; align-items: center; gap: 10px; font-weight: 600; pointer-events: auto; }
+        .toast { background: var(--glass-bg); backdrop-filter: blur(10px); border-left: 4px solid var(--success); color: var(--text-main); padding: 15px 25px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transform: translateX(120%); opacity: 0; transition: all 0.3s ease; display: flex; align-items: center; gap: 10px; font-weight: 600; pointer-events: auto; position: relative; overflow: hidden; }
         .toast.show { transform: translateX(0); opacity: 1; }
         .toast.error { border-left-color: var(--accent); }
+        .toast-progress { position: absolute; bottom: 0; left: 0; height: 3px; width: 100%; opacity: 0.8; }
+        .toast.show .toast-progress { animation: toastProgress 2.9s linear forwards; }
+        @keyframes toastProgress { to { width: 0%; } }
+
+        /* Bell Ringing Animation */
+        @keyframes ringBell {
+            0%, 100% { transform: rotate(0deg); }
+            10%, 30%, 50%, 70%, 90% { transform: rotate(12deg); }
+            20%, 40%, 60%, 80% { transform: rotate(-12deg); }
+        }
+        .ring-bell { display: inline-block; transform-origin: top center; animation: ringBell 1.5s ease-in-out infinite; }
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-thumb { background: rgba(0, 242, 254, 0.5); border-radius: 10px; }
@@ -310,7 +328,7 @@
             <div class="header-left" data-html2canvas-ignore>
                 <div class="site-brand">
                     <img src="iogo.png" alt="Logo">
-                    <div class="site-brand-text">ONTHI<span>Dashboard</span></div>
+                    <div class="site-brand-text">KHOAHOC<span>VIP</span></div>
                 </div>
                 <div class="nav-tabs">
                     <button class="nav-btn active" onclick="switchTab('tabSheet')"><i class="fas fa-table"></i> Sheet Học Tập</button>
@@ -663,10 +681,12 @@
                     } else {
                         currentUser = null;
                         updateAuthUI();
+                        setTimeout(() => showToast("Mẹo: Đăng nhập để tự động lưu và đồng bộ tiến trình học tập của bạn!", "info"), 3000);
                     }
                 });
             } else {
                 authReady = true; // Không có Firebase, tự động chạy chế độ Local
+                setTimeout(() => showToast("Đang chạy chế độ Local. Hãy cấu hình Firebase để lưu tiến trình trực tuyến!", "info"), 3000);
             }
 
             loadSchedule();
@@ -676,12 +696,36 @@
         });
 
         // --- Toast Notification ---
-        function showToast(message, isError = false) {
+        function showToast(message, type = 'success') {
+            // Hỗ trợ tham số cũ isError (boolean) cho các chỗ code cũ
+            if (type === true) type = 'error';
+            if (type === false) type = 'success';
+
             const container = document.getElementById('toastContainer');
             if(!container) return;
             const toast = document.createElement('div');
-            toast.className = `toast ${isError ? 'error' : ''}`;
-            toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}" style="color: ${isError ? 'var(--accent)' : 'var(--success)'}"></i> ${message}`;
+            
+            let icon = 'fa-check-circle';
+            let color = 'var(--success)';
+            toast.className = 'toast';
+            
+            if (type === 'error') {
+                icon = 'fa-exclamation-circle';
+                color = 'var(--accent)';
+                toast.className = 'toast error';
+            } else if (type === 'info') {
+                icon = 'fa-bell ring-bell';
+                color = '#FFD700'; // Màu vàng nổi bật cho chuông
+                // Cùng lúc rung luôn nút Login trên thanh công cụ
+                const loginBtn = document.getElementById('loginBtn');
+                if (loginBtn && loginBtn.style.display !== 'none') {
+                    loginBtn.classList.add('ring-bell');
+                    setTimeout(() => loginBtn.classList.remove('ring-bell'), 3500);
+                }
+            }
+
+            toast.innerHTML = `<i class="fas ${icon}" style="color: ${color}"></i> <span>${message}</span>
+                               <div class="toast-progress" style="background: ${color};"></div>`;
             container.appendChild(toast);
             
             setTimeout(() => toast.classList.add('show'), 10);
