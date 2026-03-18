@@ -100,7 +100,7 @@
     .site-brand-text span { color: var(--primary); font-size: 0.8rem; display: block; font-family: 'Quicksand', sans-serif; font-weight: 600; text-transform: uppercase; }
         .nav-tabs { display: flex; gap: 15px; overflow-x: auto; padding: 20px 5px; margin: -20px 0; scrollbar-width: none; -ms-overflow-style: none; align-items: center; }
         .nav-tabs::-webkit-scrollbar { display: none; }
-        .header-clock { font-size: 1.2rem; font-weight: 700; color: var(--primary); font-family: 'Orbitron', sans-serif; margin-right: auto; margin-left: 20px; }
+        .header-clock { font-size: 1.2rem; font-weight: 700; color: var(--primary); font-family: 'Orbitron', sans-serif; margin-right: auto; margin-left: 20px; min-width: 130px; text-align: center; background: var(--cell-bg); padding: 5px 15px; border-radius: 8px; border: 1px solid var(--glass-border); font-variant-numeric: tabular-nums; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .quote-container { text-align: center; margin: 0 auto 30px; font-style: italic; color: var(--text-muted); max-width: 650px; padding: 15px 25px; background: rgba(0,0,0,0.2); border-radius: 10px; border-left: 4px solid var(--accent); }
         [data-theme="light"] .quote-container { background: rgba(255,255,255,0.7); }
         .nav-btn {
@@ -263,6 +263,16 @@
         }
         .ring-bell { display: inline-block; transform-origin: top center; animation: ringBell 1.5s ease-in-out infinite; }
 
+        /* Audio Wave Animation */
+        .audio-wave { display: none; align-items: center; gap: 3px; height: 16px; margin-left: 5px; }
+        .audio-wave.playing { display: flex; }
+        .audio-wave .bar { width: 3px; background: var(--accent); border-radius: 3px; animation: wave 1s ease-in-out infinite; }
+        .audio-wave .bar:nth-child(1) { height: 40%; animation-delay: 0s; }
+        .audio-wave .bar:nth-child(2) { height: 100%; animation-delay: 0.2s; }
+        .audio-wave .bar:nth-child(3) { height: 70%; animation-delay: 0.4s; }
+        .audio-wave .bar:nth-child(4) { height: 30%; animation-delay: 0.6s; }
+        @keyframes wave { 0%, 100% { height: 30%; } 50% { height: 100%; } }
+
         /* Music Panel */
         .music-panel { position: absolute; top: 75px; right: 80px; width: 320px; background: var(--glass-bg); backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; flex-direction: column; z-index: 1000; animation: fadeUp 0.3s ease; }
         .music-panel.show { display: flex; }
@@ -345,7 +355,12 @@
                     <button class="nav-btn" onclick="switchTab('tabDocs')"><i class="fas fa-book"></i> Kho Tài Liệu</button>
                 </div>
             </div>
-            <div class="header-clock" id="liveClock">00:00:00</div>
+            <div class="header-clock">
+                <span id="liveClock">00:00:00</span>
+                <div class="audio-wave" id="audioWave">
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                </div>
+            </div>
             <div class="right-controls" data-html2canvas-ignore>
                 <button class="icon-btn" onclick="toggleMusicPanel()" title="Trình phát nhạc nền YouTube"><i class="fas fa-music" id="musicIcon"></i></button>
                 <button class="icon-btn" onclick="toggleTheme()" title="Đổi giao diện"><i class="fas fa-moon" id="themeIcon"></i></button>
@@ -355,7 +370,7 @@
                     <span id="userName" style="font-weight: 600; font-size: 0.9rem; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Name</span>
                     <button onclick="toggleLogin()" style="background: transparent; border: none; color: var(--accent); cursor: pointer; margin-left: 5px; font-size: 1.1rem; transition: 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" title="Đăng xuất"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
-                <button class="action-btn" id="loginBtn" style="background: white; color: black; border-radius: 20px;" onclick="toggleLogin()"><i class="fab fa-google"></i> Login</button>
+                <button class="action-btn" id="loginBtn" style="background: white; color: black; border-radius: 20px;" onclick="toggleLogin()"><i class="fab fa-google"></i> Đăng Nhập</button>
             </div>
         </header>
 
@@ -595,6 +610,14 @@
         }
         
         let currentUser = null;
+        let hasRemindedLogin = false; // Tránh nhắc nhở đăng nhập liên tục
+
+        function remindLoginIfGuest() {
+            if (!currentUser && !hasRemindedLogin) {
+                showToast("Lưu ý: Đăng nhập ngay để hệ thống có thể lưu tiến trình của bạn lên đám mây!", "info");
+                hasRemindedLogin = true;
+            }
+        }
 
         function updateAuthUI() {
             const loginBtn = document.getElementById('loginBtn');
@@ -824,6 +847,7 @@
             document.getElementById('musicIcon').style.color = 'var(--primary)';
             document.getElementById('ytPauseBtn').style.display = 'block';
             document.getElementById('ytPauseBtn').innerHTML = '<i class="fas fa-pause"></i> Dừng';
+            document.getElementById('audioWave').classList.add('playing');
             isYtPaused = false;
             showToast("Đang phát nhạc nền!", "success");
         }
@@ -835,11 +859,13 @@
                     iframe.contentWindow.postMessage(JSON.stringify({event: "command", func: "playVideo", args: []}), '*');
                     document.getElementById('ytPauseBtn').innerHTML = '<i class="fas fa-pause"></i> Dừng';
                     document.getElementById('musicIcon').className = 'fas fa-music ring-bell';
+                    document.getElementById('audioWave').classList.add('playing');
                     isYtPaused = false;
                 } else {
                     iframe.contentWindow.postMessage(JSON.stringify({event: "command", func: "pauseVideo", args: []}), '*');
                     document.getElementById('ytPauseBtn').innerHTML = '<i class="fas fa-play"></i> Tiếp';
                     document.getElementById('musicIcon').className = 'fas fa-music';
+                    document.getElementById('audioWave').classList.remove('playing');
                     isYtPaused = true;
                 }
             }
@@ -857,6 +883,7 @@
             document.getElementById('musicIcon').className = 'fas fa-music';
             document.getElementById('musicIcon').style.color = '';
             document.getElementById('ytPauseBtn').style.display = 'none';
+            document.getElementById('audioWave').classList.remove('playing');
             showToast("Đã tắt nhạc!", "info");
         }
         
@@ -1002,6 +1029,7 @@
         function saveSchedule() {
             localStorage.setItem('savedSchedule', document.getElementById('scheduleBody').innerHTML);
             syncDataToFirebase();
+            remindLoginIfGuest();
         }
         
         function loadSchedule() {
@@ -1128,6 +1156,7 @@
             categories.push({ id: 'cat_' + Date.now(), name });
             document.getElementById('newCategoryName').value = '';
             renderCategories();
+            remindLoginIfGuest();
         }
 
         function deleteCategory(id) {
@@ -1198,6 +1227,7 @@
             document.getElementById('docTitle').value = '';
             document.getElementById('docLink').value = '';
             renderDocs();
+            remindLoginIfGuest();
         }
 
         // --- Document Viewer ---
@@ -1324,6 +1354,96 @@
             localStorage.setItem('sheetZoom', String(sheetZoomLevel));
         }
 
+        function clampSheetZoom(z){ return Math.min(2.0, Math.max(0.5, Math.round(z*10)/10)); }
+
+        const btnZoomIn = document.getElementById('zoom-in');
+        const btnZoomOut = document.getElementById('zoom-out');
+        const btnZoomReset = document.getElementById('zoom-reset');
+
+        if(btnZoomIn) btnZoomIn.onclick = () => { sheetZoomLevel = clampSheetZoom(sheetZoomLevel + 0.1); applySheetZoom(); };
+        if(btnZoomOut) btnZoomOut.onclick = () => { sheetZoomLevel = clampSheetZoom(sheetZoomLevel - 0.1); applySheetZoom(); };
+        if(btnZoomReset) btnZoomReset.onclick = () => { sheetZoomLevel = 1; applySheetZoom(); };
+
+        window.addEventListener('keydown', (e) => {
+            if (['INPUT','TEXTAREA'].includes((e.target.tagName||'').toUpperCase())) return;
+            // Chỉ áp dụng shortcut nếu người dùng đang ở tab Sheet
+            if (document.getElementById('tabSheet') && document.getElementById('tabSheet').classList.contains('active')) {
+                if (e.key === '+'){ e.preventDefault(); sheetZoomLevel = clampSheetZoom(sheetZoomLevel + 0.1); applySheetZoom(); }
+                if (e.key === '-'){ e.preventDefault(); sheetZoomLevel = clampSheetZoom(sheetZoomLevel - 0.1); applySheetZoom(); }
+                if (e.key === '0'){ e.preventDefault(); sheetZoomLevel = 1; applySheetZoom(); }
+            }
+        });
+        applySheetZoom();
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T3HC34BE89"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-T3HC34BE89');
+    </script>
+</body>
+</html>
+        function clampSheetZoom(z){ return Math.min(2.0, Math.max(0.5, Math.round(z*10)/10)); }
+
+        const btnZoomIn = document.getElementById('zoom-in');
+        const btnZoomOut = document.getElementById('zoom-out');
+        const btnZoomReset = document.getElementById('zoom-reset');
+
+        if(btnZoomIn) btnZoomIn.onclick = () => { sheetZoomLevel = clampSheetZoom(sheetZoomLevel + 0.1); applySheetZoom(); };
+        if(btnZoomOut) btnZoomOut.onclick = () => { sheetZoomLevel = clampSheetZoom(sheetZoomLevel - 0.1); applySheetZoom(); };
+        if(btnZoomReset) btnZoomReset.onclick = () => { sheetZoomLevel = 1; applySheetZoom(); };
+
+        window.addEventListener('keydown', (e) => {
+            if (['INPUT','TEXTAREA'].includes((e.target.tagName||'').toUpperCase())) return;
+            // Chỉ áp dụng shortcut nếu người dùng đang ở tab Sheet
+            if (document.getElementById('tabSheet') && document.getElementById('tabSheet').classList.contains('active')) {
+                if (e.key === '+'){ e.preventDefault(); sheetZoomLevel = clampSheetZoom(sheetZoomLevel + 0.1); applySheetZoom(); }
+                if (e.key === '-'){ e.preventDefault(); sheetZoomLevel = clampSheetZoom(sheetZoomLevel - 0.1); applySheetZoom(); }
+                if (e.key === '0'){ e.preventDefault(); sheetZoomLevel = 1; applySheetZoom(); }
+            }
+        });
+        applySheetZoom();
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T3HC34BE89"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-T3HC34BE89');
+    </script>
+</body>
+</html>
+        function clampSheetZoom(z){ return Math.min(2.0, Math.max(0.5, Math.round(z*10)/10)); }
+
+        const btnZoomIn = document.getElementById('zoom-in');
+        const btnZoomOut = document.getElementById('zoom-out');
+        const btnZoomReset = document.getElementById('zoom-reset');
+
+        if(btnZoomIn) btnZoomIn.onclick = () => { sheetZoomLevel = clampSheetZoom(sheetZoomLevel + 0.1); applySheetZoom(); };
+        if(btnZoomOut) btnZoomOut.onclick = () => { sheetZoomLevel = clampSheetZoom(sheetZoomLevel - 0.1); applySheetZoom(); };
+        if(btnZoomReset) btnZoomReset.onclick = () => { sheetZoomLevel = 1; applySheetZoom(); };
+
+        window.addEventListener('keydown', (e) => {
+            if (['INPUT','TEXTAREA'].includes((e.target.tagName||'').toUpperCase())) return;
+            // Chỉ áp dụng shortcut nếu người dùng đang ở tab Sheet
+            if (document.getElementById('tabSheet') && document.getElementById('tabSheet').classList.contains('active')) {
+                if (e.key === '+'){ e.preventDefault(); sheetZoomLevel = clampSheetZoom(sheetZoomLevel + 0.1); applySheetZoom(); }
+                if (e.key === '-'){ e.preventDefault(); sheetZoomLevel = clampSheetZoom(sheetZoomLevel - 0.1); applySheetZoom(); }
+                if (e.key === '0'){ e.preventDefault(); sheetZoomLevel = 1; applySheetZoom(); }
+            }
+        });
+        applySheetZoom();
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T3HC34BE89"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-T3HC34BE89');
+    </script>
+</body>
+</html>
         function clampSheetZoom(z){ return Math.min(2.0, Math.max(0.5, Math.round(z*10)/10)); }
 
         const btnZoomIn = document.getElementById('zoom-in');
