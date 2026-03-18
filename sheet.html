@@ -263,6 +263,13 @@
         }
         .ring-bell { display: inline-block; transform-origin: top center; animation: ringBell 1.5s ease-in-out infinite; }
 
+        /* Music Panel */
+        .music-panel { position: absolute; top: 75px; right: 80px; width: 320px; background: var(--glass-bg); backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; flex-direction: column; z-index: 1000; animation: fadeUp 0.3s ease; }
+        .music-panel.show { display: flex; }
+        .music-panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .music-panel-header h4 { font-family: 'Quicksand'; font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; color: var(--text-main); }
+        @media (max-width: 768px) { .music-panel { top: 60px; right: 10px; width: calc(100vw - 20px); } }
+
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-thumb { background: rgba(0, 242, 254, 0.5); border-radius: 10px; }
 
@@ -340,7 +347,7 @@
             </div>
             <div class="header-clock" id="liveClock">00:00:00</div>
             <div class="right-controls" data-html2canvas-ignore>
-                <button class="icon-btn" onclick="toggleMusic()" title="Phát nhạc Lofi Focus"><i class="fas fa-music" id="musicIcon"></i></button>
+                <button class="icon-btn" onclick="toggleMusicPanel()" title="Trình phát nhạc nền YouTube"><i class="fas fa-music" id="musicIcon"></i></button>
                 <button class="icon-btn" onclick="toggleTheme()" title="Đổi giao diện"><i class="fas fa-moon" id="themeIcon"></i></button>
                 <button class="icon-btn" onclick="toggleFullScreen()" title="Toàn màn hình"><i class="fas fa-expand" id="fsIcon"></i></button>
                 <div id="userProfile" style="display: none; align-items: center; gap: 10px; background: rgba(0,0,0,0.2); padding: 4px 12px 4px 4px; border-radius: 30px; border: 1px solid var(--glass-border);">
@@ -537,7 +544,30 @@
     <div id="toastContainer" class="toast-container"></div>
 
     <audio id="alarmSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
-    <audio id="bgMusic" src="https://assets.mixkit.co/music/preview/mixkit-chill-bro-89.mp3" loop></audio>
+    
+    <!-- Music Player Panel -->
+    <div id="musicPanel" class="music-panel">
+        <div class="music-panel-header">
+            <h4><i class="fab fa-youtube" style="color: #ff0000; font-size: 1.2rem;"></i> Nhạc Nền YouTube</h4>
+            <button class="icon-btn" style="width: 28px; height: 28px; font-size: 0.8rem;" onclick="toggleMusicPanel()"><i class="fas fa-times"></i></button>
+        </div>
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <input type="text" id="ytLinkInput" list="ytHistory" class="doc-input" style="flex: 1; padding: 10px; font-size: 0.9rem; min-width: 0;" placeholder="Dán link YouTube (VD: lofi chill...)">
+            <button class="action-btn" style="background: rgba(255, 8, 104, 0.2); border: 1px solid var(--accent); color: var(--accent); padding: 0 15px;" onclick="clearYtHistory()" title="Xóa lịch sử"><i class="fas fa-trash-alt"></i></button>
+        </div>
+        <datalist id="ytHistory"></datalist>
+        <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; background: rgba(0,0,0,0.1); padding: 8px 15px; border-radius: 10px;">
+            <i class="fas fa-volume-down" style="color: var(--text-muted);"></i>
+            <input type="range" id="ytVolume" min="0" max="100" value="50" style="flex: 1; accent-color: var(--primary); cursor: pointer;" oninput="changeYtVolume(this.value)">
+            <i class="fas fa-volume-up" style="color: var(--text-muted);"></i>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="action-btn" id="ytPlayBtn" style="flex: 1; background: var(--success); border: none; color: white;" onclick="playYoutubeMusic()"><i class="fas fa-play"></i> Phát</button>
+            <button class="action-btn" id="ytPauseBtn" style="display: none; flex: 1; background: #f5af19; border: none; color: white;" onclick="togglePauseYoutubeMusic()"><i class="fas fa-pause"></i> Dừng</button>
+            <button class="action-btn" style="flex: 1; background: var(--accent); border: none; color: white;" onclick="stopYoutubeMusic()"><i class="fas fa-stop"></i> Tắt</button>
+        </div>
+        <div id="ytPlayerContainer" style="width: 0; height: 0; overflow: hidden; position: absolute;"></div>
+    </div>
 
     <script>
         // --- Firebase Configuration & Auth ---
@@ -693,6 +723,7 @@
             renderTodos();
             renderCategories();
             renderFlashcards();
+            loadYtHistory();
         });
 
         // --- Toast Notification ---
@@ -752,19 +783,100 @@
             }
         }
 
-        // --- Focus Music Player ---
-        let isMusicPlaying = false;
-        function toggleMusic() {
-            const music = document.getElementById('bgMusic');
-            const icon = document.getElementById('musicIcon');
-            if(isMusicPlaying) {
-                music.pause();
-                icon.className = 'fas fa-music';
-            } else {
-                music.play();
-                icon.className = 'fas fa-pause-circle';
+        // --- YouTube Background Music Player ---
+        let ytHistory = getSafeData('ytHistory', []);
+        let isYtPaused = false;
+        function toggleMusicPanel() {
+            document.getElementById('musicPanel').classList.toggle('show');
+        }
+
+        function getYoutubeId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function playYoutubeMusic() {
+            const input = document.getElementById('ytLinkInput').value.trim();
+            if (!input) return showToast("Vui lòng dán link YouTube!", "error");
+            
+            const videoId = getYoutubeId(input);
+            if (!videoId) return showToast("Link YouTube không hợp lệ!", "error");
+
+            const container = document.getElementById('ytPlayerContainer');
+            const vol = document.getElementById('ytVolume').value;
+            
+            // Thêm enablejsapi=1 để có thể điều khiển âm lượng bằng JS
+            container.innerHTML = `<iframe id="ytIframe" width="10" height="10" src="https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}&controls=0&enablejsapi=1" allow="autoplay; encrypted-media" style="border:none;"></iframe>`;
+            
+            document.getElementById('ytIframe').onload = function() {
+                this.contentWindow.postMessage(JSON.stringify({event: "command", func: "setVolume", args: [vol]}), '*');
+            };
+            
+            // Lưu link vào lịch sử nếu chưa có
+            if (!ytHistory.includes(input)) {
+                ytHistory.unshift(input); // Thêm vào đầu mảng
+                if (ytHistory.length > 10) ytHistory.pop(); // Giới hạn 10 link gần nhất
+                localStorage.setItem('ytHistory', JSON.stringify(ytHistory));
+                loadYtHistory();
             }
-            isMusicPlaying = !isMusicPlaying;
+            document.getElementById('musicIcon').className = 'fas fa-music ring-bell';
+            document.getElementById('musicIcon').style.color = 'var(--primary)';
+            document.getElementById('ytPauseBtn').style.display = 'block';
+            document.getElementById('ytPauseBtn').innerHTML = '<i class="fas fa-pause"></i> Dừng';
+            isYtPaused = false;
+            showToast("Đang phát nhạc nền!", "success");
+        }
+        
+        function togglePauseYoutubeMusic() {
+            const iframe = document.getElementById('ytIframe');
+            if (iframe && iframe.contentWindow) {
+                if (isYtPaused) {
+                    iframe.contentWindow.postMessage(JSON.stringify({event: "command", func: "playVideo", args: []}), '*');
+                    document.getElementById('ytPauseBtn').innerHTML = '<i class="fas fa-pause"></i> Dừng';
+                    document.getElementById('musicIcon').className = 'fas fa-music ring-bell';
+                    isYtPaused = false;
+                } else {
+                    iframe.contentWindow.postMessage(JSON.stringify({event: "command", func: "pauseVideo", args: []}), '*');
+                    document.getElementById('ytPauseBtn').innerHTML = '<i class="fas fa-play"></i> Tiếp';
+                    document.getElementById('musicIcon').className = 'fas fa-music';
+                    isYtPaused = true;
+                }
+            }
+        }
+
+        function changeYtVolume(val) {
+            const iframe = document.getElementById('ytIframe');
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage(JSON.stringify({event: "command", func: "setVolume", args: [val]}), '*');
+            }
+        }
+
+        function stopYoutubeMusic() {
+            document.getElementById('ytPlayerContainer').innerHTML = '';
+            document.getElementById('musicIcon').className = 'fas fa-music';
+            document.getElementById('musicIcon').style.color = '';
+            document.getElementById('ytPauseBtn').style.display = 'none';
+            showToast("Đã tắt nhạc!", "info");
+        }
+        
+        function loadYtHistory() {
+            const datalist = document.getElementById('ytHistory');
+            datalist.innerHTML = '';
+            ytHistory.forEach(link => {
+                const option = document.createElement('option');
+                option.value = link;
+                datalist.appendChild(option);
+            });
+        }
+        
+        function clearYtHistory() {
+            if(confirm("Bạn có chắc chắn muốn xóa lịch sử link nhạc không?")) {
+                ytHistory = [];
+                localStorage.removeItem('ytHistory');
+                loadYtHistory();
+                showToast("Đã xóa lịch sử!", "success");
+            }
         }
 
         // --- Live Clock & Motivational Quote ---
