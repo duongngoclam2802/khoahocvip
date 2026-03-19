@@ -9,16 +9,22 @@
     <meta property="og:image" content="iogo.png">
     <title>Hệ thống hỗ trợ ôn thi THPT, TSA, HSA, VATC, SAT,... </title>
     <link rel="icon" type="image/png" href="iogo.png">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <!-- Tối ưu hóa tải phông chữ và CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Quicksand:wght@400;600;700&family=Dancing+Script:wght@700&family=Be+Vietnam+Pro:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+
+    <!-- Load script không chặn render -->
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Quicksand:wght@400;600;700&family=Dancing+Script:wght@700&family=Be+Vietnam+Pro:wght@400;500;600;700;900&display=swap');
-
         :root {
             /* Soft Dark Theme (Dịu mắt) */
             --bg-grad-1: #0f172a; --bg-grad-2: #1e293b; --bg-grad-3: #334155;
@@ -71,19 +77,21 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden;
             background: linear-gradient(120deg, var(--bg-grad-1) 0%, var(--bg-grad-2) 50%, var(--bg-grad-3) 100%);
             background-size: 200% 200%; animation: gradientMove 15s ease infinite;
+            will-change: background-position;
         }
         @keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
-        .orb { position: absolute; border-radius: 50%; filter: blur(50px); animation: floatOrb 12s infinite ease-in-out alternate; }
-        .orb:nth-child(1) { width: 350px; height: 350px; background: var(--orb-1); top: -5%; left: -5%; }
-        .orb:nth-child(2) { width: 450px; height: 450px; background: var(--orb-2); bottom: -10%; right: -5%; animation-delay: -4s; }
-        .orb:nth-child(3) { width: 250px; height: 250px; background: var(--orb-3); top: 35%; left: 35%; animation-delay: -7s; }
+        .orb { position: absolute; border-radius: 50%; animation: floatOrb 12s infinite ease-in-out alternate; will-change: transform; }
+        .orb:nth-child(1) { width: 350px; height: 350px; background: radial-gradient(circle, var(--orb-1) 0%, transparent 70%); top: -5%; left: -5%; }
+        .orb:nth-child(2) { width: 450px; height: 450px; background: radial-gradient(circle, var(--orb-2) 0%, transparent 70%); bottom: -10%; right: -5%; animation-delay: -4s; }
+        .orb:nth-child(3) { width: 250px; height: 250px; background: radial-gradient(circle, var(--orb-3) 0%, transparent 70%); top: 35%; left: 35%; animation-delay: -7s; }
         @keyframes floatOrb { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(60px, 60px) scale(1.3); } }
 
         /* --- UI Container --- */
         .container {
             width: 100vw; height: 100vh; max-width: 100vw;
-            background: var(--glass-bg); backdrop-filter: blur(25px);
+            background: var(--glass-bg); backdrop-filter: blur(8px);
+            transform: translateZ(0); /* Kích hoạt tăng tốc phần cứng */
             display: flex; flex-direction: column; overflow: hidden;
         }
 
@@ -132,6 +140,7 @@
             background: var(--cell-bg); padding: 20px 30px; border-radius: 15px; border: 1px solid var(--primary);
             text-align: center; box-shadow: 0 10px 30px rgba(0,242,254,0.1); min-width: 130px; position: relative; overflow: hidden;
             animation: fadeInUp 0.5s ease backwards; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            will-change: transform, box-shadow;
         }
         .time-block:hover { transform: translateY(-10px) scale(1.05); box-shadow: 0 15px 30px rgba(0,242,254,0.3); z-index: 10; }
         .time-block:nth-child(1) { animation-delay: 0.1s; } .time-block:nth-child(2) { animation-delay: 0.2s; }
@@ -145,6 +154,7 @@
             background: var(--cell-bg); border: 1px solid var(--glass-border); border-radius: 15px; padding: 25px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3); backdrop-filter: blur(10px);
             animation: fadeInUp 0.6s ease backwards; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            will-change: transform, box-shadow;
         }
         .exam-card:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.4); border-color: var(--primary); }
         .exam-card:nth-child(1) { animation-delay: 0.2s; } .exam-card:nth-child(2) { animation-delay: 0.3s; } .exam-card:nth-child(3) { animation-delay: 0.4s; }
@@ -344,7 +354,7 @@
         <header>
             <div class="header-left" data-html2canvas-ignore>
                 <div class="site-brand">
-                    <img src="iogo.png" alt="Logo">
+                <img src="iogo.png" alt="Logo" width="40" height="40" decoding="async">
                     <div class="site-brand-text">KHOAHOC<span>VIP</span></div>
                 </div>
                 <div class="nav-tabs">
@@ -366,7 +376,7 @@
                 <button class="icon-btn" onclick="toggleTheme()" title="Đổi giao diện"><i class="fas fa-moon" id="themeIcon"></i></button>
                 <button class="icon-btn" onclick="toggleFullScreen()" title="Toàn màn hình"><i class="fas fa-expand" id="fsIcon"></i></button>
                 <div id="userProfile" style="display: none; align-items: center; gap: 10px; background: rgba(0,0,0,0.2); padding: 4px 12px 4px 4px; border-radius: 30px; border: 1px solid var(--glass-border);">
-                    <img id="userAvatar" src="" alt="Avatar" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--primary);">
+                <img id="userAvatar" src="" alt="Avatar" width="32" height="32" loading="lazy" decoding="async" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--primary);">
                     <span id="userName" style="font-weight: 600; font-size: 0.9rem; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Name</span>
                     <button onclick="toggleLogin()" style="background: transparent; border: none; color: var(--accent); cursor: pointer; margin-left: 5px; font-size: 1.1rem; transition: 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" title="Đăng xuất"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
@@ -1353,124 +1363,3 @@
             sheetIframe.style.height = (100 / sheetZoomLevel) + '%';
             localStorage.setItem('sheetZoom', String(sheetZoomLevel));
         }
-
-        function clampSheetZoom(z){ return Math.min(2.0, Math.max(0.5, Math.round(z*10)/10)); }
-
-        const btnZoomIn = document.getElementById('zoom-in');
-        const btnZoomOut = document.getElementById('zoom-out');
-        const btnZoomReset = document.getElementById('zoom-reset');
-
-        if(btnZoomIn) btnZoomIn.onclick = () => { sheetZoomLevel = clampSheetZoom(sheetZoomLevel + 0.1); applySheetZoom(); };
-        if(btnZoomOut) btnZoomOut.onclick = () => { sheetZoomLevel = clampSheetZoom(sheetZoomLevel - 0.1); applySheetZoom(); };
-        if(btnZoomReset) btnZoomReset.onclick = () => { sheetZoomLevel = 1; applySheetZoom(); };
-
-        window.addEventListener('keydown', (e) => {
-            if (['INPUT','TEXTAREA'].includes((e.target.tagName||'').toUpperCase())) return;
-            // Chỉ áp dụng shortcut nếu người dùng đang ở tab Sheet
-            if (document.getElementById('tabSheet') && document.getElementById('tabSheet').classList.contains('active')) {
-                if (e.key === '+'){ e.preventDefault(); sheetZoomLevel = clampSheetZoom(sheetZoomLevel + 0.1); applySheetZoom(); }
-                if (e.key === '-'){ e.preventDefault(); sheetZoomLevel = clampSheetZoom(sheetZoomLevel - 0.1); applySheetZoom(); }
-                if (e.key === '0'){ e.preventDefault(); sheetZoomLevel = 1; applySheetZoom(); }
-            }
-        });
-        applySheetZoom();
-    </script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T3HC34BE89"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){ dataLayer.push(arguments); }
-      gtag('js', new Date());
-      gtag('config', 'G-T3HC34BE89');
-    </script>
-</body>
-</html>
-        function clampSheetZoom(z){ return Math.min(2.0, Math.max(0.5, Math.round(z*10)/10)); }
-
-        const btnZoomIn = document.getElementById('zoom-in');
-        const btnZoomOut = document.getElementById('zoom-out');
-        const btnZoomReset = document.getElementById('zoom-reset');
-
-        if(btnZoomIn) btnZoomIn.onclick = () => { sheetZoomLevel = clampSheetZoom(sheetZoomLevel + 0.1); applySheetZoom(); };
-        if(btnZoomOut) btnZoomOut.onclick = () => { sheetZoomLevel = clampSheetZoom(sheetZoomLevel - 0.1); applySheetZoom(); };
-        if(btnZoomReset) btnZoomReset.onclick = () => { sheetZoomLevel = 1; applySheetZoom(); };
-
-        window.addEventListener('keydown', (e) => {
-            if (['INPUT','TEXTAREA'].includes((e.target.tagName||'').toUpperCase())) return;
-            // Chỉ áp dụng shortcut nếu người dùng đang ở tab Sheet
-            if (document.getElementById('tabSheet') && document.getElementById('tabSheet').classList.contains('active')) {
-                if (e.key === '+'){ e.preventDefault(); sheetZoomLevel = clampSheetZoom(sheetZoomLevel + 0.1); applySheetZoom(); }
-                if (e.key === '-'){ e.preventDefault(); sheetZoomLevel = clampSheetZoom(sheetZoomLevel - 0.1); applySheetZoom(); }
-                if (e.key === '0'){ e.preventDefault(); sheetZoomLevel = 1; applySheetZoom(); }
-            }
-        });
-        applySheetZoom();
-    </script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T3HC34BE89"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){ dataLayer.push(arguments); }
-      gtag('js', new Date());
-      gtag('config', 'G-T3HC34BE89');
-    </script>
-</body>
-</html>
-        function clampSheetZoom(z){ return Math.min(2.0, Math.max(0.5, Math.round(z*10)/10)); }
-
-        const btnZoomIn = document.getElementById('zoom-in');
-        const btnZoomOut = document.getElementById('zoom-out');
-        const btnZoomReset = document.getElementById('zoom-reset');
-
-        if(btnZoomIn) btnZoomIn.onclick = () => { sheetZoomLevel = clampSheetZoom(sheetZoomLevel + 0.1); applySheetZoom(); };
-        if(btnZoomOut) btnZoomOut.onclick = () => { sheetZoomLevel = clampSheetZoom(sheetZoomLevel - 0.1); applySheetZoom(); };
-        if(btnZoomReset) btnZoomReset.onclick = () => { sheetZoomLevel = 1; applySheetZoom(); };
-
-        window.addEventListener('keydown', (e) => {
-            if (['INPUT','TEXTAREA'].includes((e.target.tagName||'').toUpperCase())) return;
-            // Chỉ áp dụng shortcut nếu người dùng đang ở tab Sheet
-            if (document.getElementById('tabSheet') && document.getElementById('tabSheet').classList.contains('active')) {
-                if (e.key === '+'){ e.preventDefault(); sheetZoomLevel = clampSheetZoom(sheetZoomLevel + 0.1); applySheetZoom(); }
-                if (e.key === '-'){ e.preventDefault(); sheetZoomLevel = clampSheetZoom(sheetZoomLevel - 0.1); applySheetZoom(); }
-                if (e.key === '0'){ e.preventDefault(); sheetZoomLevel = 1; applySheetZoom(); }
-            }
-        });
-        applySheetZoom();
-    </script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T3HC34BE89"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){ dataLayer.push(arguments); }
-      gtag('js', new Date());
-      gtag('config', 'G-T3HC34BE89');
-    </script>
-</body>
-</html>
-        function clampSheetZoom(z){ return Math.min(2.0, Math.max(0.5, Math.round(z*10)/10)); }
-
-        const btnZoomIn = document.getElementById('zoom-in');
-        const btnZoomOut = document.getElementById('zoom-out');
-        const btnZoomReset = document.getElementById('zoom-reset');
-
-        if(btnZoomIn) btnZoomIn.onclick = () => { sheetZoomLevel = clampSheetZoom(sheetZoomLevel + 0.1); applySheetZoom(); };
-        if(btnZoomOut) btnZoomOut.onclick = () => { sheetZoomLevel = clampSheetZoom(sheetZoomLevel - 0.1); applySheetZoom(); };
-        if(btnZoomReset) btnZoomReset.onclick = () => { sheetZoomLevel = 1; applySheetZoom(); };
-
-        window.addEventListener('keydown', (e) => {
-            if (['INPUT','TEXTAREA'].includes((e.target.tagName||'').toUpperCase())) return;
-            // Chỉ áp dụng shortcut nếu người dùng đang ở tab Sheet
-            if (document.getElementById('tabSheet') && document.getElementById('tabSheet').classList.contains('active')) {
-                if (e.key === '+'){ e.preventDefault(); sheetZoomLevel = clampSheetZoom(sheetZoomLevel + 0.1); applySheetZoom(); }
-                if (e.key === '-'){ e.preventDefault(); sheetZoomLevel = clampSheetZoom(sheetZoomLevel - 0.1); applySheetZoom(); }
-                if (e.key === '0'){ e.preventDefault(); sheetZoomLevel = 1; applySheetZoom(); }
-            }
-        });
-        applySheetZoom();
-    </script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T3HC34BE89"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){ dataLayer.push(arguments); }
-      gtag('js', new Date());
-      gtag('config', 'G-T3HC34BE89');
-    </script>
-</body>
-</html>
