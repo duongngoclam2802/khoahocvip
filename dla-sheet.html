@@ -565,6 +565,44 @@ background: var(--glass-bg); backdrop-filter: blur(20px);
 </div>
 </div>
 </section>
+
+<!-- --- 5. Affiliate Mode (Đại lý & CTV) --- -->
+<section id="tabAffiliate" class="mode-section">
+<div class="affiliate-wrapper" style="max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; gap: 30px;">
+<div class="affiliate-banner" style="text-align: center; background: linear-gradient(135deg, rgba(255,140,0,0.15), rgba(255,0,128,0.15)); padding: 40px 20px; border-radius: 15px; border: 1px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+<h2 style="font-size: 2.2rem; color: var(--accent); margin-bottom: 15px; font-weight: 800;"><i class="fas fa-rocket"></i> CHƯƠNG TRÌNH ĐẠI LÝ & CTV</h2>
+<p style="font-size: 1.1rem; line-height: 1.6; color: var(--text-main);">Tham gia phân phối các khóa học VIP (XPS 2K9, IELTS, TOEIC, Khóa Sinh Viên,...) với mức hoa hồng siêu khủng lên đến <strong style="color: #FFD700; font-size: 1.3rem;">50%</strong> mỗi lượt giới thiệu thành công. Cơ hội tuyệt vời giúp các bạn có thêm thu nhập trang trải cuộc sống!</p>
+</div>
+
+<div class="affiliate-content" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+<div class="exam-card" id="affiliateFormContainer">
+<h3><i class="fas fa-user-plus"></i> Đăng ký thông tin</h3>
+<div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+<input type="text" id="affName" class="doc-input" placeholder="Họ và tên của bạn...">
+<input type="email" id="affEmail" class="doc-input" placeholder="Email (dùng để đăng nhập)...">
+<input type="tel" id="affPhone" class="doc-input" placeholder="Số điện thoại / Zalo...">
+<div style="display: flex; align-items: center; gap: 10px;"><span style="color: var(--text-muted); width: 80px;">Ngày sinh:</span><input type="date" id="affDob" class="doc-input" style="flex: 1;"></div>
+<button class="action-btn" style="background: var(--success); color: white; padding: 12px; font-size: 1.1rem; border: none; margin-top: 10px;" onclick="submitAffiliate()"><i class="fas fa-paper-plane"></i> Gửi Đăng Ký</button>
+</div>
+</div>
+
+<div class="exam-card">
+<h3><i class="fas fa-info-circle"></i> Trạng thái của bạn</h3>
+<div id="affiliateStatus" style="margin-top: 15px; font-size: 1.1rem; text-align: center; padding: 30px 10px; background: rgba(0,0,0,0.2); border-radius: 10px;">
+Vui lòng đăng nhập hoặc gửi đăng ký để xem trạng thái.
+</div>
+</div>
+</div>
+
+<div class="exam-card" style="grid-column: 1 / -1; max-width: 100%;">
+<h3><i class="fas fa-users"></i> Danh sách Đại Lý & CTV</h3>
+<div id="affiliateList" style="margin-top: 15px; max-height: 400px; overflow-y: auto;">
+<!-- Danh sách được tạo bằng JS -->
+</div>
+</div>
+</div>
+</section>
+
 </div>
 
 <!-- Toast Container -->
@@ -1408,10 +1446,54 @@ if (myData.status === 'pending') {
 statusDiv.innerHTML = `<i class="fas fa-hourglass-half" style="color: #f5af19; font-size: 2.5rem; margin-bottom: 10px; display: block;"></i> <strong style="color: #f5af19;">Đang chờ duyệt</strong><br><span style="font-size: 0.95rem; color: var(--text-muted); display: block; margin-top: 10px;">Hồ sơ của bạn đã được gửi. Quản trị viên sẽ sớm liên hệ và xét duyệt!</span>`;
 document.getElementById('affiliateFormContainer').style.display = 'none';
 } else if (myData.status === 'approved') {
-statusDiv.innerHTML = `<i class="fas fa-check-circle" style="color: var(--success); font-size: 2.5rem; margin-bottom: 10px; display: block;"></i> <strong style="color: var(--success);">Đại Lý / CTV Chính Thức</strong><br><span style="font-size: 0.95rem; color: var(--text-muted); display: block; margin-top: 10px;">Mã CTV của bạn: <b>${myData.id.substring(0,8).toUpperCase()}</b><br>Mức hoa hồng: <b style="color: #FFD700;">50% / Lượt giới thiệu</b></span>
- spize: 0.85rem; color: var(--text-muted);">Số lượt giới thiệu</span><br><strong style="font-size: 1.8rem; color: var(--primary);">${myData.referrals || 0}</strong></div>
-<div><span style="font-size: 0.85rem; color: var(--text-muted);">Tổng thu nhập</span><br><strong style="font-size: 1.8rem; color: var(--success);">${(myData.totalEarned || 0).toLocaleString('vi-VN')} đ</strong></div>
+
+let bankHtml = `
+<div style="margin-top: 20px; text-align: left; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; border: 1px solid var(--glass-border);">
+    <h4 style="color: var(--primary); margin-bottom: 10px; font-size: 1rem;"><i class="fas fa-university"></i> Thông tin nhận hoa hồng</h4>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+        <input type="text" id="bankName" class="doc-input" placeholder="Tên Ngân Hàng (VD: MB Bank, Momo...)" value="${myData.bankName || ''}">
+        <input type="text" id="bankAcc" class="doc-input" placeholder="Số Tài Khoản" value="${myData.bankAcc || ''}">
+        <input type="text" id="bankOwner" class="doc-input" placeholder="Tên Chủ Tài Khoản" value="${myData.bankOwner || ''}">
+        <button class="action-btn" style="background: var(--primary); color: white; border: none; padding: 8px;" onclick="updateBankInfo()"><i class="fas fa-save"></i> Cập nhật Ngân Hàng</button>
+    </div>
 </div>`;
+
+let proofHtml = `
+<div style="margin-top: 15px; text-align: left; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; border: 1px solid var(--glass-border);">
+    <h4 style="color: var(--accent); margin-bottom: 10px; font-size: 1rem;"><i class="fas fa-file-upload"></i> Báo cáo đơn hàng thành công</h4>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+        <input type="text" id="refCourse" class="doc-input" placeholder="Tên khóa học (VD: XPS 2K9, IELTS...)">
+        <input type="email" id="refEmail" class="doc-input" placeholder="Email học viên đăng ký">
+        <input type="tel" id="refPhone" class="doc-input" placeholder="SĐT học viên">
+        <label style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Tải lên ảnh Hóa đơn/Bill chuyển khoản:</label>
+        <input type="file" id="refFile" class="doc-input" accept="image/*">
+        <button class="action-btn" style="background: var(--success); color: white; border: none; padding: 8px;" onclick="submitReferralProof()"><i class="fas fa-paper-plane"></i> Gửi Báo Cáo & Chờ Duyệt</button>
+    </div>
+</div>`;
+
+let userProofsHtml = '';
+if (myData.proofs && myData.proofs.length > 0) {
+    userProofsHtml = `<div style="margin-top: 15px; text-align: left; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px;">
+        <h4 style="color: var(--text-main); margin-bottom: 10px; font-size: 0.95rem;"><i class="fas fa-history"></i> Lịch sử báo cáo</h4>
+        <ul style="list-style: none; padding: 0; font-size: 0.85rem; color: var(--text-muted);">
+            ${myData.proofs.map(p => `
+                <li style="margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    Khóa <b>${p.course}</b> (${p.email})<br>
+                    ${p.status === 'pending' ? '<span style="color: #f5af19;"><i class="fas fa-clock"></i> Đang chờ duyệt</span>' : '<span style="color: var(--success);"><i class="fas fa-check"></i> Đã duyệt & Cộng tiền</span>'}
+                </li>
+            `).join('')}
+        </ul>
+    </div>`;
+}
+
+statusDiv.innerHTML = `<i class="fas fa-check-circle" style="color: var(--success); font-size: 2.5rem; margin-bottom: 10px; display: block;"></i> <strong style="color: var(--success);">Đại Lý / CTV Chính Thức</strong><br><span style="font-size: 0.95rem; color: var(--text-muted); display: block; margin-top: 10px;">Mã CTV của bạn: <b>${myData.id.substring(0,8).toUpperCase()}</b><br>Mức hoa hồng: <b style="color: #FFD700;">50% / Lượt giới thiệu</b></span>
+<div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--glass-border); display: flex; justify-content: space-around;">
+<div><span style="font-size: 0.85rem; color: var(--text-muted);">Số lượt giới thiệu</span><br><strong style="font-size: 1.8rem; color: var(--primary);">${myData.referrals || 0}</strong></div>
+<div><span style="font-size: 0.85rem; color: var(--text-muted);">Tổng thu nhập</span><br><strong style="font-size: 1.8rem; color: var(--success);">${(myData.totalEarned || 0).toLocaleString('vi-VN')} đ</strong></div>
+</div>
+${bankHtml}
+${proofHtml}
+${userProofsHtml}`;
 document.getElementById('affiliateFormContainer').style.display = 'none';
 }
 } else {
@@ -1428,23 +1510,54 @@ listDiv.innerHTML = '<div style="text-align: center; color: var(--text-muted); p
 return;
 }
 
-let html = `<div style="overflow-x: auto;"><table style="width: 100%; text-align: left; border-collapse: collapse; min-width: 500px;">
-<thead><tr style="border-bottom: 1px solid var(--glass-border);"><th style="padding: 10px;">Họ tên</th><th style="padding: 10px;">Email / Liên hệ</th><th style="padding: 10px;">Trạng thái</th>${isAdmin ? '<th style="padding: 10px;">Thống kê</th><th style="padding: 10px; text-align: right;">Hành động</th>' : ''}</tr></thead>
+let html = `<div style="overflow-x: auto;"><table style="width: 100%; text-align: left; border-collapse: collapse; min-width: 650px;">
+<thead><tr style="border-bottom: 1px solid var(--glass-border);">
+    <th style="padding: 10px;">CTV Info</th>
+    <th style="padding: 10px;">Trạng thái</th>
+    ${isAdmin ? '<th style="padding: 10px;">Thống kê & Thanh toán</th><th style="padding: 10px; text-align: right;">Quản lý & Duyệt đơn</th>' : ''}
+</tr></thead>
 <tbody>`;
+
 affiliates.forEach(aff => {
 if (!isAdmin && aff.status !== 'approved') return;
 const statusBadge = aff.status === 'approved' 
 ? `<span style="background: rgba(52, 211, 153, 0.2); color: var(--success); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">Đã duyệt</span>`
 : `<span style="background: rgba(245, 175, 25, 0.2); color: #f5af19; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">Chờ duyệt</span>`;
 
+let proofsAdminHtml = '';
+if (isAdmin && aff.proofs && aff.proofs.length > 0) {
+    const pendingProofs = aff.proofs.filter(p => p.status === 'pending');
+    if (pendingProofs.length > 0) {
+        proofsAdminHtml = `<div style="margin-top: 10px; text-align: left; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 5px; border-left: 3px solid #f5af19;">
+            <div style="font-size: 0.8rem; color: #f5af19; margin-bottom: 5px;"><b>${pendingProofs.length} Đơn chờ duyệt:</b></div>
+            ${pendingProofs.map(p => `
+                <div style="font-size: 0.8rem; margin-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 5px;">
+                    Khóa: <b style="color:var(--primary);">${p.course}</b><br>HV: ${p.email} - ${p.phone}<br>
+                    <a href="${p.proofImg}" target="_blank" style="color: #38bdf8; text-decoration: underline;"><i class="fas fa-image"></i> Xem Bill chuyển khoản</a><br>
+                    <button onclick="approveProof('${aff.id}', '${p.id}')" style="background:var(--success); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; margin-top:5px;"><i class="fas fa-check"></i> Duyệt đơn & Trả hoa hồng</button>
+                </div>
+            `).join('')}
+        </div>`;
+    }
+}
+
 html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-<td style="padding: 10px; font-weight: 600;">${aff.name}</td>
-<td style="padding: 10px; color: var(--text-muted); font-size: 0.9rem;">${isAdmin ? aff.email + '<br>' + aff.phone : aff.email.replace(/(.{2})(.*)(?=@)/, "$1***")}</td>
-<td style="padding: 10px;">${statusBadge}</td>
-${isAdmin ? `<td style="padding: 10px; font-size: 0.85rem;">
-Lượt: <b style="color: var(--primary
-<td style="padding: 10px; text-align: right;">
-${aff.status === 'pending' ? `<button class="action-btn" style="background: var(--success); color: white; border: none; padding: 5px 10px; font-size: 0.8rem;" onclick="approveAffiliate('${aff.id}')">Duyệt</button>` : `<button class="action-btn" style="background: var(--primary); color: white; border: none; padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;" onclick="addCommission('${aff.id}')" title="Thêm lượt giới thiệu">+ Đơn</button><button class="action-btn" style="background: var(--accent); color: white; border: none; padding: 5px 10px; font-size: 0.8rem;" onclick="revokeAffiliate('${aff.id}')">Hủy</button>`}
+<td style="padding: 10px; vertical-align: top;">
+    <span style="font-weight: 600;">${aff.name}</span><br>
+    <span style="font-size: 0.85rem; color: var(--text-muted);">${isAdmin ? aff.email + '<br>' + aff.phone : aff.email.replace(/(.{2})(.*)(?=@)/, "$1***")}</span>
+</td>
+<td style="padding: 10px; vertical-align: top;">${statusBadge}</td>
+${isAdmin ? `
+<td style="padding: 10px; font-size: 0.85rem; vertical-align: top;">
+    Lượt: <b style="color: var(--primary);">${aff.referrals || 0}</b><br>
+    Tiền: <b style="color: var(--success);">${(aff.totalEarned || 0).toLocaleString('vi-VN')}đ</b>
+    <div style="margin-top: 5px; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.1); color: var(--text-muted);">
+        ${aff.bankName ? `Ngân hàng: <b>${aff.bankName}</b><br>STK: <b>${aff.bankAcc}</b><br>Tên: <b>${aff.bankOwner}</b>` : 'Chưa có thông tin NH'}
+    </div>
+</td>
+<td style="padding: 10px; text-align: right; vertical-align: top; min-width: 250px;">
+    ${aff.status === 'pending' ? `<button class="action-btn" style="background: var(--success); color: white; border: none; padding: 5px 10px; font-size: 0.8rem;" onclick="approveAffiliate('${aff.id}')">Duyệt CTV</button>` : `<button class="action-btn" style="background: var(--primary); color: white; border: none; padding: 5px 10px; font-size: 0.8rem; margin-bottom: 5px;" onclick="addCommission('${aff.id}')" title="Thêm lượt giới thiệu trực tiếp">+ Cộng Tiền Thủ Công</button> <button class="action-btn" style="background: var(--accent); color: white; border: none; padding: 5px 10px; font-size: 0.8rem; margin-bottom: 5px;" onclick="revokeAffiliate('${aff.id}')">Hủy CTV</button>`}
+    ${proofsAdminHtml}
 </td>` : ''}
 </tr>`;
 });
@@ -1477,6 +1590,89 @@ if(doc.exists) { const data = doc.data(); return docRef.update({ referrals: (dat
 const aff = affiliates.find(a => a.id === uid);
 if(aff) { aff.referrals = (aff.referrals || 0) + 1; aff.totalEarned = (aff.totalEarned || 0) + amount; localStorage.setItem('affiliates', JSON.stringify(affiliates)); renderAffiliates(); showToast("Đã ghi nhận đơn! (Local)"); }
 }
+}
+
+function updateBankInfo() {
+    if (!currentUser) return;
+    const bankName = document.getElementById('bankName').value.trim();
+    const bankAcc = document.getElementById('bankAcc').value.trim();
+    const bankOwner = document.getElementById('bankOwner').value.trim();
+    
+    if (!bankName || !bankAcc || !bankOwner) return showToast("Vui lòng nhập đủ thông tin ngân hàng!", "error");
+    
+    if(db) {
+        db.collection('affiliates').doc(currentUser.uid).update({ bankName, bankAcc, bankOwner })
+        .then(() => showToast("Cập nhật thông tin ngân hàng thành công!"))
+        .catch(err => showToast("Lỗi: " + err.message, "error"));
+    } else {
+        const aff = affiliates.find(a => a.id === currentUser.uid);
+        if(aff) {
+            aff.bankName = bankName; aff.bankAcc = bankAcc; aff.bankOwner = bankOwner;
+            localStorage.setItem('affiliates', JSON.stringify(affiliates));
+            showToast("Đã cập nhật (Local)"); renderAffiliates();
+        }
+    }
+}
+
+function submitReferralProof() {
+    if (!currentUser) return;
+    const course = document.getElementById('refCourse').value.trim();
+    const email = document.getElementById('refEmail').value.trim();
+    const phone = document.getElementById('refPhone').value.trim();
+    const fileInput = document.getElementById('refFile');
+    
+    if (!course || !email || !phone) return showToast("Vui lòng điền đủ thông tin học viên!", "error");
+    if (!fileInput.files || fileInput.files.length === 0) return showToast("Vui lòng tải lên ảnh bill chuyển khoản!", "error");
+    
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const base64Img = e.target.result;
+        const proofData = { id: Date.now().toString(), course, email, phone, proofImg: base64Img, status: 'pending', date: new Date().toISOString() };
+        if(db) {
+            const docRef = db.collection('affiliates').doc(currentUser.uid);
+            docRef.get().then(doc => {
+                if(doc.exists) {
+                    const data = doc.data(); const proofs = data.proofs || []; proofs.push(proofData);
+                    return docRef.update({ proofs });
+                }
+            }).then(() => showToast("Đã gửi báo cáo thành công! Vui lòng chờ Admin duyệt.")).catch(err => showToast("Lỗi: " + err.message, "error"));
+        } else {
+            const aff = affiliates.find(a => a.id === currentUser.uid);
+            if(aff) {
+                if(!aff.proofs) aff.proofs = []; aff.proofs.push(proofData);
+                localStorage.setItem('affiliates', JSON.stringify(affiliates));
+                showToast("Đã gửi báo cáo! (Local)"); renderAffiliates();
+            }
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+function approveProof(uid, proofId) {
+    const amountStr = prompt("Nhập số tiền hoa hồng cho đơn này (VNĐ):\n(Hệ thống sẽ duyệt đơn và tự động cộng tiền)", "100000");
+    if (!amountStr) return;
+    const amount = parseInt(amountStr.replace(/[^0-9]/g, ''));
+    if (isNaN(amount) || amount <= 0) return showToast("Số tiền không hợp lệ!", "error");
+
+    if(db) {
+        const docRef = db.collection('affiliates').doc(uid);
+        docRef.get().then(doc => {
+            if(doc.exists) {
+                const data = doc.data(); const proofs = data.proofs || [];
+                const pIndex = proofs.findIndex(p => p.id === proofId); if (pIndex > -1) proofs[pIndex].status = 'approved';
+                return docRef.update({ proofs, referrals: (data.referrals || 0) + 1, totalEarned: (data.totalEarned || 0) + amount });
+            }
+        }).then(() => showToast("Đã duyệt đơn và cộng hoa hồng!")).catch(err => showToast("Lỗi: " + err.message, "error"));
+    } else {
+        const aff = affiliates.find(a => a.id === uid);
+        if(aff) {
+            if(!aff.proofs) aff.proofs = []; const pIndex = aff.proofs.findIndex(p => p.id === proofId);
+            if (pIndex > -1) aff.proofs[pIndex].status = 'approved';
+            aff.referrals = (aff.referrals || 0) + 1; aff.totalEarned = (aff.totalEarned || 0) + amount; 
+            localStorage.setItem('affiliates', JSON.stringify(affiliates)); renderAffiliates(); showToast("Đã duyệt đơn! (Local)"); 
+        }
+    }
 }
 
 // Export to Image using html2canvas
