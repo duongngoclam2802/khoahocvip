@@ -1452,3 +1452,33 @@ window.addEventListener('keydown', (e) => {
     }
 });
 applySheetZoom();
+
+// ========= Security Enhancements (Bảo Mật Hệ Thống) =========
+
+// 1. Chặn chuột phải
+document.addEventListener('contextmenu', function(e) {
+    // Cho phép chuột phải trong ô input và textarea
+    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        showToast("Chuột phải đã bị vô hiệu hóa!", "error");
+    }
+});
+
+// 2. Chặn các phím tắt mở DevTools và xem mã nguồn
+document.addEventListener('keydown', function(e) {
+    // Chặn F12
+    if (e.key === 'F12') {
+        e.preventDefault();
+        showToast("Hành động này không được phép!", "error");
+    }
+    // Chặn Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (DevTools)
+    if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+        e.preventDefault();
+        showToast("Hành động này không được phép!", "error");
+    }
+    // Chặn Ctrl+U (Xem mã nguồn)
+    if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+        e.preventDefault();
+        showToast("Chức năng xem mã nguồn đã bị khóa!", "error");
+    }
+});
