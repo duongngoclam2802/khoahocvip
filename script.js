@@ -73,7 +73,16 @@ currentUser = result.user;
 updateAuthUI();
 alert(`Xin chào ${currentUser.displayName}! Dữ liệu của bạn sẽ tự động được đồng bộ lên đám mây.`);
 loadDataFromFirebase();
-}).catch(error => console.error("Lỗi đăng nhập:", error));
+}).catch(error => {
+    console.error("Lỗi đăng nhập:", error);
+    if (error.code === 'auth/popup-closed-by-user') {
+        showToast("Bạn đã đóng cửa sổ đăng nhập hoặc trình duyệt chặn Popup/Cookie.", "error");
+    } else if (error.code === 'auth/unauthorized-domain') {
+        alert("Lỗi Firebase: Tên miền hiện tại chưa được cấp quyền. Hãy thêm vào Authorized Domains trên Firebase Console.");
+    } else {
+        alert("Có lỗi xảy ra khi đăng nhập: " + error.message);
+    }
+});
 }
 }
 }
