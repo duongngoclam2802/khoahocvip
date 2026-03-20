@@ -365,6 +365,7 @@ background: var(--glass-bg); backdrop-filter: blur(20px);
 <button class="nav-btn" onclick="switchTab('tabSchedule')"><i class="fas fa-calendar-alt"></i> Quản Lý Lịch</button>
 <button class="nav-btn" onclick="switchTab('tabDocs')"><i class="fas fa-book"></i> Kho Tài Liệu</button>
 <button class="nav-btn" onclick="switchTab('tabAffiliate')"><i class="fas fa-handshake"></i> Đại Lý & CTV</button>
+<button class="nav-btn" id="navAdmin" style="display: none; background: linear-gradient(135deg, #ff0844, #ffb199); color: white; border: none; box-shadow: 0 4px 15px rgba(255,8,68,0.4);" onclick="switchTab('tabAdmin')"><i class="fas fa-user-shield"></i> Quản Trị Admin</button>
 </div>
 </div>
 <!-- <div class="header-clock">
@@ -594,11 +595,24 @@ Vui lòng đăng nhập hoặc gửi đăng ký để xem trạng thái.
 </div>
 </div>
 
-<div class="exam-card" style="grid-column: 1 / -1; max-width: 100%;">
-<h3><i class="fas fa-users"></i> Danh sách Đại Lý & CTV</h3>
-<div id="affiliateList" style="margin-top: 15px; max-height: 400px; overflow-y: auto;">
-<!-- Danh sách được tạo bằng JS -->
 </div>
+</section>
+
+<!-- --- 6. Admin Mode (Chỉ hiển thị cho Admin) --- -->
+<section id="tabAdmin" class="mode-section">
+<div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
+<h2 style="color: var(--accent); font-size: 2rem; margin-bottom: 10px; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 15px;"><i class="fas fa-user-shield"></i> Bảng Điều Khiển Quản Trị</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+    <div class="exam-card" style="text-align:center; padding: 20px;"><h3><i class="fas fa-users"></i> Tổng CTV</h3><strong id="adminStatTotal" style="font-size:2.5rem;color:var(--primary); display:block; margin-top:10px;">0</strong></div>
+    <div class="exam-card" style="text-align:center; padding: 20px;"><h3><i class="fas fa-hourglass-half"></i> CTV Chờ Duyệt</h3><strong id="adminStatPending" style="font-size:2.5rem;color:#f5af19; display:block; margin-top:10px;">0</strong></div>
+    <div class="exam-card" style="text-align:center; padding: 20px;"><h3><i class="fas fa-file-invoice-dollar"></i> Đơn Chờ Xử Lý</h3><strong id="adminStatProofs" style="font-size:2.5rem;color:var(--accent); display:block; margin-top:10px;">0</strong></div>
+    <div class="exam-card" style="text-align:center; padding: 20px;"><h3><i class="fas fa-coins"></i> Tổng Hoa Hồng</h3><strong id="adminStatMoney" style="font-size:2rem;color:var(--success); display:block; margin-top:15px;">0đ</strong></div>
+</div>
+<div class="exam-card" style="max-width: 100%; grid-column: 1 / -1;">
+    <h3><i class="fas fa-tasks"></i> Quản lý toàn bộ hệ thống Đại lý & CTV</h3>
+    <div id="adminTableContainer" style="margin-top: 15px; overflow-y: auto; max-height: 600px;">
+        <!-- Nội dung bảng render bằng JS -->
+    </div>
 </div>
 </div>
 </section>
@@ -680,9 +694,16 @@ loginBtn.style.display = 'none';
 userProfile.style.display = 'flex';
 document.getElementById('userAvatar').src = currentUser.photoURL || 'https://via.placeholder.com/32';
 document.getElementById('userName').innerText = currentUser.displayName || 'Người dùng';
+
+if (currentUser.email === ADMIN_EMAIL) {
+    document.getElementById('navAdmin').style.display = 'inline-block';
+} else {
+    document.getElementById('navAdmin').style.display = 'none';
+}
 } else {
 loginBtn.style.display = 'inline-block';
 userProfile.style.display = 'none';
+document.getElementById('navAdmin').style.display = 'none';
 }
 }
 
@@ -1388,15 +1409,17 @@ function submitAffiliate() {
 if (!currentUser) return showToast("Vui lòng đăng nhập để đăng ký làm CTV!", "error");
 
 const name = document.getElementById('affName').value.trim();
-const email = document.getElementById('affEmail').value.trim();
 const phone = document.getElementById('affPhone').value.trim();
 const dob = document.getElementById('affDob').value.trim();
 
-if (!name || !email || !phone || !dob) return showToast("Vui lòng điền đầy đủ thông tin!", "error");
+if (!name || !phone || !dob) return showToast("Vui lòng điền đầy đủ thông tin!", "error");
 
 const newAff = {
 id: currentUser.uid,
-name, email, phone, dob,
+name: name,
+email: currentUser.email || "Chưa cung cấp Email", // Xử lý lỗi null email
+phone: phone, 
+dob: dob,
 status: 'pending',
 referrals: 0,
 totalEarned: 0,
@@ -1407,8 +1430,18 @@ if(db) {
 db.collection('affiliates').doc(currentUser.uid).set(newAff)
 .then(() => {
 showToast("Đăng ký thành công! Đang chờ duyệt.");
+document.getElementById('affiliateFormContainer').style.display = 'none';
 })
-.catch(err => showToast("Lỗi đăng ký: " + err.message, "error"));
+.catch(err => {
+console.warn("Lỗi Firebase:", err);
+showToast("Đã lưu tạm thời! (Lý do: Máy chủ Firebase đang từ chối quyền ghi)", "info");
+// Tự động lưu trữ dự phòng xuống LocalStorage nếu Firebase từ chối
+const existingIndex = affiliates.findIndex(a => a.id === currentUser.uid);
+if(existingIndex >= 0) affiliates[existingIndex] = newAff;
+else affiliates.push(newAff);
+localStorage.setItem('affiliates', JSON.stringify(affiliates));
+renderAffiliates();
+});
 } else {
 const existingIndex = affiliates.findIndex(a => a.id === currentUser.uid);
 if(existingIndex >= 0) affiliates[existingIndex] = newAff;
@@ -1432,14 +1465,17 @@ renderAffiliates();
 }
 
 function renderAffiliates() {
-const listDiv = document.getElementById('affiliateList');
 const statusDiv = document.getElementById('affiliateStatus');
+const adminContainer = document.getElementById('adminTableContainer');
 const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
 
-listDiv.innerHTML = '';
+if(adminContainer) adminContainer.innerHTML = '';
 
+// --- 1. Render giao diện người dùng cá nhân ---
 if (currentUser) {
 document.getElementById('affEmail').value = currentUser.email;
+document.getElementById('affEmail').readOnly = true; // Khóa trường email
+document.getElementById('affEmail').style.opacity = '0.6';
 const myData = affiliates.find(a => a.id === currentUser.uid);
 if (myData) {
 if (myData.status === 'pending') {
@@ -1479,7 +1515,9 @@ if (myData.proofs && myData.proofs.length > 0) {
             ${myData.proofs.map(p => `
                 <li style="margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
                     Khóa <b>${p.course}</b> (${p.email})<br>
-                    ${p.status === 'pending' ? '<span style="color: #f5af19;"><i class="fas fa-clock"></i> Đang chờ duyệt</span>' : '<span style="color: var(--success);"><i class="fas fa-check"></i> Đã duyệt & Cộng tiền</span>'}
+                    ${p.status === 'pending' ? '<span style="color: #f5af19;"><i class="fas fa-clock"></i> Đang chờ duyệt</span>' : 
+                     (p.status === 'approved' ? '<span style="color: var(--success);"><i class="fas fa-check"></i> Đã duyệt & Cộng tiền</span>' : 
+                     `<span style="color: var(--accent);"><i class="fas fa-times"></i> Đã từ chối: ${p.rejectReason || 'Lý do không hợp lệ'}</span>`)}
                 </li>
             `).join('')}
         </ul>
@@ -1505,21 +1543,36 @@ statusDiv.innerHTML = "Vui lòng đăng nhập hoặc gửi đăng ký để xem
 document.getElementById('affiliateFormContainer').style.display = 'block';
 }
 
-if (affiliates.length === 0) {
-listDiv.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 20px;">Chưa có dữ liệu.</div>';
-return;
-}
+// --- 2. Render giao diện Bảng Điều Khiển Admin ---
+if (isAdmin && adminContainer) {
+    
+    // Cập nhật Thống kê
+    let totalPending = 0; let pendingProofs = 0; let totalMoney = 0;
+    affiliates.forEach(a => {
+        if(a.status === 'pending') totalPending++;
+        if(a.totalEarned) totalMoney += a.totalEarned;
+        if(a.proofs) pendingProofs += a.proofs.filter(p => p.status === 'pending').length;
+    });
+    document.getElementById('adminStatTotal').innerText = affiliates.length;
+    document.getElementById('adminStatPending').innerText = totalPending;
+    document.getElementById('adminStatProofs').innerText = pendingProofs;
+    document.getElementById('adminStatMoney').innerText = totalMoney.toLocaleString('vi-VN') + 'đ';
 
-let html = `<div style="overflow-x: auto;"><table style="width: 100%; text-align: left; border-collapse: collapse; min-width: 650px;">
+    if (affiliates.length === 0) {
+        adminContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 20px;">Chưa có dữ liệu CTV nào.</div>';
+        return;
+    }
+
+    let html = `<div style="overflow-x: auto;"><table style="width: 100%; text-align: left; border-collapse: collapse; min-width: 800px;">
 <thead><tr style="border-bottom: 1px solid var(--glass-border);">
     <th style="padding: 10px;">CTV Info</th>
     <th style="padding: 10px;">Trạng thái</th>
-    ${isAdmin ? '<th style="padding: 10px;">Thống kê & Thanh toán</th><th style="padding: 10px; text-align: right;">Quản lý & Duyệt đơn</th>' : ''}
+    <th style="padding: 10px;">Thống kê & Ngân Hàng</th>
+    <th style="padding: 10px; text-align: right;">Hành động & Duyệt đơn</th>
 </tr></thead>
 <tbody>`;
 
 affiliates.forEach(aff => {
-if (!isAdmin && aff.status !== 'approved') return;
 const statusBadge = aff.status === 'approved' 
 ? `<span style="background: rgba(52, 211, 153, 0.2); color: var(--success); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">Đã duyệt</span>`
 : `<span style="background: rgba(245, 175, 25, 0.2); color: #f5af19; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">Chờ duyệt</span>`;
@@ -1534,7 +1587,10 @@ if (isAdmin && aff.proofs && aff.proofs.length > 0) {
                 <div style="font-size: 0.8rem; margin-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 5px;">
                     Khóa: <b style="color:var(--primary);">${p.course}</b><br>HV: ${p.email} - ${p.phone}<br>
                     <a href="${p.proofImg}" target="_blank" style="color: #38bdf8; text-decoration: underline;"><i class="fas fa-image"></i> Xem Bill chuyển khoản</a><br>
-                    <button onclick="approveProof('${aff.id}', '${p.id}')" style="background:var(--success); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; margin-top:5px;"><i class="fas fa-check"></i> Duyệt đơn & Trả hoa hồng</button>
+                    <div style="margin-top: 5px; display: flex; gap: 5px;">
+                        <button onclick="approveProof('${aff.id}', '${p.id}')" style="background:var(--success); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; flex: 1;"><i class="fas fa-check"></i> Duyệt (Trả HH)</button>
+                        <button onclick="rejectProof('${aff.id}', '${p.id}')" style="background:var(--accent); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; flex: 1;"><i class="fas fa-times"></i> Từ chối</button>
+                    </div>
                 </div>
             `).join('')}
         </div>`;
@@ -1544,10 +1600,9 @@ if (isAdmin && aff.proofs && aff.proofs.length > 0) {
 html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
 <td style="padding: 10px; vertical-align: top;">
     <span style="font-weight: 600;">${aff.name}</span><br>
-    <span style="font-size: 0.85rem; color: var(--text-muted);">${isAdmin ? aff.email + '<br>' + aff.phone : aff.email.replace(/(.{2})(.*)(?=@)/, "$1***")}</span>
+    <span style="font-size: 0.85rem; color: var(--text-muted);">${aff.email}<br><i class="fas fa-phone"></i> ${aff.phone}</span>
 </td>
 <td style="padding: 10px; vertical-align: top;">${statusBadge}</td>
-${isAdmin ? `
 <td style="padding: 10px; font-size: 0.85rem; vertical-align: top;">
     Lượt: <b style="color: var(--primary);">${aff.referrals || 0}</b><br>
     Tiền: <b style="color: var(--success);">${(aff.totalEarned || 0).toLocaleString('vi-VN')}đ</b>
@@ -1556,13 +1611,15 @@ ${isAdmin ? `
     </div>
 </td>
 <td style="padding: 10px; text-align: right; vertical-align: top; min-width: 250px;">
-    ${aff.status === 'pending' ? `<button class="action-btn" style="background: var(--success); color: white; border: none; padding: 5px 10px; font-size: 0.8rem;" onclick="approveAffiliate('${aff.id}')">Duyệt CTV</button>` : `<button class="action-btn" style="background: var(--primary); color: white; border: none; padding: 5px 10px; font-size: 0.8rem; margin-bottom: 5px;" onclick="addCommission('${aff.id}')" title="Thêm lượt giới thiệu trực tiếp">+ Cộng Tiền Thủ Công</button> <button class="action-btn" style="background: var(--accent); color: white; border: none; padding: 5px 10px; font-size: 0.8rem; margin-bottom: 5px;" onclick="revokeAffiliate('${aff.id}')">Hủy CTV</button>`}
+    ${aff.status === 'pending' ? `<button class="action-btn" style="background: var(--success); color: white; border: none; padding: 5px 10px; font-size: 0.8rem; margin-bottom: 5px;" onclick="approveAffiliate('${aff.id}')"><i class="fas fa-check"></i> Duyệt CTV</button>` : `<button class="action-btn" style="background: var(--primary); color: white; border: none; padding: 5px 10px; font-size: 0.8rem; margin-bottom: 5px;" onclick="addCommission('${aff.id}')" title="Thêm lượt giới thiệu trực tiếp">+ Cộng Tiền Thủ Công</button> <button class="action-btn" style="background: #f5af19; color: white; border: none; padding: 5px 10px; font-size: 0.8rem; margin-bottom: 5px;" onclick="revokeAffiliate('${aff.id}')">Hạ cấp CTV</button>`}
+    <button class="action-btn" style="background: var(--accent); color: white; border: none; padding: 5px 10px; font-size: 0.8rem; margin-bottom: 5px;" onclick="deleteAffiliate('${aff.id}')" title="Xóa hoàn toàn tài khoản khỏi danh sách"><i class="fas fa-trash"></i> Xóa CTV</button>
     ${proofsAdminHtml}
-</td>` : ''}
+</td>
 </tr>`;
 });
-html += `</tbody></table></div>`;
-listDiv.innerHTML = html;
+    html += `</tbody></table></div>`;
+    adminContainer.innerHTML = html;
+}
 }
 
 function approveAffiliate(uid) {
@@ -1573,6 +1630,18 @@ else { const aff = affiliates.find(a => a.id === uid); if(aff) aff.status = 'app
 function revokeAffiliate(uid) {
 if(db) { db.collection('affiliates').doc(uid).update({ status: 'pending' }).then(() => showToast("Đã hủy quyền CTV!")).catch(err => showToast("Lỗi: " + err.message, "error")); } 
 else { const aff = affiliates.find(a => a.id === uid); if(aff) aff.status = 'pending'; localStorage.setItem('affiliates', JSON.stringify(affiliates)); renderAffiliates(); showToast("Đã hủy quyền CTV! (Local)"); }
+}
+
+function deleteAffiliate(uid) {
+if(!confirm("CẢNH BÁO: Bạn có chắc chắn muốn XÓA HOÀN TOÀN CTV này khỏi hệ thống không? Dữ liệu không thể khôi phục!")) return;
+if(db) {
+    db.collection('affiliates').doc(uid).delete().then(() => showToast("Đã xóa CTV hoàn toàn khỏi hệ thống!")).catch(err => showToast("Lỗi: " + err.message, "error"));
+} else {
+    affiliates = affiliates.filter(a => a.id !== uid);
+    localStorage.setItem('affiliates', JSON.stringify(affiliates));
+    renderAffiliates();
+    showToast("Đã xóa CTV (Local)!");
+}
 }
 
 function addCommission(uid) {
@@ -1671,6 +1740,30 @@ function approveProof(uid, proofId) {
             if (pIndex > -1) aff.proofs[pIndex].status = 'approved';
             aff.referrals = (aff.referrals || 0) + 1; aff.totalEarned = (aff.totalEarned || 0) + amount; 
             localStorage.setItem('affiliates', JSON.stringify(affiliates)); renderAffiliates(); showToast("Đã duyệt đơn! (Local)"); 
+        }
+    }
+}
+
+function rejectProof(uid, proofId) {
+    const reason = prompt("Nhập lý do từ chối đơn này (Ví dụ: Chuyển khoản thiếu, Bill giả...):");
+    if (reason === null) return; // Hủy
+
+    if(db) {
+        const docRef = db.collection('affiliates').doc(uid);
+        docRef.get().then(doc => {
+            if(doc.exists) {
+                const data = doc.data(); const proofs = data.proofs || [];
+                const pIndex = proofs.findIndex(p => p.id === proofId); 
+                if (pIndex > -1) { proofs[pIndex].status = 'rejected'; proofs[pIndex].rejectReason = reason || 'Quản trị viên từ chối'; }
+                return docRef.update({ proofs });
+            }
+        }).then(() => showToast("Đã từ chối đơn!", "info")).catch(err => showToast("Lỗi: " + err.message, "error"));
+    } else {
+        const aff = affiliates.find(a => a.id === uid);
+        if(aff && aff.proofs) {
+            const pIndex = aff.proofs.findIndex(p => p.id === proofId);
+            if (pIndex > -1) { aff.proofs[pIndex].status = 'rejected'; aff.proofs[pIndex].rejectReason = reason || 'Quản trị viên từ chối'; }
+            localStorage.setItem('affiliates', JSON.stringify(affiliates)); renderAffiliates(); showToast("Đã từ chối đơn! (Local)", "info"); 
         }
     }
 }
