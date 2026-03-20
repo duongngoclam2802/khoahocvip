@@ -41,6 +41,13 @@
 body {
 font-family: var(--main-font); color: var(--text-main); margin: 0; padding: 0;
 height: 100vh; width: 100vw; overflow: hidden;
+/* Chặn bôi đen văn bản toàn trang */
+-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; 
+}
+
+/* Ngoại trừ các ô nhập liệu và bảng tính vẫn cho phép chọn và bôi đen */
+input, textarea, [contenteditable="true"] {
+-webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text;
 }
 
 /* Smooth theme transition */
