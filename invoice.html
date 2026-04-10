@@ -28,6 +28,7 @@
       --primary: #000000;
       --primary-hover: #3f3f46;
       --success: #10b981;
+      --danger: #ef4444;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -36,7 +37,6 @@
     .dashboard { max-width: 1600px; margin: 0 auto; display: grid; grid-template-columns: 400px 1fr; gap: 24px; align-items: start; transition: all 0.3s;}
     @media (max-width: 1024px) { .dashboard { grid-template-columns: 1fr; } }
 
-    /* Chế độ Client - Căn giữa hóa đơn khi khách xem */
     .dashboard.client-mode { display: flex; justify-content: center; padding-top: 40px; }
 
     .panel { background: var(--bg-panel); border-radius: 12px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 24px; }
@@ -51,8 +51,9 @@
     .btn:hover { background: var(--primary-hover); }
     .btn-success { background: var(--success); }
     .btn-success:hover { background: #059669; }
+    .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); margin-top: 12px; }
+    .btn-outline:hover { background: var(--bg-body); }
 
-    /* Hóa đơn */
     .invoice-wrapper { display: flex; justify-content: center; overflow-x: auto; padding: 0 0 24px 0; width: 100%;}
     #invoice { width: 210mm; background: #fff; padding: 50mm 20mm; box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; }
 
@@ -76,77 +77,46 @@
     .total-row.grand-total { border-top: 2px solid var(--border-dark); border-bottom: 2px solid var(--border-dark); font-size: 1.25rem; font-weight: 700; margin-top: 8px; }
 
     .inv-footer { display: flex; justify-content: space-between; align-items: flex-end; }
-    .attachment-box { display: flex; gap: 20px; align-items: center; }
+    .attachment-box { display: flex; gap: 24px; align-items: center; }
     
-    .qr-link-wrapper img { width: 150px; height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.2s; }
-    .qr-link-wrapper:hover img { transform: scale(1.05); }
+    /* MÃ QR ĐƯỢC PHÓNG TO */
+    .qr-link-wrapper img { 
+      width: 220px; /* Tăng từ 150px lên 220px */
+      height: 220px; 
+      object-fit: cover; 
+      border-radius: 12px; 
+      border: 2px solid var(--border-color); 
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08); 
+      transition: transform 0.2s; 
+    }
+    .qr-link-wrapper:hover img { transform: scale(1.03); }
     
-    .attachment-info h5 { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; }
-    .attachment-info p { font-size: 0.95rem; font-weight: 600; margin-bottom: 12px; color: #111827; }
+    .attachment-info h5 { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 6px; }
+    .attachment-info p { font-size: 1.05rem; font-weight: 600; margin-bottom: 16px; color: #111827; }
     
-    .action-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #2563eb; background: #eff6ff; padding: 6px 12px; border-radius: 6px; cursor: pointer; border: 1px solid #bfdbfe; transition: 0.2s; margin-right: 8px; text-decoration: none;}
+    .action-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #2563eb; background: #eff6ff; padding: 8px 14px; border-radius: 6px; cursor: pointer; border: 1px solid #bfdbfe; transition: 0.2s; margin-right: 8px; font-weight: 500;}
     .action-badge:hover { background: #dbeafe; }
 
     .thank-you { font-size: 0.9rem; color: var(--text-muted); font-style: italic; text-align: right; }
     
-    /* Loading Overlay */
     #loadingScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 16px; font-size: 1.2rem; font-weight: 500; }
     .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #000; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--text-main); color: white; padding: 12px 24px; border-radius: 8px; font-weight: 500; display: none; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    #toast.error { background: var(--danger); }
 
     /* --- CSS CON DẤU ĐỎ --- */
     .official-stamp {
-      width: 140px;
-      height: 140px;
-      border: 4px double #dc2626; /* Viền kép màu đỏ */
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #dc2626;
-      font-family: 'Times New Roman', serif; /* Font chữ chuẩn mộc dấu */
-      text-align: center;
-      transform: rotate(-15deg); /* Hơi nghiêng cho tự nhiên */
-      opacity: 0.85; /* Hơi mờ như mực in thật */
-      
-      /* Vị trí góc dưới cùng bên phải hóa đơn */
-      position: absolute;
-      right: 40px;
-      bottom: 30px;
-      pointer-events: none; /* Không che khuất chữ bên dưới */
+      width: 140px; height: 140px; border: 4px double #dc2626; border-radius: 50%;
+      display: flex; justify-content: center; align-items: center; color: #dc2626;
+      font-family: 'Times New Roman', serif; text-align: center; transform: rotate(-15deg);
+      opacity: 0.85; position: absolute; right: 40px; bottom: 30px; pointer-events: none;
     }
-    .stamp-content {
-      border: 1px dashed #dc2626; /* Viền nét đứt bên trong */
-      border-radius: 50%;
-      width: 118px;
-      height: 118px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 10px;
-    }
-    .stamp-title {
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
-    .stamp-sign {
-      font-size: 1.4rem;
-      font-weight: 900;
-      margin: 6px 0;
-      padding: 2px 0;
-      border-top: 1px solid #dc2626;
-      border-bottom: 1px solid #dc2626;
-      width: 90%;
-    }
-    .stamp-sub {
-      font-size: 0.65rem;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
+    .stamp-content { border: 1px dashed #dc2626; border-radius: 50%; width: 118px; height: 118px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; }
+    .stamp-title { font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; }
+    .stamp-sign { font-size: 1.4rem; font-weight: 900; margin: 6px 0; padding: 2px 0; border-top: 1px solid #dc2626; border-bottom: 1px solid #dc2626; width: 90%; }
+    .stamp-sub { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; }
   </style>
 </head>
 <body>
@@ -156,7 +126,7 @@
   <p>Đang tải dữ liệu hóa đơn...</p>
 </div>
 
-<div id="toast"><i class="fa-solid fa-check-circle"></i> Đã xử lý thành công!</div>
+<div id="toast"><i class="fa-solid fa-check-circle"></i> <span id="toastMsg">Đã xử lý thành công!</span></div>
 
 <div class="dashboard" id="mainDashboard">
   
@@ -170,6 +140,7 @@
       <div class="form-group"><label>Tên Chủ Tài Khoản Nhận</label><input type="text" class="form-control" id="account" placeholder="Ví dụ: NGUYEN VAN A" oninput="liveUpdate()"></div>
 
       <button class="btn btn-success" id="btnSave" onclick="saveInvoiceToFirebase()"><i class="fa-solid fa-cloud-arrow-up"></i> Lưu Lên Hệ Thống</button>
+      <button class="btn btn-outline" onclick="resetForm()"><i class="fa-solid fa-plus"></i> Tạo Hóa Đơn Mới</button>
     </div>
   </div>
 
@@ -195,7 +166,7 @@
         <div class="inv-footer">
           <div class="attachment-box">
             <a href="QQR.png" target="_blank" class="qr-link-wrapper" title="Bấm để mở ảnh QR to">
-              <img src="QQR.png" alt="Mã QR" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=QQR.png';">
+              <img src="QQR.png" alt="Mã QR" onerror="this.onerror=null; this.src='https://via.placeholder.com/220?text=QQR.png';">
             </a>
             <div class="attachment-info">
               <h5>Thông tin thanh toán</h5>
@@ -224,9 +195,7 @@
 </div>
 
 <script>
-  // ==========================================
-  // 1. CẤU HÌNH FIREBASE TỪ HÌNH ẢNH CỦA BẠN
-  // ==========================================
+  // 1. CẤU HÌNH FIREBASE
   const firebaseConfig = {
     apiKey: "AIzaSyDkA6RYXElUuv-_Mxco8KK5dC4cvyWHyY",
     authDomain: "onthi-dashboard.firebaseapp.com",
@@ -237,40 +206,31 @@
     measurementId: "G-40ZSKBCBCD"
   };
   
-  // Khởi tạo Firebase
-  if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-  }
+  if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
   const db = firebase.firestore();
 
-  // ==========================================
-  // 2. LOGIC ĐỊNH DẠNG & HIỂN THỊ
-  // ==========================================
+  // 2. BIẾN TOÀN CỤC
   const formatMoney = (amount) => new Intl.NumberFormat('vi-VN').format(amount || 0) + ' ₫';
   const d = new Date();
   const getToday = () => `${('0'+d.getDate()).slice(-2)}/${('0'+(d.getMonth()+1)).slice(-2)}/${d.getFullYear()}`;
   
   let currentCode = "";
+  let isSaved = false; // Biến kiểm tra xem bill này đã được lưu lên Firebase chưa
 
-  // ==========================================
-  // 3. KIỂM TRA TRẠNG THÁI: ADMIN HAY CLIENT?
-  // ==========================================
+  // 3. CHẾ ĐỘ HIỂN THỊ (ADMIN / CLIENT)
   const urlParams = new URLSearchParams(window.location.search);
   const invoiceIdParam = urlParams.get('id');
 
   if (invoiceIdParam) {
-    // ---> CHẾ ĐỘ CLIENT (KHÁCH VÀO XEM THEO LINK)
     document.title = `Hóa Đơn ${invoiceIdParam}`;
-    document.getElementById('adminPanel').style.display = 'none'; // Ẩn form soạn thảo
-    document.getElementById('mainDashboard').classList.add('client-mode'); // Chỉnh layout ra giữa
-    document.getElementById('loadingScreen').style.display = 'flex'; // Hiện màn hình loading
+    document.getElementById('adminPanel').style.display = 'none'; 
+    document.getElementById('mainDashboard').classList.add('client-mode'); 
+    document.getElementById('loadingScreen').style.display = 'flex'; 
 
-    // Truy vấn Firebase lấy dữ liệu
     db.collection("invoices").doc(invoiceIdParam).get().then((doc) => {
       document.getElementById('loadingScreen').style.display = 'none';
       if (doc.exists) {
         const data = doc.data();
-        // Đổ dữ liệu vào Bill
         document.getElementById('outCode').innerText = data.code;
         document.getElementById('outDate').innerText = data.date;
         document.getElementById('outEmail').innerText = data.email;
@@ -281,12 +241,11 @@
         document.getElementById('outPriceRow').innerText = priceFormatted;
         document.getElementById('outSubTotal').innerText = priceFormatted;
         document.getElementById('outPriceTotal').innerText = priceFormatted;
-        
         document.getElementById('outAccount').innerText = (data.account || "CHƯA NHẬP TÊN TK").toUpperCase();
         currentCode = data.code;
       } else {
         alert("Hóa đơn này không tồn tại trên hệ thống hoặc đã bị xóa!");
-        window.location.href = window.location.origin + window.location.pathname; // Đá về trang chủ
+        window.location.href = window.location.origin + window.location.pathname; 
       }
     }).catch((error) => {
       alert("Lỗi kết nối máy chủ: " + error.message);
@@ -294,17 +253,33 @@
     });
 
   } else {
-    // ---> CHẾ ĐỘ ADMIN (TẠO HÓA ĐƠN MỚI)
+    generateNewCode();
+  }
+
+  // 4. HÀM CHỨC NĂNG
+  function generateNewCode() {
     currentCode = `INV-${Math.floor(100000 + Math.random() * 900000)}`;
     document.getElementById('outDate').innerText = getToday();
     document.getElementById('outCode').innerText = currentCode;
+    isSaved = false;
   }
 
-  // ==========================================
-  // 4. CÁC HÀM XỬ LÝ SỰ KIỆN
-  // ==========================================
+  function resetForm() {
+    if(!isSaved && document.getElementById('price').value !== "") {
+      if(!confirm("Hóa đơn này chưa được lưu. Bạn có chắc muốn tạo mới?")) return;
+    }
+    document.getElementById('email').value = "";
+    document.getElementById('phone').value = "";
+    document.getElementById('course').value = "";
+    document.getElementById('price').value = "";
+    liveUpdate();
+    generateNewCode();
+    showToast("Đã làm mới form nhập liệu!", "success");
+  }
+
   function liveUpdate() {
-    if(invoiceIdParam) return; // Nếu khách xem thì chặn sửa
+    if(invoiceIdParam) return; 
+    isSaved = false; // Mỗi khi chỉnh sửa, đánh dấu là chưa lưu
     document.getElementById('outEmail').innerText = document.getElementById('email').value || "khachhang@email.com";
     document.getElementById('outPhone').innerText = "SĐT: " + (document.getElementById('phone').value || "---");
     document.getElementById('outCourse').innerText = document.getElementById('course').value || "Chưa nhập tên dịch vụ";
@@ -315,7 +290,6 @@
     document.getElementById('outAccount').innerText = (document.getElementById('account').value || "CHƯA NHẬP TÊN TK").toUpperCase();
   }
 
-  // LƯU DỮ LIỆU LÊN FIREBASE CLOUD
   function saveInvoiceToFirebase() {
     const email = document.getElementById('email').value;
     const phone = document.getElementById('phone').value;
@@ -340,22 +314,14 @@
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     };
 
-    // Push lên bảng "invoices" với ID là mã hóa đơn (VD: INV-123456)
     db.collection("invoices").doc(currentCode).set(invoiceData)
       .then(() => {
-        showToast("Đã đẩy dữ liệu lên Firebase thành công!");
-        // Cấp mã mới cho lần nhập tiếp theo
-        currentCode = `INV-${Math.floor(100000 + Math.random() * 900000)}`;
-        document.getElementById('outCode').innerText = currentCode;
-        // Reset form cơ bản
-        document.getElementById('email').value = "";
-        document.getElementById('course').value = "";
-        document.getElementById('price').value = "";
-        liveUpdate();
+        isSaved = true; // Đánh dấu là đã lưu thành công
+        showToast("Đã lưu Hóa đơn thành công! Bạn có thể copy link.", "success");
       })
       .catch((error) => {
         console.error("Lỗi:", error);
-        alert("Có lỗi xảy ra: Xin hãy kiểm tra lại Rule của Firebase Firestore!");
+        showToast("Có lỗi xảy ra: Không thể lưu dữ liệu!", "error");
       })
       .finally(() => {
         btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Lưu Lên Hệ Thống`;
@@ -363,26 +329,37 @@
       });
   }
 
-  // TẠO LINK TRỰC TIẾP CHO KHÁCH HÀNG
   function copyInvoiceLink() {
-    // Link gốc + tham số ID. Ví dụ: https://tenmien.com/?id=INV-837465
+    // Ngăn chặn việc copy link khi chưa lưu (Vì copy xong gửi khách sẽ bị lỗi Not Found)
+    if (!invoiceIdParam && !isSaved) {
+      alert("VUI LÒNG BẤM NÚT 'LƯU LÊN HỆ THỐNG' TRƯỚC KHI COPY LINK!");
+      return;
+    }
+
     const link = window.location.origin + window.location.pathname + '?id=' + currentCode;
     
     if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(link).then(() => showToast("Đã copy Link: " + link));
+        navigator.clipboard.writeText(link).then(() => showToast("Đã copy Link: " + link, "success"));
     } else {
         let textArea = document.createElement("textarea");
         textArea.value = link;
         document.body.appendChild(textArea); textArea.focus(); textArea.select();
         document.execCommand('copy');
         document.body.removeChild(textArea);
-        showToast("Đã copy Link Hóa Đơn!");
+        showToast("Đã copy Link Hóa Đơn!", "success");
     }
   }
 
-  function showToast(msg) {
+  function showToast(msg, type = "success") {
     const toast = document.getElementById('toast');
-    toast.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${msg}`;
+    document.getElementById('toastMsg').innerText = msg;
+    if(type === "error") {
+      toast.classList.add("error");
+      toast.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span id="toastMsg">${msg}</span>`;
+    } else {
+      toast.classList.remove("error");
+      toast.innerHTML = `<i class="fa-solid fa-check-circle"></i> <span id="toastMsg">${msg}</span>`;
+    }
     toast.style.display = 'block';
     setTimeout(() => { toast.style.display = 'none'; }, 3000);
   }
