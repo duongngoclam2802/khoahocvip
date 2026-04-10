@@ -2,272 +2,397 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Hóa đơn thanh toán</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hóa Đơn Thanh Toán - KhoaHocVip</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
   <style>
-    body {
-      background: #f3f6fb;
-      font-family: 'Inter', sans-serif;
-      padding: 2rem;
+    :root {
+      --bg-body: #f4f4f5;
+      --bg-panel: #ffffff;
+      --text-main: #18181b;
+      --text-muted: #71717a;
+      --border-color: #e4e4e7;
+      --border-dark: #27272a;
+      --primary: #000000;
+      --primary-hover: #3f3f46;
+      --success: #10b981;
     }
-    .invoice-form, .invoice-preview, .history-section {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
-    }
-    h2 {
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background: var(--bg-body); color: var(--text-main); padding: 20px; }
+
+    .dashboard { max-width: 1600px; margin: 0 auto; display: grid; grid-template-columns: 400px 1fr; gap: 24px; align-items: start; transition: all 0.3s;}
+    @media (max-width: 1024px) { .dashboard { grid-template-columns: 1fr; } }
+
+    /* Chế độ Client - Căn giữa hóa đơn khi khách xem */
+    .dashboard.client-mode { display: flex; justify-content: center; padding-top: 40px; }
+
+    .panel { background: var(--bg-panel); border-radius: 12px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 24px; }
+    .panel-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 24px; display: flex; align-items: center; gap: 8px; }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); margin-bottom: 8px; }
+    .form-control { width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.95rem; transition: all 0.2s; }
+    .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,0,0,0.05); }
+
+    .btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 500; font-size: 1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
+    .btn:hover { background: var(--primary-hover); }
+    .btn-success { background: var(--success); }
+    .btn-success:hover { background: #059669; }
+
+    /* Hóa đơn */
+    .invoice-wrapper { display: flex; justify-content: center; overflow-x: auto; padding: 0 0 24px 0; width: 100%;}
+    #invoice { width: 210mm; background: #fff; padding: 50mm 20mm; box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; }
+
+    .inv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 60px; }
+    .inv-logo { font-size: 28px; font-weight: 700; letter-spacing: -1px; }
+    .inv-title { font-size: 40px; font-weight: 300; letter-spacing: 4px; color: var(--text-muted); text-transform: uppercase; line-height: 1; }
+
+    .inv-meta { display: flex; justify-content: space-between; margin-bottom: 50px; }
+    .meta-block h4 { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px; }
+    .meta-block p { font-size: 1rem; font-weight: 500; margin-bottom: 4px; }
+    .meta-block.right { text-align: right; }
+
+    .inv-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+    .inv-table th { text-align: left; padding: 12px 0; border-bottom: 2px solid var(--border-dark); font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); }
+    .inv-table td { padding: 20px 0; border-bottom: 1px solid var(--border-color); font-size: 1rem; }
+    .inv-table th.right, .inv-table td.right { text-align: right; }
+    
+    .inv-total { display: flex; justify-content: flex-end; margin-bottom: 60px; }
+    .total-box { width: 300px; }
+    .total-row { display: flex; justify-content: space-between; padding: 12px 0; font-size: 1rem; }
+    .total-row.grand-total { border-top: 2px solid var(--border-dark); border-bottom: 2px solid var(--border-dark); font-size: 1.25rem; font-weight: 700; margin-top: 8px; }
+
+    .inv-footer { display: flex; justify-content: space-between; align-items: flex-end; }
+    .attachment-box { display: flex; gap: 20px; align-items: center; }
+    
+    .qr-link-wrapper img { width: 150px; height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.2s; }
+    .qr-link-wrapper:hover img { transform: scale(1.05); }
+    
+    .attachment-info h5 { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; }
+    .attachment-info p { font-size: 0.95rem; font-weight: 600; margin-bottom: 12px; color: #111827; }
+    
+    .action-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #2563eb; background: #eff6ff; padding: 6px 12px; border-radius: 6px; cursor: pointer; border: 1px solid #bfdbfe; transition: 0.2s; margin-right: 8px; text-decoration: none;}
+    .action-badge:hover { background: #dbeafe; }
+
+    .thank-you { font-size: 0.9rem; color: var(--text-muted); font-style: italic; text-align: right; }
+    
+    /* Loading Overlay */
+    #loadingScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 16px; font-size: 1.2rem; font-weight: 500; }
+    .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #000; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--text-main); color: white; padding: 12px 24px; border-radius: 8px; font-weight: 500; display: none; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+    /* --- CSS CON DẤU ĐỎ --- */
+    .official-stamp {
+      width: 140px;
+      height: 140px;
+      border: 4px double #dc2626; /* Viền kép màu đỏ */
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #dc2626;
+      font-family: 'Times New Roman', serif; /* Font chữ chuẩn mộc dấu */
       text-align: center;
-      color: #2c3e50;
-      margin-bottom: 1rem;
+      transform: rotate(-15deg); /* Hơi nghiêng cho tự nhiên */
+      opacity: 0.85; /* Hơi mờ như mực in thật */
+      
+      /* Vị trí góc dưới cùng bên phải hóa đơn */
+      position: absolute;
+      right: 40px;
+      bottom: 30px;
+      pointer-events: none; /* Không che khuất chữ bên dưới */
     }
-    input, label {
-      display: block;
-      width: 100%;
+    .stamp-content {
+      border: 1px dashed #dc2626; /* Viền nét đứt bên trong */
+      border-radius: 50%;
+      width: 118px;
+      height: 118px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
     }
-    input {
-      padding: 0.75rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+    .stamp-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
     }
-    label {
-      font-weight: bold;
-      margin: 0.5rem 0 0.25rem;
-    }
-    .btn {
-      background-color: #2b6cb0;
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-right: 1rem;
-    }
-    .btn:hover {
-      background-color: #1a4f80;
-    }
-    #invoice {
-      max-width: 700px;
-      margin: auto;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 2rem;
-    }
-    .invoice-header {
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    .invoice-header img {
-      max-height: 60px;
-      margin-bottom: 10px;
-    }
-    .invoice-header h3 {
-      margin-bottom: 0.2rem;
-      color: #2c3e50;
-      font-size: 1.5rem;
-    }
-    .invoice-id {
-      text-align: right;
-      font-weight: bold;
-      margin-bottom: 1rem;
-      color: #4a5568;
-    }
-    .invoice-info p {
-      font-size: 1rem;
+    .stamp-sign {
+      font-size: 1.4rem;
+      font-weight: 900;
       margin: 6px 0;
+      padding: 2px 0;
+      border-top: 1px solid #dc2626;
+      border-bottom: 1px solid #dc2626;
+      width: 90%;
     }
-    .qr-section {
-      text-align: center;
-    }
-    .qr-section img {
-      width: 180px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 6px;
-      background: #f9f9f9;
-    }
-    .button-group {
-      text-align: center;
-      margin-top: 1.5rem;
-    }
-    .history-section table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .history-section th, .history-section td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: left;
-    }
-    .history-section th {
-      background-color: #f0f0f0;
+    .stamp-sub {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
     }
   </style>
 </head>
 <body>
 
+<div id="loadingScreen" style="display: none;">
+  <div class="spinner"></div>
+  <p>Đang tải dữ liệu hóa đơn...</p>
+</div>
+
+<div id="toast"><i class="fa-solid fa-check-circle"></i> Đã xử lý thành công!</div>
+
+<div class="dashboard" id="mainDashboard">
+  
+  <div id="adminPanel">
+    <div class="panel">
+      <h2 class="panel-title"><i class="fa-solid fa-pen-to-square"></i> Soạn hóa đơn (Gắn Firebase)</h2>
+      <div class="form-group"><label>Email Khách Hàng</label><input type="email" class="form-control" id="email" placeholder="khachhang@email.com" oninput="liveUpdate()"></div>
+      <div class="form-group"><label>Số Điện Thoại</label><input type="text" class="form-control" id="phone" placeholder="09xxxxxxx" oninput="liveUpdate()"></div>
+      <div class="form-group"><label>Sản Phẩm / Dịch Vụ</label><input type="text" class="form-control" id="course" placeholder="Tên khóa học" oninput="liveUpdate()"></div>
+      <div class="form-group"><label>Đơn Giá (VNĐ)</label><input type="number" class="form-control" id="price" placeholder="Ví dụ: 1500000" oninput="liveUpdate()"></div>
+      <div class="form-group"><label>Tên Chủ Tài Khoản Nhận</label><input type="text" class="form-control" id="account" placeholder="Ví dụ: NGUYEN VAN A" oninput="liveUpdate()"></div>
+
+      <button class="btn btn-success" id="btnSave" onclick="saveInvoiceToFirebase()"><i class="fa-solid fa-cloud-arrow-up"></i> Lưu Lên Hệ Thống</button>
+    </div>
+  </div>
+
+  <div id="previewPanel">
+    <div class="invoice-wrapper">
+      <div id="invoice">
+        <div class="inv-header"><div class="inv-logo">khoahocvip.io.vn</div><div class="inv-title">Invoice</div></div>
+        <div class="inv-meta">
+          <div class="meta-block"><h4>Hóa đơn cấp cho</h4><p id="outEmail">khachhang@email.com</p><p id="outPhone" style="color: var(--text-muted); font-weight: 400;">SĐT: ---</p></div>
+          <div class="meta-block right"><h4>Chi tiết hóa đơn</h4><p>Số HĐ: <span id="outCode">INV-XXXX</span></p><p style="color: var(--text-muted); font-weight: 400;">Ngày cấp: <span id="outDate">--/--/----</span></p></div>
+        </div>
+        <table class="inv-table">
+          <thead><tr><th>Mô tả Dịch Vụ</th><th class="right">Thành Tiền</th></tr></thead>
+          <tbody><tr><td><p class="item-name" id="outCourse">Chưa nhập tên dịch vụ</p></td><td class="right" id="outPriceRow">0 ₫</td></tr></tbody>
+        </table>
+        <div class="inv-total">
+          <div class="total-box">
+            <div class="total-row"><span>Tổng phụ</span><span id="outSubTotal">0 ₫</span></div>
+            <div class="total-row grand-total"><span>Tổng Cộng</span><span id="outPriceTotal">0 ₫</span></div>
+          </div>
+        </div>
+
+        <div class="inv-footer">
+          <div class="attachment-box">
+            <a href="QQR.png" target="_blank" class="qr-link-wrapper" title="Bấm để mở ảnh QR to">
+              <img src="QQR.png" alt="Mã QR" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=QQR.png';">
+            </a>
+            <div class="attachment-info">
+              <h5>Thông tin thanh toán</h5>
+              <p id="outAccount">Tài khoản nhận: ---</p>
+              
+              <div id="copyButtonsContainer">
+                <span class="action-badge" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> Tải PDF</span>
+                <span class="action-badge" onclick="copyInvoiceLink()"><i class="fas fa-link"></i> Copy Link HĐ Gửi Khách</span>
+              </div>
+            </div>
+          </div>
+          <div class="thank-you">Cảm ơn bạn đã sử dụng dịch vụ.</div>
+        </div>
+
+        <div class="official-stamp">
+          <div class="stamp-content">
+            <span class="stamp-title">KHOAHOCVIP</span>
+            <span class="stamp-sign">ĐÃ KÝ</span>
+            <span class="stamp-sub">Admin KhoaHocVip</span>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-  const PASSWORD = "lamlam2802";
-  const input = prompt("🔐 Nhập mật khẩu để truy cập tạo hóa đơn:");
-  if (input !== PASSWORD) {
-    alert("❌ Sai mật khẩu.");
-    window.location.href = "/";
+  // ==========================================
+  // 1. CẤU HÌNH FIREBASE TỪ HÌNH ẢNH CỦA BẠN
+  // ==========================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyDkA6RYXElUuv-_Mxco8KK5dC4cvyWHyY",
+    authDomain: "onthi-dashboard.firebaseapp.com",
+    projectId: "onthi-dashboard",
+    storageBucket: "onthi-dashboard.firebasestorage.app",
+    messagingSenderId: "856897874104",
+    appId: "1:856897874104:web:a26077783e4f14ab18ec4d",
+    measurementId: "G-40ZSKBCBCD"
+  };
+  
+  // Khởi tạo Firebase
+  if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
   }
-</script>
+  const db = firebase.firestore();
 
-<main>
-  <h2><i class="fas fa-file-invoice-dollar"></i> Tạo hóa đơn thanh toán</h2>
+  // ==========================================
+  // 2. LOGIC ĐỊNH DẠNG & HIỂN THỊ
+  // ==========================================
+  const formatMoney = (amount) => new Intl.NumberFormat('vi-VN').format(amount || 0) + ' ₫';
+  const d = new Date();
+  const getToday = () => `${('0'+d.getDate()).slice(-2)}/${('0'+(d.getMonth()+1)).slice(-2)}/${d.getFullYear()}`;
+  
+  let currentCode = "";
 
-  <div class="invoice-form">
-    <label>Email:</label>
-    <input type="email" id="email">
-    <label>Số điện thoại:</label>
-    <input type="text" id="phone">
-    <label>Tên khóa học:</label>
-    <input type="text" id="course">
-    <label>Giá (VND):</label>
-    <input type="number" id="price">
-    <label>Ngày thanh toán:</label>
-    <input type="date" id="date">
-    <label>Ảnh QR chuyển khoản:</label>
-    <input type="file" id="qr" accept="image/*">
-    <label>Tên chủ tài khoản:</label>
-    <input type="text" id="account">
-    <button class="btn" onclick="generateInvoice()"><i class="fas fa-eye"></i> Tạo hóa đơn</button>
-  </div>
+  // ==========================================
+  // 3. KIỂM TRA TRẠNG THÁI: ADMIN HAY CLIENT?
+  // ==========================================
+  const urlParams = new URLSearchParams(window.location.search);
+  const invoiceIdParam = urlParams.get('id');
 
-  <div class="invoice-preview" style="display:none">
-    <div id="invoice">
-      <div class="invoice-header">
-        <div style="font-size: 24px; font-weight: bold; color: #2c3e50; margin-bottom: 10px;">khoahocvip.io.vn</div>
-        <h3><i class="fas fa-receipt"></i> HÓA ĐƠN THANH TOÁN</h3>
-      </div>
-      <div class="invoice-id">
-        Mã hóa đơn: <span id="invoiceCode"></span>
-      </div>
-      <div class="invoice-info">
-        <p><strong>Email:</strong> <span id="outEmail"></span></p>
-        <p><strong>SĐT:</strong> <span id="outPhone"></span></p>
-        <p><strong>Khóa học:</strong> <span id="outCourse"></span></p>
-        <p><strong>Giá:</strong> <span id="outPrice"></span> VND</p>
-        <p><strong>Ngày thanh toán:</strong> <span id="outDate"></span></p>
-      </div>
-      <div class="qr-section">
-        <img id="outQR" alt="QR ngân hàng">
-        <p id="outAccount"></p>
-      </div>
-    </div>
-    <div class="button-group">
-      <button class="btn" onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> Tải PDF</button>
-      <button class="btn" onclick="downloadImage()"><i class="fas fa-image"></i> Tải ảnh</button>
-    </div>
-  </div>
+  if (invoiceIdParam) {
+    // ---> CHẾ ĐỘ CLIENT (KHÁCH VÀO XEM THEO LINK)
+    document.title = `Hóa Đơn ${invoiceIdParam}`;
+    document.getElementById('adminPanel').style.display = 'none'; // Ẩn form soạn thảo
+    document.getElementById('mainDashboard').classList.add('client-mode'); // Chỉnh layout ra giữa
+    document.getElementById('loadingScreen').style.display = 'flex'; // Hiện màn hình loading
 
-  <div class="history-section">
-    <h2>Lịch sử hóa đơn đã tạo</h2>
-    <table id="historyTable">
-      <thead>
-        <tr>
-          <th>Mã</th><th>Email</th><th>SĐT</th><th>Khóa học</th><th>Giá</th><th>Ngày</th><th>Chủ TK</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <div class="button-group">
-      <button class="btn" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Tải danh sách Excel</button>
-    </div>
-  </div>
-</main>
+    // Truy vấn Firebase lấy dữ liệu
+    db.collection("invoices").doc(invoiceIdParam).get().then((doc) => {
+      document.getElementById('loadingScreen').style.display = 'none';
+      if (doc.exists) {
+        const data = doc.data();
+        // Đổ dữ liệu vào Bill
+        document.getElementById('outCode').innerText = data.code;
+        document.getElementById('outDate').innerText = data.date;
+        document.getElementById('outEmail').innerText = data.email;
+        document.getElementById('outPhone').innerText = "SĐT: " + (data.phone || "---");
+        document.getElementById('outCourse').innerText = data.course;
+        
+        const priceFormatted = formatMoney(data.price);
+        document.getElementById('outPriceRow').innerText = priceFormatted;
+        document.getElementById('outSubTotal').innerText = priceFormatted;
+        document.getElementById('outPriceTotal').innerText = priceFormatted;
+        
+        document.getElementById('outAccount').innerText = (data.account || "CHƯA NHẬP TÊN TK").toUpperCase();
+        currentCode = data.code;
+      } else {
+        alert("Hóa đơn này không tồn tại trên hệ thống hoặc đã bị xóa!");
+        window.location.href = window.location.origin + window.location.pathname; // Đá về trang chủ
+      }
+    }).catch((error) => {
+      alert("Lỗi kết nối máy chủ: " + error.message);
+      document.getElementById('loadingScreen').style.display = 'none';
+    });
 
-<script>
-  const historyData = JSON.parse(localStorage.getItem("invoiceHistory") || "[]");
+  } else {
+    // ---> CHẾ ĐỘ ADMIN (TẠO HÓA ĐƠN MỚI)
+    currentCode = `INV-${Math.floor(100000 + Math.random() * 900000)}`;
+    document.getElementById('outDate').innerText = getToday();
+    document.getElementById('outCode').innerText = currentCode;
+  }
 
-  function generateInvoice() {
+  // ==========================================
+  // 4. CÁC HÀM XỬ LÝ SỰ KIỆN
+  // ==========================================
+  function liveUpdate() {
+    if(invoiceIdParam) return; // Nếu khách xem thì chặn sửa
+    document.getElementById('outEmail').innerText = document.getElementById('email').value || "khachhang@email.com";
+    document.getElementById('outPhone').innerText = "SĐT: " + (document.getElementById('phone').value || "---");
+    document.getElementById('outCourse').innerText = document.getElementById('course').value || "Chưa nhập tên dịch vụ";
+    const priceStr = formatMoney(document.getElementById('price').value);
+    document.getElementById('outPriceRow').innerText = priceStr;
+    document.getElementById('outSubTotal').innerText = priceStr;
+    document.getElementById('outPriceTotal').innerText = priceStr;
+    document.getElementById('outAccount').innerText = (document.getElementById('account').value || "CHƯA NHẬP TÊN TK").toUpperCase();
+  }
+
+  // LƯU DỮ LIỆU LÊN FIREBASE CLOUD
+  function saveInvoiceToFirebase() {
     const email = document.getElementById('email').value;
     const phone = document.getElementById('phone').value;
     const course = document.getElementById('course').value;
     const price = document.getElementById('price').value;
-    const date = document.getElementById('date').value;
     const account = document.getElementById('account').value;
-    const qrInput = document.getElementById('qr');
 
-    if (!qrInput.files[0]) return alert("Chọn ảnh QR");
+    if(!email || !price) return alert("Vui lòng điền tối thiểu Email và Đơn giá!");
 
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const code = Math.floor(100000 + Math.random() * 900000);
-      document.getElementById('outEmail').textContent = email;
-      document.getElementById('outPhone').textContent = phone;
-      document.getElementById('outCourse').textContent = course;
-      document.getElementById('outPrice').textContent = parseInt(price).toLocaleString();
-      document.getElementById('outDate').textContent = date.split('-').reverse().join('/');
-      document.getElementById('outQR').src = e.target.result;
-      document.getElementById('outAccount').textContent = "Chủ tài khoản: " + account;
-      document.getElementById('invoiceCode').textContent = code;
-      document.querySelector('.invoice-preview').style.display = 'block';
+    const btn = document.getElementById('btnSave');
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...`;
+    btn.disabled = true;
 
-      // Lưu lịch sử
-      const invoice = { code, email, phone, course, price, date, account };
-      historyData.push(invoice);
-      localStorage.setItem("invoiceHistory", JSON.stringify(historyData));
-      renderHistory();
+    const invoiceData = {
+      code: currentCode,
+      email: email,
+      phone: phone,
+      course: course,
+      price: Number(price),
+      account: account,
+      date: getToday(),
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
     };
-    reader.readAsDataURL(qrInput.files[0]);
+
+    // Push lên bảng "invoices" với ID là mã hóa đơn (VD: INV-123456)
+    db.collection("invoices").doc(currentCode).set(invoiceData)
+      .then(() => {
+        showToast("Đã đẩy dữ liệu lên Firebase thành công!");
+        // Cấp mã mới cho lần nhập tiếp theo
+        currentCode = `INV-${Math.floor(100000 + Math.random() * 900000)}`;
+        document.getElementById('outCode').innerText = currentCode;
+        // Reset form cơ bản
+        document.getElementById('email').value = "";
+        document.getElementById('course').value = "";
+        document.getElementById('price').value = "";
+        liveUpdate();
+      })
+      .catch((error) => {
+        console.error("Lỗi:", error);
+        alert("Có lỗi xảy ra: Xin hãy kiểm tra lại Rule của Firebase Firestore!");
+      })
+      .finally(() => {
+        btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Lưu Lên Hệ Thống`;
+        btn.disabled = false;
+      });
   }
 
-  function renderHistory() {
-    const tbody = document.querySelector("#historyTable tbody");
-    tbody.innerHTML = "";
-    historyData.forEach(item => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${item.code}</td>
-        <td>${item.email}</td>
-        <td>${item.phone}</td>
-        <td>${item.course}</td>
-        <td>${parseInt(item.price).toLocaleString()}</td>
-        <td>${item.date.split('-').reverse().join('/')}</td>
-        <td>${item.account}</td>
-      `;
-      tbody.appendChild(tr);
-    });
+  // TẠO LINK TRỰC TIẾP CHO KHÁCH HÀNG
+  function copyInvoiceLink() {
+    // Link gốc + tham số ID. Ví dụ: https://tenmien.com/?id=INV-837465
+    const link = window.location.origin + window.location.pathname + '?id=' + currentCode;
+    
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(link).then(() => showToast("Đã copy Link: " + link));
+    } else {
+        let textArea = document.createElement("textarea");
+        textArea.value = link;
+        document.body.appendChild(textArea); textArea.focus(); textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showToast("Đã copy Link Hóa Đơn!");
+    }
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${msg}`;
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 3000);
   }
 
   function downloadPDF() {
-    html2pdf().from(document.getElementById('invoice')).set({
-      margin: 0.5,
-      filename: `hoa-don-${Date.now()}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' }
-    }).save();
-  }
-
-  function downloadImage() {
-    html2canvas(document.getElementById('invoice')).then(canvas => {
-      const link = document.createElement('a');
-      link.download = `hoa-don-${Date.now()}.png`;
-      link.href = canvas.toDataURL();
-      link.click();
+    document.getElementById('copyButtonsContainer').style.display = 'none';
+    html2pdf().set({ margin: 0, filename: `${currentCode}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 3, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(document.getElementById('invoice')).save().then(() => {
+      document.getElementById('copyButtonsContainer').style.display = 'block';
     });
   }
-
-  function exportToExcel() {
-    const ws = XLSX.utils.json_to_sheet(historyData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Invoices");
-    XLSX.writeFile(wb, "danh-sach-hoa-don.xlsx");
-  }
-
-  renderHistory();
 </script>
-
 </body>
 </html>
