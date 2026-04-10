@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Hóa Đơn Thanh Toán - KhoaHocVip</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,15 +29,21 @@
       --primary-hover: #3f3f46;
       --success: #10b981;
       --danger: #ef4444;
+      --blue: #2563eb;
+      --blue-hover: #1d4ed8;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-    body { background: var(--bg-body); color: var(--text-main); padding: 20px; }
+    body { background: var(--bg-body); color: var(--text-main); padding: 20px; overflow-x: hidden; }
 
     .dashboard { max-width: 1600px; margin: 0 auto; display: grid; grid-template-columns: 400px 1fr; gap: 24px; align-items: start; transition: all 0.3s;}
-    @media (max-width: 1024px) { .dashboard { grid-template-columns: 1fr; } }
+    
+    /* Layout Responsive cho Mobile & Tablet */
+    @media (max-width: 1100px) { 
+      .dashboard { grid-template-columns: 1fr; } 
+    }
 
-    .dashboard.client-mode { display: flex; justify-content: center; padding-top: 40px; }
+    .dashboard.client-mode { display: flex; justify-content: center; padding: 20px 0; }
 
     .panel { background: var(--bg-panel); border-radius: 12px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 24px; }
     .panel-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 24px; display: flex; align-items: center; gap: 8px; }
@@ -51,11 +57,36 @@
     .btn:hover { background: var(--primary-hover); }
     .btn-success { background: var(--success); }
     .btn-success:hover { background: #059669; }
+    .btn-blue { background: var(--blue); }
+    .btn-blue:hover { background: var(--blue-hover); }
     .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); margin-top: 12px; }
     .btn-outline:hover { background: var(--bg-body); }
+    
+    .admin-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    @media (max-width: 600px) {
+      .admin-actions { grid-template-columns: 1fr; }
+    }
 
-    .invoice-wrapper { display: flex; justify-content: center; overflow-x: auto; padding: 0 0 24px 0; width: 100%;}
-    #invoice { width: 210mm; background: #fff; padding: 50mm 20mm; box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; }
+    /* VÙNG CHỨA HÓA ĐƠN RESPONSIVE */
+    .invoice-container-outer {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      overflow: hidden; /* Cắt phần viền dư thừa */
+    }
+
+    .invoice-scale-wrapper {
+      transform-origin: top center; /* Giữ điểm neo thu phóng ở trên cùng */
+      margin-bottom: 24px;
+    }
+
+    #invoice { 
+      width: 210mm; /* Cố định chuẩn A4 để in ấn/lưu ảnh không bị vỡ */
+      background: #fff; 
+      padding: 50mm 20mm; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+      position: relative; 
+    }
 
     .inv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 60px; }
     .inv-logo { font-size: 28px; font-weight: 700; letter-spacing: -1px; }
@@ -76,37 +107,29 @@
     .total-row { display: flex; justify-content: space-between; padding: 12px 0; font-size: 1rem; }
     .total-row.grand-total { border-top: 2px solid var(--border-dark); border-bottom: 2px solid var(--border-dark); font-size: 1.25rem; font-weight: 700; margin-top: 8px; }
 
-    .inv-footer { display: flex; justify-content: space-between; align-items: flex-end; }
-    .attachment-box { display: flex; gap: 24px; align-items: center; }
+    .inv-footer { display: flex; justify-content: space-between; align-items: flex-start; }
+    .attachment-box { display: flex; gap: 32px; align-items: flex-start; }
     
-    /* MÃ QR ĐƯỢC PHÓNG TO */
-    .qr-link-wrapper img { 
-      width: 220px; /* Tăng từ 150px lên 220px */
-      height: 220px; 
-      object-fit: cover; 
-      border-radius: 12px; 
-      border: 2px solid var(--border-color); 
-      box-shadow: 0 6px 16px rgba(0,0,0,0.08); 
-      transition: transform 0.2s; 
-    }
-    .qr-link-wrapper:hover img { transform: scale(1.03); }
+    .qr-link-wrapper img { width: 280px; height: 280px; object-fit: cover; border-radius: 16px; border: 3px solid #e4e4e7; box-shadow: 0 8px 24px rgba(0,0,0,0.1); transition: transform 0.2s; }
+    .qr-link-wrapper:hover img { transform: scale(1.02); }
     
-    .attachment-info h5 { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 6px; }
-    .attachment-info p { font-size: 1.05rem; font-weight: 600; margin-bottom: 16px; color: #111827; }
+    .attachment-info { padding-top: 10px; }
+    .attachment-info h5 { font-size: 1rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
+    .attachment-info p { font-size: 1.15rem; font-weight: 700; margin-bottom: 20px; color: #111827; }
     
-    .action-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #2563eb; background: #eff6ff; padding: 8px 14px; border-radius: 6px; cursor: pointer; border: 1px solid #bfdbfe; transition: 0.2s; margin-right: 8px; font-weight: 500;}
-    .action-badge:hover { background: #dbeafe; }
+    .buttons-grid { display: flex; flex-direction: column; gap: 10px; }
+    .action-badge { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; color: #2563eb; background: #eff6ff; padding: 10px 16px; border-radius: 8px; cursor: pointer; border: 1px solid #bfdbfe; transition: 0.2s; font-weight: 600; text-decoration: none;}
+    .action-badge:hover { background: #dbeafe; transform: translateY(-1px); }
 
-    .thank-you { font-size: 0.9rem; color: var(--text-muted); font-style: italic; text-align: right; }
+    .thank-you { font-size: 0.95rem; color: var(--text-muted); font-style: italic; text-align: right; padding-top: 20px;}
     
     #loadingScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 16px; font-size: 1.2rem; font-weight: 500; }
     .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #000; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--text-main); color: white; padding: 12px 24px; border-radius: 8px; font-weight: 500; display: none; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--text-main); color: white; padding: 12px 24px; border-radius: 8px; font-weight: 500; display: none; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); text-align: center; max-width: 90%; width: max-content;}
     #toast.error { background: var(--danger); }
 
-    /* --- CSS CON DẤU ĐỎ --- */
     .official-stamp {
       width: 140px; height: 140px; border: 4px double #dc2626; border-radius: 50%;
       display: flex; justify-content: center; align-items: center; color: #dc2626;
@@ -117,6 +140,11 @@
     .stamp-title { font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; }
     .stamp-sign { font-size: 1.4rem; font-weight: 900; margin: 6px 0; padding: 2px 0; border-top: 1px solid #dc2626; border-bottom: 1px solid #dc2626; width: 90%; }
     .stamp-sub { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; }
+
+    /* Lịch sử Responsive */
+    .history-table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .history-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 600px; }
+    .history-table th, .history-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
   </style>
 </head>
 <body>
@@ -140,55 +168,61 @@
       <div class="form-group"><label>Tên Chủ Tài Khoản Nhận</label><input type="text" class="form-control" id="account" placeholder="Ví dụ: NGUYEN VAN A" oninput="liveUpdate()"></div>
 
       <button class="btn btn-success" id="btnSave" onclick="saveInvoiceToFirebase()"><i class="fa-solid fa-cloud-arrow-up"></i> Lưu Lên Hệ Thống</button>
-      <button class="btn btn-outline" onclick="resetForm()"><i class="fa-solid fa-plus"></i> Tạo Hóa Đơn Mới</button>
+      
+      <div class="admin-actions">
+        <button class="btn btn-blue" onclick="copyInvoiceLink()" style="margin: 0;"><i class="fas fa-link"></i> Copy Link Gửi Khách</button>
+        <button class="btn btn-outline" onclick="resetForm()" style="margin: 0;"><i class="fa-solid fa-plus"></i> Hóa Đơn Mới</button>
+      </div>
     </div>
   </div>
 
   <div id="previewPanel">
-    <div class="invoice-wrapper">
-      <div id="invoice">
-        <div class="inv-header"><div class="inv-logo">khoahocvip.io.vn</div><div class="inv-title">Invoice</div></div>
-        <div class="inv-meta">
-          <div class="meta-block"><h4>Hóa đơn cấp cho</h4><p id="outEmail">khachhang@email.com</p><p id="outPhone" style="color: var(--text-muted); font-weight: 400;">SĐT: ---</p></div>
-          <div class="meta-block right"><h4>Chi tiết hóa đơn</h4><p>Số HĐ: <span id="outCode">INV-XXXX</span></p><p style="color: var(--text-muted); font-weight: 400;">Ngày cấp: <span id="outDate">--/--/----</span></p></div>
-        </div>
-        <table class="inv-table">
-          <thead><tr><th>Mô tả Dịch Vụ</th><th class="right">Thành Tiền</th></tr></thead>
-          <tbody><tr><td><p class="item-name" id="outCourse">Chưa nhập tên dịch vụ</p></td><td class="right" id="outPriceRow">0 ₫</td></tr></tbody>
-        </table>
-        <div class="inv-total">
-          <div class="total-box">
-            <div class="total-row"><span>Tổng phụ</span><span id="outSubTotal">0 ₫</span></div>
-            <div class="total-row grand-total"><span>Tổng Cộng</span><span id="outPriceTotal">0 ₫</span></div>
+    <div class="invoice-container-outer" id="invoiceOuter">
+      <div class="invoice-scale-wrapper" id="invoiceWrapper">
+        <div id="invoice">
+          <div class="inv-header"><div class="inv-logo">khoahocvip.io.vn</div><div class="inv-title">Invoice</div></div>
+          <div class="inv-meta">
+            <div class="meta-block"><h4>Hóa đơn cấp cho</h4><p id="outEmail">khachhang@email.com</p><p id="outPhone" style="color: var(--text-muted); font-weight: 400;">SĐT: ---</p></div>
+            <div class="meta-block right"><h4>Chi tiết hóa đơn</h4><p>Số HĐ: <span id="outCode">INV-XXXX</span></p><p style="color: var(--text-muted); font-weight: 400;">Ngày cấp: <span id="outDate">--/--/----</span></p></div>
           </div>
-        </div>
-
-        <div class="inv-footer">
-          <div class="attachment-box">
-            <a href="QQR.png" target="_blank" class="qr-link-wrapper" title="Bấm để mở ảnh QR to">
-              <img src="QQR.png" alt="Mã QR" onerror="this.onerror=null; this.src='https://via.placeholder.com/220?text=QQR.png';">
-            </a>
-            <div class="attachment-info">
-              <h5>Thông tin thanh toán</h5>
-              <p id="outAccount">Tài khoản nhận: ---</p>
-              
-              <div id="copyButtonsContainer">
-                <span class="action-badge" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> Tải PDF</span>
-                <span class="action-badge" onclick="copyInvoiceLink()"><i class="fas fa-link"></i> Copy Link HĐ Gửi Khách</span>
-              </div>
+          <table class="inv-table">
+            <thead><tr><th>Mô tả Dịch Vụ</th><th class="right">Thành Tiền</th></tr></thead>
+            <tbody><tr><td><p class="item-name" id="outCourse">Chưa nhập tên dịch vụ</p></td><td class="right" id="outPriceRow">0 ₫</td></tr></tbody>
+          </table>
+          <div class="inv-total">
+            <div class="total-box">
+              <div class="total-row"><span>Tổng phụ</span><span id="outSubTotal">0 ₫</span></div>
+              <div class="total-row grand-total"><span>Tổng Cộng</span><span id="outPriceTotal">0 ₫</span></div>
             </div>
           </div>
-          <div class="thank-you">Cảm ơn bạn đã sử dụng dịch vụ.</div>
-        </div>
 
-        <div class="official-stamp">
-          <div class="stamp-content">
-            <span class="stamp-title">KHOAHOCVIP</span>
-            <span class="stamp-sign">ĐÃ KÝ</span>
-            <span class="stamp-sub">Admin KhoaHocVip</span>
+          <div class="inv-footer">
+            <div class="attachment-box">
+              <a href="QQR.png" target="_blank" class="qr-link-wrapper" title="Bấm để mở ảnh QR to">
+                <img src="QQR.png" alt="Mã QR" onerror="this.onerror=null; this.src='https://via.placeholder.com/280?text=QQR.png';">
+              </a>
+              <div class="attachment-info">
+                <h5>Quét mã để thanh toán</h5>
+                <p id="outAccount">Tài khoản nhận: ---</p>
+                
+                <div class="buttons-grid" id="copyButtonsContainer">
+                  <span class="action-badge" onclick="downloadImage()"><i class="fa-solid fa-image"></i> Tải Ảnh Hóa Đơn</span>
+                  <span class="action-badge" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> Tải PDF Hóa Đơn</span>
+                </div>
+              </div>
+            </div>
+            <div class="thank-you">Cảm ơn bạn đã<br>sử dụng dịch vụ.</div>
           </div>
+
+          <div class="official-stamp">
+            <div class="stamp-content">
+              <span class="stamp-title">KHOAHOCVIP</span>
+              <span class="stamp-sign">ĐÃ KÝ</span>
+              <span class="stamp-sub">Admin KhoaHocVip</span>
+            </div>
+          </div>
+          
         </div>
-        
       </div>
     </div>
   </div>
@@ -215,7 +249,36 @@
   const getToday = () => `${('0'+d.getDate()).slice(-2)}/${('0'+(d.getMonth()+1)).slice(-2)}/${d.getFullYear()}`;
   
   let currentCode = "";
-  let isSaved = false; // Biến kiểm tra xem bill này đã được lưu lên Firebase chưa
+  let isSaved = false; 
+
+  // --- LOGIC RESPONSIVE BẰNG JAVASCRIPT ---
+  function scaleInvoice() {
+    const outer = document.getElementById('invoiceOuter');
+    const wrapper = document.getElementById('invoiceWrapper');
+    const invoice = document.getElementById('invoice');
+    
+    // Width chuẩn A4 tính bằng px (khoảng 794px ở độ phân giải tiêu chuẩn)
+    const originalWidth = invoice.offsetWidth; 
+    const availableWidth = outer.offsetWidth;
+
+    // Nếu màn hình nhỏ hơn tờ A4 (trên Mobile/Tablet)
+    if (availableWidth < originalWidth) {
+      const scaleValue = availableWidth / originalWidth;
+      wrapper.style.transform = `scale(${scaleValue})`;
+      // Điều chỉnh chiều cao vùng chứa để không bị khoảng trống dư thừa
+      wrapper.style.height = `${invoice.offsetHeight * scaleValue}px`;
+    } else {
+      // Reset khi ở Desktop
+      wrapper.style.transform = `scale(1)`;
+      wrapper.style.height = `auto`;
+    }
+  }
+
+  // Tự động scale khi Resize trình duyệt hoặc xoay ngang màn hình điện thoại
+  window.addEventListener('resize', scaleInvoice);
+  // Scale lần đầu khi load trang
+  setTimeout(scaleInvoice, 100); 
+  // ----------------------------------------
 
   // 3. CHẾ ĐỘ HIỂN THỊ (ADMIN / CLIENT)
   const urlParams = new URLSearchParams(window.location.search);
@@ -243,6 +306,9 @@
         document.getElementById('outPriceTotal').innerText = priceFormatted;
         document.getElementById('outAccount').innerText = (data.account || "CHƯA NHẬP TÊN TK").toUpperCase();
         currentCode = data.code;
+        
+        // Scale lại sau khi đổ dữ liệu để kích thước cập nhật chính xác
+        setTimeout(scaleInvoice, 50);
       } else {
         alert("Hóa đơn này không tồn tại trên hệ thống hoặc đã bị xóa!");
         window.location.href = window.location.origin + window.location.pathname; 
@@ -279,7 +345,7 @@
 
   function liveUpdate() {
     if(invoiceIdParam) return; 
-    isSaved = false; // Mỗi khi chỉnh sửa, đánh dấu là chưa lưu
+    isSaved = false; 
     document.getElementById('outEmail').innerText = document.getElementById('email').value || "khachhang@email.com";
     document.getElementById('outPhone').innerText = "SĐT: " + (document.getElementById('phone').value || "---");
     document.getElementById('outCourse').innerText = document.getElementById('course').value || "Chưa nhập tên dịch vụ";
@@ -288,6 +354,7 @@
     document.getElementById('outSubTotal').innerText = priceStr;
     document.getElementById('outPriceTotal').innerText = priceStr;
     document.getElementById('outAccount').innerText = (document.getElementById('account').value || "CHƯA NHẬP TÊN TK").toUpperCase();
+    setTimeout(scaleInvoice, 10);
   }
 
   function saveInvoiceToFirebase() {
@@ -316,7 +383,7 @@
 
     db.collection("invoices").doc(currentCode).set(invoiceData)
       .then(() => {
-        isSaved = true; // Đánh dấu là đã lưu thành công
+        isSaved = true; 
         showToast("Đã lưu Hóa đơn thành công! Bạn có thể copy link.", "success");
       })
       .catch((error) => {
@@ -330,7 +397,6 @@
   }
 
   function copyInvoiceLink() {
-    // Ngăn chặn việc copy link khi chưa lưu (Vì copy xong gửi khách sẽ bị lỗi Not Found)
     if (!invoiceIdParam && !isSaved) {
       alert("VUI LÒNG BẤM NÚT 'LƯU LÊN HỆ THỐNG' TRƯỚC KHI COPY LINK!");
       return;
@@ -364,10 +430,46 @@
     setTimeout(() => { toast.style.display = 'none'; }, 3000);
   }
 
+  // Khôi phục scale về 1 để xuất file không bị mờ
+  async function resetScaleForExport(callback) {
+    const wrapper = document.getElementById('invoiceWrapper');
+    const oldTransform = wrapper.style.transform;
+    const oldHeight = wrapper.style.height;
+    
+    wrapper.style.transform = 'scale(1)';
+    wrapper.style.height = 'auto';
+    
+    // Đợi layout update
+    await new Promise(r => setTimeout(r, 100));
+    
+    await callback();
+    
+    // Phục hồi lại scale
+    wrapper.style.transform = oldTransform;
+    wrapper.style.height = oldHeight;
+  }
+
+  function downloadImage() {
+    document.getElementById('copyButtonsContainer').style.display = 'none';
+    
+    resetScaleForExport(() => {
+      return html2canvas(document.getElementById('invoice'), { scale: 3, useCORS: true }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `HoaDon_${currentCode}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        document.getElementById('copyButtonsContainer').style.display = 'flex';
+      });
+    });
+  }
+
   function downloadPDF() {
     document.getElementById('copyButtonsContainer').style.display = 'none';
-    html2pdf().set({ margin: 0, filename: `${currentCode}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 3, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(document.getElementById('invoice')).save().then(() => {
-      document.getElementById('copyButtonsContainer').style.display = 'block';
+    
+    resetScaleForExport(() => {
+      return html2pdf().set({ margin: 0, filename: `${currentCode}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 3, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(document.getElementById('invoice')).save().then(() => {
+        document.getElementById('copyButtonsContainer').style.display = 'flex';
+      });
     });
   }
 </script>
