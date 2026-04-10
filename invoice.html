@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Hóa Đơn Thanh Toán - KhoaHocVip</title>
+
+  <meta property="og:title" content="Hóa Đơn Thanh Toán Dịch Vụ - KhoaHocVip" />
+  <meta property="og:description" content="Nhấn vào link để xem chi tiết hóa đơn dịch vụ và thông tin chuyển khoản an toàn." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://via.placeholder.com/600x315.png?text=HOA+DON+THANH+TOAN" />
+  <meta name="theme-color" content="#2563eb">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,18 +40,24 @@
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    
     body { background: var(--bg-body); color: var(--text-main); padding: 20px; overflow-x: hidden; }
 
+    /* Bố cục chính */
     .dashboard { max-width: 1600px; margin: 0 auto; display: grid; grid-template-columns: 400px 1fr; gap: 24px; align-items: start; transition: all 0.3s;}
     
-    /* Layout Responsive cho Mobile & Tablet */
     @media (max-width: 1100px) { 
       .dashboard { grid-template-columns: 1fr; } 
+    }
+    @media (max-width: 600px) {
+      body { padding: 10px; }
     }
 
     .dashboard.client-mode { display: flex; justify-content: center; padding: 20px 0; }
 
     .panel { background: var(--bg-panel); border-radius: 12px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 24px; }
+    @media (max-width: 600px) { .panel { padding: 20px; } }
+    
     .panel-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 24px; display: flex; align-items: center; gap: 8px; }
 
     .form-group { margin-bottom: 20px; }
@@ -67,21 +79,30 @@
       .admin-actions { grid-template-columns: 1fr; }
     }
 
-    /* VÙNG CHỨA HÓA ĐƠN RESPONSIVE */
+    /* VÙNG CHỨA HÓA ĐƠN ĐƯỢC TỐI ƯU RESPONSIVE */
+    #previewPanel {
+      width: 100%;
+      max-width: 100vw;
+      display: flex;
+      justify-content: center;
+    }
+
     .invoice-container-outer {
       width: 100%;
       display: flex;
       justify-content: center;
-      overflow: hidden; /* Cắt phần viền dư thừa */
+      overflow: hidden; /* Cắt gọn phần viền để không bị lướt ngang */
     }
 
     .invoice-scale-wrapper {
-      transform-origin: top center; /* Giữ điểm neo thu phóng ở trên cùng */
+      transform-origin: top center;
       margin-bottom: 24px;
+      transition: transform 0.1s;
     }
 
+    /* Kích thước hóa đơn cứng chuẩn A4 */
     #invoice { 
-      width: 210mm; /* Cố định chuẩn A4 để in ấn/lưu ảnh không bị vỡ */
+      width: 210mm; /* Khổ giấy A4 ~ 794px */
       background: #fff; 
       padding: 50mm 20mm; 
       box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
@@ -140,11 +161,6 @@
     .stamp-title { font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; }
     .stamp-sign { font-size: 1.4rem; font-weight: 900; margin: 6px 0; padding: 2px 0; border-top: 1px solid #dc2626; border-bottom: 1px solid #dc2626; width: 90%; }
     .stamp-sub { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; }
-
-    /* Lịch sử Responsive */
-    .history-table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .history-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 600px; }
-    .history-table th, .history-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
   </style>
 </head>
 <body>
@@ -251,34 +267,40 @@
   let currentCode = "";
   let isSaved = false; 
 
-  // --- LOGIC RESPONSIVE BẰNG JAVASCRIPT ---
+  // ==========================================
+  // THUẬT TOÁN RESPONSIVE ĐƯỢC TỐI ƯU CỰC MẠNH
+  // ==========================================
   function scaleInvoice() {
-    const outer = document.getElementById('invoiceOuter');
     const wrapper = document.getElementById('invoiceWrapper');
     const invoice = document.getElementById('invoice');
     
-    // Width chuẩn A4 tính bằng px (khoảng 794px ở độ phân giải tiêu chuẩn)
-    const originalWidth = invoice.offsetWidth; 
-    const availableWidth = outer.offsetWidth;
+    // Chiều rộng A4 cố định của hóa đơn (~794px)
+    const originalWidth = invoice.offsetWidth || 794; 
+    
+    // Lấy chiều rộng màn hình khả dụng (trừ đi padding 2 bên của body/container)
+    let availableWidth = window.innerWidth;
+    if (window.innerWidth <= 1100) {
+      availableWidth = window.innerWidth - 20; // Trừ 20px padding trên Mobile
+    } else {
+      availableWidth = document.getElementById('previewPanel').clientWidth; 
+    }
 
-    // Nếu màn hình nhỏ hơn tờ A4 (trên Mobile/Tablet)
+    // Nếu màn hình nhỏ hơn hóa đơn, tiến hành thu nhỏ theo tỷ lệ
     if (availableWidth < originalWidth) {
       const scaleValue = availableWidth / originalWidth;
       wrapper.style.transform = `scale(${scaleValue})`;
-      // Điều chỉnh chiều cao vùng chứa để không bị khoảng trống dư thừa
+      // Tính lại chiều cao thật của Wrapper để không dư khoảng trắng bên dưới
       wrapper.style.height = `${invoice.offsetHeight * scaleValue}px`;
     } else {
-      // Reset khi ở Desktop
+      // Màn hình rộng (PC/Laptop) -> Hiển thị gốc 100%
       wrapper.style.transform = `scale(1)`;
       wrapper.style.height = `auto`;
     }
   }
 
-  // Tự động scale khi Resize trình duyệt hoặc xoay ngang màn hình điện thoại
+  // Lắng nghe sự kiện xoay màn hình đt hoặc kéo cửa sổ
   window.addEventListener('resize', scaleInvoice);
-  // Scale lần đầu khi load trang
-  setTimeout(scaleInvoice, 100); 
-  // ----------------------------------------
+  setTimeout(scaleInvoice, 150); // Cho UI ổn định rồi chạy scale
 
   // 3. CHẾ ĐỘ HIỂN THỊ (ADMIN / CLIENT)
   const urlParams = new URLSearchParams(window.location.search);
@@ -307,8 +329,8 @@
         document.getElementById('outAccount').innerText = (data.account || "CHƯA NHẬP TÊN TK").toUpperCase();
         currentCode = data.code;
         
-        // Scale lại sau khi đổ dữ liệu để kích thước cập nhật chính xác
-        setTimeout(scaleInvoice, 50);
+        // Scale lại sau khi đổ dữ liệu Firebase
+        setTimeout(scaleInvoice, 100);
       } else {
         alert("Hóa đơn này không tồn tại trên hệ thống hoặc đã bị xóa!");
         window.location.href = window.location.origin + window.location.pathname; 
@@ -354,6 +376,8 @@
     document.getElementById('outSubTotal').innerText = priceStr;
     document.getElementById('outPriceTotal').innerText = priceStr;
     document.getElementById('outAccount').innerText = (document.getElementById('account').value || "CHƯA NHẬP TÊN TK").toUpperCase();
+    
+    // Scale update khi text làm dài layout
     setTimeout(scaleInvoice, 10);
   }
 
@@ -396,6 +420,9 @@
       });
   }
 
+  // ==========================================
+  // HÀM COPY GỘP CHỮ VÀO LINK ZALO/MESSENGER
+  // ==========================================
   function copyInvoiceLink() {
     if (!invoiceIdParam && !isSaved) {
       alert("VUI LÒNG BẤM NÚT 'LƯU LÊN HỆ THỐNG' TRƯỚC KHI COPY LINK!");
@@ -403,16 +430,20 @@
     }
 
     const link = window.location.origin + window.location.pathname + '?id=' + currentCode;
+    const clientEmail = document.getElementById('outEmail').innerText || "Khách hàng";
+    
+    // Mẫu tin nhắn copy siêu đẹp
+    const textToCopy = `🧾 HÓA ĐƠN THANH TOÁN DỊCH VỤ\n👤 Khách hàng: ${clientEmail}\n🔗 Nhấn vào link bên dưới để xem hóa đơn và quét mã QR chuyển khoản:\n${link}`;
     
     if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(link).then(() => showToast("Đã copy Link: " + link, "success"));
+        navigator.clipboard.writeText(textToCopy).then(() => showToast("Đã copy nội dung gửi khách!", "success"));
     } else {
         let textArea = document.createElement("textarea");
-        textArea.value = link;
+        textArea.value = textToCopy;
         document.body.appendChild(textArea); textArea.focus(); textArea.select();
         document.execCommand('copy');
         document.body.removeChild(textArea);
-        showToast("Đã copy Link Hóa Đơn!", "success");
+        showToast("Đã copy nội dung gửi khách!", "success");
     }
   }
 
@@ -430,23 +461,32 @@
     setTimeout(() => { toast.style.display = 'none'; }, 3000);
   }
 
-  // Khôi phục scale về 1 để xuất file không bị mờ
+  // ==========================================
+  // XUẤT ẢNH/PDF KHÔNG BỊ CẮT TRÊN ĐIỆN THOẠI
+  // ==========================================
   async function resetScaleForExport(callback) {
     const wrapper = document.getElementById('invoiceWrapper');
+    const outer = document.getElementById('invoiceOuter');
+    
+    // Lưu lại trạng thái Scale hiện tại
     const oldTransform = wrapper.style.transform;
     const oldHeight = wrapper.style.height;
+    const oldOverflow = outer.style.overflow;
     
+    // Bơm hóa đơn về đúng kích thước A4 vật lý (Scale 1)
     wrapper.style.transform = 'scale(1)';
     wrapper.style.height = 'auto';
+    outer.style.overflow = 'visible'; // Mở khóa tràn viền để Camera không bị cắt
     
-    // Đợi layout update
-    await new Promise(r => setTimeout(r, 100));
+    // Chờ 150ms để trình duyệt render kịp kích thước thật
+    await new Promise(r => setTimeout(r, 150));
     
     await callback();
     
-    // Phục hồi lại scale
+    // Trả lại giao diện thu nhỏ cho điện thoại
     wrapper.style.transform = oldTransform;
     wrapper.style.height = oldHeight;
+    outer.style.overflow = oldOverflow;
   }
 
   function downloadImage() {
