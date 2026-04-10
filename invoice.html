@@ -43,15 +43,13 @@
     
     body { background: var(--bg-body); color: var(--text-main); padding: 20px; overflow-x: hidden; }
 
-    /* Bố cục chính */
+    /* Màn hình khóa mờ khi chưa nhập pass */
+    body.locked { display: none; }
+
     .dashboard { max-width: 1600px; margin: 0 auto; display: grid; grid-template-columns: 400px 1fr; gap: 24px; align-items: start; transition: all 0.3s;}
     
-    @media (max-width: 1100px) { 
-      .dashboard { grid-template-columns: 1fr; } 
-    }
-    @media (max-width: 600px) {
-      body { padding: 10px; }
-    }
+    @media (max-width: 1100px) { .dashboard { grid-template-columns: 1fr; } }
+    @media (max-width: 600px) { body { padding: 10px; } }
 
     .dashboard.client-mode { display: flex; justify-content: center; padding: 20px 0; }
 
@@ -75,39 +73,13 @@
     .btn-outline:hover { background: var(--bg-body); }
     
     .admin-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
-    @media (max-width: 600px) {
-      .admin-actions { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 600px) { .admin-actions { grid-template-columns: 1fr; } }
 
-    /* VÙNG CHỨA HÓA ĐƠN ĐƯỢC TỐI ƯU RESPONSIVE */
-    #previewPanel {
-      width: 100%;
-      max-width: 100vw;
-      display: flex;
-      justify-content: center;
-    }
+    #previewPanel { width: 100%; max-width: 100vw; display: flex; justify-content: center; }
+    .invoice-container-outer { width: 100%; display: flex; justify-content: center; overflow: hidden; }
+    .invoice-scale-wrapper { transform-origin: top center; margin-bottom: 24px; transition: transform 0.1s; }
 
-    .invoice-container-outer {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      overflow: hidden; /* Cắt gọn phần viền để không bị lướt ngang */
-    }
-
-    .invoice-scale-wrapper {
-      transform-origin: top center;
-      margin-bottom: 24px;
-      transition: transform 0.1s;
-    }
-
-    /* Kích thước hóa đơn cứng chuẩn A4 */
-    #invoice { 
-      width: 210mm; /* Khổ giấy A4 ~ 794px */
-      background: #fff; 
-      padding: 50mm 20mm; 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
-      position: relative; 
-    }
+    #invoice { width: 210mm; background: #fff; padding: 50mm 20mm; box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; }
 
     .inv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 60px; }
     .inv-logo { font-size: 28px; font-weight: 700; letter-spacing: -1px; }
@@ -131,13 +103,17 @@
     .inv-footer { display: flex; justify-content: space-between; align-items: flex-start; }
     .attachment-box { display: flex; gap: 32px; align-items: flex-start; }
     
+    /* Làm con trỏ tay khi trỏ vào ảnh QR */
+    .qr-link-wrapper { cursor: pointer; }
     .qr-link-wrapper img { width: 280px; height: 280px; object-fit: cover; border-radius: 16px; border: 3px solid #e4e4e7; box-shadow: 0 8px 24px rgba(0,0,0,0.1); transition: transform 0.2s; }
     .qr-link-wrapper:hover img { transform: scale(1.02); }
     
     .attachment-info { padding-top: 10px; }
     .attachment-info h5 { font-size: 1rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
-    .attachment-info p { font-size: 1.15rem; font-weight: 700; margin-bottom: 20px; color: #111827; }
+    .attachment-info p { font-size: 1.15rem; font-weight: 700; margin-bottom: 12px; color: #111827; }
     
+    .click-hint { font-size: 0.85rem; color: var(--blue); background: #eff6ff; padding: 6px 10px; border-radius: 6px; display: inline-block; margin-bottom: 20px; border: 1px dashed var(--blue); }
+
     .buttons-grid { display: flex; flex-direction: column; gap: 10px; }
     .action-badge { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; color: #2563eb; background: #eff6ff; padding: 10px 16px; border-radius: 8px; cursor: pointer; border: 1px solid #bfdbfe; transition: 0.2s; font-weight: 600; text-decoration: none;}
     .action-badge:hover { background: #dbeafe; transform: translateY(-1px); }
@@ -163,9 +139,7 @@
     .stamp-sub { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; }
   </style>
 </head>
-<body>
-
-<div id="loadingScreen" style="display: none;">
+<body class="locked"> <div id="loadingScreen" style="display: none;">
   <div class="spinner"></div>
   <p>Đang tải dữ liệu hóa đơn...</p>
 </div>
@@ -181,7 +155,7 @@
       <div class="form-group"><label>Số Điện Thoại</label><input type="text" class="form-control" id="phone" placeholder="09xxxxxxx" oninput="liveUpdate()"></div>
       <div class="form-group"><label>Sản Phẩm / Dịch Vụ</label><input type="text" class="form-control" id="course" placeholder="Tên khóa học" oninput="liveUpdate()"></div>
       <div class="form-group"><label>Đơn Giá (VNĐ)</label><input type="number" class="form-control" id="price" placeholder="Ví dụ: 1500000" oninput="liveUpdate()"></div>
-      <div class="form-group"><label>Tên Chủ Tài Khoản Nhận</label><input type="text" class="form-control" id="account" placeholder="Ví dụ: NGUYEN VAN A" oninput="liveUpdate()"></div>
+      <div class="form-group"><label>Tên / Số Tài Khoản Nhận</label><input type="text" class="form-control" id="account" placeholder="Ví dụ: 0123456789 - VCB" oninput="liveUpdate()"></div>
 
       <button class="btn btn-success" id="btnSave" onclick="saveInvoiceToFirebase()"><i class="fa-solid fa-cloud-arrow-up"></i> Lưu Lên Hệ Thống</button>
       
@@ -214,12 +188,16 @@
 
           <div class="inv-footer">
             <div class="attachment-box">
-              <a href="QQR.png" target="_blank" class="qr-link-wrapper" title="Bấm để mở ảnh QR to">
-                <img src="QQR.png" alt="Mã QR" onerror="this.onerror=null; this.src='https://via.placeholder.com/280?text=QQR.png';">
-              </a>
+              
+              <div class="qr-link-wrapper" onclick="handleQRClick()" title="Bấm để lưu ảnh và Copy STK">
+                <img id="qrImageElement" src="QQR.png" alt="Mã QR" onerror="this.onerror=null; this.src='https://via.placeholder.com/280?text=QQR.png';">
+              </div>
+
               <div class="attachment-info">
                 <h5>Quét mã để thanh toán</h5>
-                <p id="outAccount">Tài khoản nhận: ---</p>
+                <p id="outAccount">---</p>
+                
+                <div class="click-hint"><i class="fas fa-hand-pointer"></i> Bấm vào mã QR để thanh toán nhanh</div>
                 
                 <div class="buttons-grid" id="copyButtonsContainer">
                   <span class="action-badge" onclick="downloadImage()"><i class="fa-solid fa-image"></i> Tải Ảnh Hóa Đơn</span>
@@ -245,7 +223,32 @@
 </div>
 
 <script>
+  // ==========================================
+  // BẢO MẬT ADMIN BẰNG PASSCODE (BƯỚC ĐẦU TIÊN)
+  // ==========================================
+  const ADMIN_PASSWORD = "khoahocvip"; // <-- BẠN ĐỔI MẬT KHẨU TẠI ĐÂY
+  
+  const urlParams = new URLSearchParams(window.location.search);
+  const invoiceIdParam = urlParams.get('id');
+
+  if (!invoiceIdParam) {
+    // Không có ID => Đây là truy cập Admin => Yêu cầu mật khẩu
+    let pass = prompt("🔐 HỆ THỐNG QUẢN TRỊ \nVui lòng nhập mật khẩu để truy cập:");
+    if (pass === ADMIN_PASSWORD) {
+      document.body.classList.remove("locked"); // Mở khóa
+    } else {
+      document.body.innerHTML = "<h2 style='text-align:center; margin-top:50px; font-family:sans-serif;'>⛔ Truy cập bị từ chối.</h2>";
+      throw new Error("Sai mật khẩu"); // Dừng toàn bộ code
+    }
+  } else {
+    // Có ID => Khách hàng đang xem link => Mở khóa màn hình ngay
+    document.body.classList.remove("locked");
+  }
+
+
+  // ==========================================
   // 1. CẤU HÌNH FIREBASE
+  // ==========================================
   const firebaseConfig = {
     apiKey: "AIzaSyDkA6RYXElUuv-_Mxco8KK5dC4cvyWHyY",
     authDomain: "onthi-dashboard.firebaseapp.com",
@@ -267,45 +270,30 @@
   let currentCode = "";
   let isSaved = false; 
 
-  // ==========================================
-  // THUẬT TOÁN RESPONSIVE ĐƯỢC TỐI ƯU CỰC MẠNH
-  // ==========================================
+  // --- THUẬT TOÁN RESPONSIVE ---
   function scaleInvoice() {
     const wrapper = document.getElementById('invoiceWrapper');
     const invoice = document.getElementById('invoice');
-    
-    // Chiều rộng A4 cố định của hóa đơn (~794px)
     const originalWidth = invoice.offsetWidth || 794; 
-    
-    // Lấy chiều rộng màn hình khả dụng (trừ đi padding 2 bên của body/container)
     let availableWidth = window.innerWidth;
-    if (window.innerWidth <= 1100) {
-      availableWidth = window.innerWidth - 20; // Trừ 20px padding trên Mobile
-    } else {
-      availableWidth = document.getElementById('previewPanel').clientWidth; 
-    }
+    
+    if (window.innerWidth <= 1100) { availableWidth = window.innerWidth - 20; } 
+    else { availableWidth = document.getElementById('previewPanel').clientWidth; }
 
-    // Nếu màn hình nhỏ hơn hóa đơn, tiến hành thu nhỏ theo tỷ lệ
     if (availableWidth < originalWidth) {
       const scaleValue = availableWidth / originalWidth;
       wrapper.style.transform = `scale(${scaleValue})`;
-      // Tính lại chiều cao thật của Wrapper để không dư khoảng trắng bên dưới
       wrapper.style.height = `${invoice.offsetHeight * scaleValue}px`;
     } else {
-      // Màn hình rộng (PC/Laptop) -> Hiển thị gốc 100%
       wrapper.style.transform = `scale(1)`;
       wrapper.style.height = `auto`;
     }
   }
 
-  // Lắng nghe sự kiện xoay màn hình đt hoặc kéo cửa sổ
   window.addEventListener('resize', scaleInvoice);
-  setTimeout(scaleInvoice, 150); // Cho UI ổn định rồi chạy scale
+  setTimeout(scaleInvoice, 150);
 
   // 3. CHẾ ĐỘ HIỂN THỊ (ADMIN / CLIENT)
-  const urlParams = new URLSearchParams(window.location.search);
-  const invoiceIdParam = urlParams.get('id');
-
   if (invoiceIdParam) {
     document.title = `Hóa Đơn ${invoiceIdParam}`;
     document.getElementById('adminPanel').style.display = 'none'; 
@@ -329,7 +317,6 @@
         document.getElementById('outAccount').innerText = (data.account || "CHƯA NHẬP TÊN TK").toUpperCase();
         currentCode = data.code;
         
-        // Scale lại sau khi đổ dữ liệu Firebase
         setTimeout(scaleInvoice, 100);
       } else {
         alert("Hóa đơn này không tồn tại trên hệ thống hoặc đã bị xóa!");
@@ -339,7 +326,6 @@
       alert("Lỗi kết nối máy chủ: " + error.message);
       document.getElementById('loadingScreen').style.display = 'none';
     });
-
   } else {
     generateNewCode();
   }
@@ -360,6 +346,7 @@
     document.getElementById('phone').value = "";
     document.getElementById('course').value = "";
     document.getElementById('price').value = "";
+    document.getElementById('account').value = "";
     liveUpdate();
     generateNewCode();
     showToast("Đã làm mới form nhập liệu!", "success");
@@ -376,8 +363,6 @@
     document.getElementById('outSubTotal').innerText = priceStr;
     document.getElementById('outPriceTotal').innerText = priceStr;
     document.getElementById('outAccount').innerText = (document.getElementById('account').value || "CHƯA NHẬP TÊN TK").toUpperCase();
-    
-    // Scale update khi text làm dài layout
     setTimeout(scaleInvoice, 10);
   }
 
@@ -420,19 +405,13 @@
       });
   }
 
-  // ==========================================
-  // HÀM COPY GỘP CHỮ VÀO LINK ZALO/MESSENGER
-  // ==========================================
   function copyInvoiceLink() {
     if (!invoiceIdParam && !isSaved) {
       alert("VUI LÒNG BẤM NÚT 'LƯU LÊN HỆ THỐNG' TRƯỚC KHI COPY LINK!");
       return;
     }
-
     const link = window.location.origin + window.location.pathname + '?id=' + currentCode;
     const clientEmail = document.getElementById('outEmail').innerText || "Khách hàng";
-    
-    // Mẫu tin nhắn copy siêu đẹp
     const textToCopy = `🧾 HÓA ĐƠN THANH TOÁN DỊCH VỤ\n👤 Khách hàng: ${clientEmail}\n🔗 Nhấn vào link bên dưới để xem hóa đơn và quét mã QR chuyển khoản:\n${link}`;
     
     if (navigator.clipboard && window.isSecureContext) {
@@ -441,10 +420,43 @@
         let textArea = document.createElement("textarea");
         textArea.value = textToCopy;
         document.body.appendChild(textArea); textArea.focus(); textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
+        document.execCommand('copy'); document.body.removeChild(textArea);
         showToast("Đã copy nội dung gửi khách!", "success");
     }
+  }
+
+  // ==========================================
+  // XỬ LÝ SỰ KIỆN KHI KHÁCH BẤM VÀO ẢNH QR
+  // ==========================================
+  function handleQRClick() {
+    // 1. Tự động Copy thông tin chuyển khoản (STK, Giá tiền, Nội dung)
+    const accText = document.getElementById('outAccount').innerText;
+    const priceText = document.getElementById('outPriceTotal').innerText;
+    const courseText = document.getElementById('outCourse').innerText;
+    
+    // Tách STK từ dãy số (nếu bạn nhập dạng: 0123456 - NGUYEN VAN A)
+    const stk = accText.split('-')[0].trim();
+    
+    // Copy vào bộ nhớ tạm
+    const copyContent = `Số tài khoản: ${stk}\nSố tiền: ${priceText}\nNội dung: Thanh toan ${courseText}`;
+    
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(copyContent);
+    } else {
+        let ta = document.createElement("textarea"); ta.value = copyContent; document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    }
+
+    // 2. Tự động tải ảnh QR xuống thư viện ảnh của điện thoại
+    const imgUrl = document.getElementById('qrImageElement').src;
+    const a = document.createElement('a');
+    a.href = imgUrl;
+    a.download = "QR_ThanhToan_KhoaHocVip.png";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    // 3. Thông báo hướng dẫn cực kỳ rõ ràng
+    alert("✅ Đã tự động TẢI ẢNH QR và COPY Số Tài Khoản.\n\n👉 Vui lòng mở App Ngân Hàng của bạn:\n1. Chọn mục Quét QR -> Chọn ảnh vừa tải về.\n2. Hoặc Dán Số tài khoản vừa copy.");
   }
 
   function showToast(msg, type = "success") {
@@ -461,43 +473,23 @@
     setTimeout(() => { toast.style.display = 'none'; }, 3000);
   }
 
-  // ==========================================
-  // XUẤT ẢNH/PDF KHÔNG BỊ CẮT TRÊN ĐIỆN THOẠI
-  // ==========================================
   async function resetScaleForExport(callback) {
     const wrapper = document.getElementById('invoiceWrapper');
     const outer = document.getElementById('invoiceOuter');
-    
-    // Lưu lại trạng thái Scale hiện tại
     const oldTransform = wrapper.style.transform;
     const oldHeight = wrapper.style.height;
     const oldOverflow = outer.style.overflow;
-    
-    // Bơm hóa đơn về đúng kích thước A4 vật lý (Scale 1)
-    wrapper.style.transform = 'scale(1)';
-    wrapper.style.height = 'auto';
-    outer.style.overflow = 'visible'; // Mở khóa tràn viền để Camera không bị cắt
-    
-    // Chờ 150ms để trình duyệt render kịp kích thước thật
+    wrapper.style.transform = 'scale(1)'; wrapper.style.height = 'auto'; outer.style.overflow = 'visible';
     await new Promise(r => setTimeout(r, 150));
-    
     await callback();
-    
-    // Trả lại giao diện thu nhỏ cho điện thoại
-    wrapper.style.transform = oldTransform;
-    wrapper.style.height = oldHeight;
-    outer.style.overflow = oldOverflow;
+    wrapper.style.transform = oldTransform; wrapper.style.height = oldHeight; outer.style.overflow = oldOverflow;
   }
 
   function downloadImage() {
     document.getElementById('copyButtonsContainer').style.display = 'none';
-    
     resetScaleForExport(() => {
       return html2canvas(document.getElementById('invoice'), { scale: 3, useCORS: true }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `HoaDon_${currentCode}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
+        const link = document.createElement('a'); link.download = `HoaDon_${currentCode}.png`; link.href = canvas.toDataURL('image/png'); link.click();
         document.getElementById('copyButtonsContainer').style.display = 'flex';
       });
     });
@@ -505,7 +497,6 @@
 
   function downloadPDF() {
     document.getElementById('copyButtonsContainer').style.display = 'none';
-    
     resetScaleForExport(() => {
       return html2pdf().set({ margin: 0, filename: `${currentCode}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 3, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(document.getElementById('invoice')).save().then(() => {
         document.getElementById('copyButtonsContainer').style.display = 'flex';
