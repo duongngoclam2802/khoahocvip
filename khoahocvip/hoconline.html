@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khoahocvip.io.vn - Dashboard Học Tập</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/hoconline.js"></script>
+</head>
+<body class="bg-main text-main flex h-screen overflow-hidden transition-colors duration-500 font-sans">
+
+  <!-- Grainy Texture Overlay -->
+  <div id="grain-overlay" aria-hidden="true"></div>
+
+  <!-- Mouse Glow Follower -->
+  <div id="mouse-glow" aria-hidden="true"></div>
+
+  <!-- SIDEBAR (LEFT) -->
+  <aside class="w-[260px] h-full bg-[#fdfbf7] dark:bg-slate-900 border-r border-theme flex-col shrink-0 hidden lg:flex shadow-xl z-40 relative transition-transform" id="global-sidebar">
+    <div class="px-6 py-6 flex items-center gap-3 cursor-pointer" onclick="window.changeMainView('view-dashboard')">
+      <img src="iogo.png" alt="Logo" class="w-10 h-10 rounded-xl shadow-lg border-2 border-white object-cover bg-white">
+      <h1 class="text-xl font-extrabold tracking-tight text-main">Khoahocvip</h1>
+    </div>
+
+    <div class="flex-1 overflow-y-auto custom-scrollbar px-4 pb-6 space-y-8">
+      <!-- Cá nhân -->
+      <div>
+        <p class="px-3 text-xs font-bold text-muted uppercase tracking-widest mb-3">Cá nhân</p>
+        <div class="space-y-1">
+          <button class="sidebar-item active w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted font-medium" onclick="window.changeMainView('view-dashboard', this)">
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Tổng quan
+          </button>
+          <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted font-medium" onclick="window.changeMainView('view-my-courses', this)">
+            <i data-lucide="book-open-check" class="w-5 h-5"></i> Khóa học của tôi
+          </button>
+          <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted font-medium" onclick="window.changeMainView('view-profile', this)">
+            <i data-lucide="user-cog" class="w-5 h-5"></i> Thông tin cá nhân
+          </button>
+        </div>
+      </div>
+
+      <!-- Học tập -->
+      <div>
+        <p class="px-3 text-xs font-bold text-muted uppercase tracking-widest mb-3">Học tập</p>
+        <div class="space-y-1">
+          <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted font-medium" onclick="window.changeMainView('view-discovery', this)">
+            <i data-lucide="compass" class="w-5 h-5"></i> Khám phá
+          </button>
+          <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted font-medium" onclick="window.changeMainView('view-docs', this)">
+            <i data-lucide="file-text" class="w-5 h-5"></i> Tài liệu PDF
+          </button>
+          <button class="sidebar-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-muted font-medium" onclick="window.changeMainView('view-news', this)">
+            <div class="flex items-center gap-3"><i data-lucide="bell" class="w-5 h-5"></i> Tin tức</div>
+            <span class="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full" id="news-badge">Mới</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Cộng đồng -->
+      <div>
+        <p class="px-3 text-xs font-bold text-muted uppercase tracking-widest mb-3">Cộng đồng</p>
+        <div class="space-y-1">
+          <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted font-medium" onclick="window.changeMainView('view-qa', this)">
+            <i data-lucide="message-square" class="w-5 h-5"></i> Hỏi đáp
+          </button>
+          <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted font-medium" onclick="window.changeMainView('view-dashboard', this)">
+            <i data-lucide="trophy" class="w-5 h-5"></i> Bảng xếp hạng
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT AREA (RIGHT) -->
+  <div class="flex-1 flex flex-col relative overflow-hidden bg-main">
+    
+    <!-- Header (Top Nav) -->
+    <header class="sticky top-0 z-40 bg-main/80 backdrop-blur-xl border-b border-theme px-6 py-4 flex justify-between items-center transition-colors">
+      <div class="flex items-center gap-4 flex-1">
+        <button class="lg:hidden p-2 text-muted hover:text-main rounded-xl" onclick="document.getElementById('global-sidebar').classList.toggle('hidden')">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+        <div class="hidden sm:flex items-center bg-card border border-theme rounded-full px-4 py-2 w-full max-w-md focus-within:border-orange-400 transition-all shadow-sm">
+          <i data-lucide="search" class="w-5 h-5 text-muted"></i>
+          <input type="text" placeholder="Tìm kiếm..." class="bg-transparent border-none outline-none text-sm ml-2 w-full text-main placeholder-muted">
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-3 sm:gap-5">
+        <button id="btn-theme-toggle" class="p-2 text-muted hover:text-orange-500 rounded-full transition-colors">
+          <i data-lucide="moon" id="theme-icon"></i>
+        </button>
+        
+        <button id="btn-login" class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-5 py-2 rounded-full font-bold shadow-lg shadow-orange-500/30 hover:-translate-y-0.5 text-sm">
+          Đăng nhập
+        </button>
+
+        <div id="user-menu" class="hidden flex items-center gap-3">
+          <div class="flex items-center gap-2 cursor-pointer bg-card px-3 py-1.5 rounded-full border border-theme shadow-sm hover:border-orange-300 transition-colors">
+            <div class="w-8 h-8 bg-gradient-to-tr from-orange-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xs" id="user-avatar">U</div>
+            <div class="text-sm font-semibold text-main max-w-[100px] truncate" id="user-info"></div>
+            <div id="user-streak" class="hidden text-sm animate-pulse-slow ml-1" title="Chuỗi ngày học liên tục">🔥</div>
+          </div>
+          <button id="btn-logout" class="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors" title="Đăng xuất">
+            <i data-lucide="log-out" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- VIEWS CONTAINER -->
+    <div class="flex-1 overflow-y-auto custom-scrollbar" id="main-views-container">
+
+      <!-- ============================================== -->
+      <!-- VIEW 1: DASHBOARD (HOME) -->
+      <!-- ============================================== -->
+      <main id="view-dashboard" class="main-view transition-all duration-500" style="opacity: 1">
+        <div class="view-content-wrapper">
+          <div class="content-container flex flex-col gap-8">
+        <!-- ===== HERO BANNER v2 (Glass + Floating) ===== -->
+        <div class="hero-banner-v2 relative w-full h-[300px] sm:h-[340px] rounded-3xl overflow-hidden shadow-2xl" id="hero-banner">
+          
+          <!-- Background image with parallax -->
+          <img src="anh.png" id="banner-parallax-img" class="absolute inset-0 w-full h-full object-cover scale-105 transition-transform duration-[2000ms] ease-out" alt="Banner">
+          
+          <!-- Dark gradient overlay -->
+          <div class="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-slate-900/10"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
+
+          <!-- Floating math/science icons -->
+          <div class="floating-icons pointer-events-none select-none" aria-hidden="true">
+            <span class="float-icon" style="top:12%;left:62%;animation-delay:0s;font-size:1.5rem;opacity:0.12">&#x3C0;</span>
+            <span class="float-icon" style="top:55%;left:72%;animation-delay:0.7s;font-size:1.1rem;opacity:0.1">&#x221E;</span>
+            <span class="float-icon" style="top:20%;left:80%;animation-delay:1.3s;font-size:1.3rem;opacity:0.13">&Sigma;</span>
+            <span class="float-icon" style="top:65%;left:55%;animation-delay:2s;font-size:1rem;opacity:0.09">&Delta;</span>
+            <span class="float-icon" style="top:30%;left:90%;animation-delay:0.4s;font-size:1.4rem;opacity:0.11">&int;</span>
+            <span class="float-icon" style="top:75%;left:82%;animation-delay:1.8s;font-size:0.9rem;opacity:0.1">e=mc&sup2;</span>
+          </div>
+
+          <!-- Glass Content Box -->
+          <div class="absolute inset-0 flex items-center">
+            <div class="ml-8 sm:ml-12 max-w-xl bg-white/8 backdrop-blur-lg border border-white/15 rounded-2xl p-6 sm:p-8 shadow-2xl" style="background: rgba(15,23,42,0.55);">
+              
+              <div class="flex items-center gap-2 mb-4">
+                <span class="relative flex h-2.5 w-2.5">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500"></span>
+                </span>
+                <span class="text-orange-400 text-[11px] font-black uppercase tracking-[0.2em]">Khóa học mới 2K9 &bull; 2027</span>
+              </div>
+
+              <h2 class="text-3xl sm:text-4xl font-black text-white leading-tight mb-3 drop-shadow-lg">
+                Nền tảng học tập<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400">Thế hệ mới</span>
+              </h2>
+
+              <p class="text-slate-300/90 text-sm sm:text-[15px] mb-6 leading-relaxed font-medium max-w-sm">
+                Trọn bộ kiến thức &amp; kỹ năng chinh phục kỳ thi. Lộ trình chuẩn hóa cho học sinh 2K9.
+              </p>
+
+              <div class="flex items-center gap-3 flex-wrap">
+                <a href="https://zalo.me/0327359035" target="_blank" class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-orange-600/30 hover:-translate-y-0.5 transition-all flex items-center gap-2 text-sm">
+                  Tham gia ngay <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+                <button onclick="window.changeMainView('view-discovery')" class="bg-white/10 border border-white/20 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-white/20 transition-all flex items-center gap-2 text-sm backdrop-blur-sm">
+                  Khám phá <i data-lucide="compass" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== QUICK ACTION BAR ===== -->
+        <div class="flex flex-wrap gap-3" id="quick-action-bar">
+          <button id="btn-quick-continue" class="quick-action-pill flex items-center gap-2.5 bg-card border border-theme rounded-full px-5 py-2.5 text-sm font-bold text-main hover:border-orange-400 hover:text-orange-500 hover:shadow-lg hover:shadow-orange-500/10 transition-all group" onclick="window.changeMainView('view-my-courses')">
+            <span class="w-7 h-7 bg-orange-100 dark:bg-orange-500/15 text-orange-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">▶️</span>
+            Tiếp tục học
+          </button>
+          <button class="quick-action-pill flex items-center gap-2.5 bg-card border border-theme rounded-full px-5 py-2.5 text-sm font-bold text-main hover:border-blue-400 hover:text-blue-500 hover:shadow-lg hover:shadow-blue-500/10 transition-all group" onclick="window.changeMainView('view-docs')">
+            <span class="w-7 h-7 bg-blue-100 dark:bg-blue-500/15 text-blue-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">📎</span>
+            Tài liệu mới
+          </button>
+          <button class="quick-action-pill flex items-center gap-2.5 bg-card border border-theme rounded-full px-5 py-2.5 text-sm font-bold text-main hover:border-green-400 hover:text-green-600 hover:shadow-lg hover:shadow-green-500/10 transition-all group" onclick="window.changeMainView('view-news')">
+            <span class="w-7 h-7 bg-green-100 dark:bg-green-500/15 text-green-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">📢</span>
+            Tin tức
+          </button>
+          <button id="btn-quick-qa" class="quick-action-pill flex items-center gap-2.5 bg-card border border-theme rounded-full px-5 py-2.5 text-sm font-bold text-main hover:border-purple-400 hover:text-purple-500 hover:shadow-lg hover:shadow-purple-500/10 transition-all group" onclick="window.changeMainView('view-qa')">
+            <span class="w-7 h-7 bg-purple-100 dark:bg-purple-500/15 text-purple-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">💬</span>
+            Hỏi đáp
+          </button>
+        </div>
+
+        <!-- ===== STAT CARDS BENTO v2 ===== -->
+        <div class="stats-bento grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 relative z-10">
+
+          <!-- Card 1: Khóa Đang Học (wide) -->
+          <div class="stat-card-v2 stat-card-orange group col-span-2 lg:col-span-2 relative overflow-hidden rounded-2xl p-6 cursor-default" onclick="window.changeMainView('view-my-courses')">
+            <div class="flex justify-between items-start">
+              <div class="relative z-10">
+                <p class="stat-label-v2">Khóa Đang Học</p>
+                <h3 class="stat-value-v2" id="stat-learning">0</h3>
+                <p class="text-orange-600/70 dark:text-orange-400/70 text-xs font-semibold mt-1">khóa học hoạt động</p>
+              </div>
+              <div class="stat-icon-v2 bg-orange-100 dark:bg-orange-500/15 text-orange-500">🚀</div>
+            </div>
+            <div class="absolute bottom-0 right-0 w-32 h-32 bg-orange-500/8 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-2 right-6 text-8xl opacity-5 font-black text-orange-500 select-none">XP</div>
+          </div>
+
+          <!-- Card 2: Giờ Học (has sparkline) -->
+          <div class="stat-card-v2 stat-card-blue group relative overflow-hidden rounded-2xl p-5 cursor-default">
+            <div class="flex justify-between items-start mb-3">
+              <div class="relative z-10">
+                <p class="stat-label-v2">Giờ Học</p>
+                <h3 class="stat-value-v2" id="stat-hours">0<span class="text-base text-muted font-medium ml-1">h</span></h3>
+              </div>
+              <div class="stat-icon-v2 bg-blue-100 dark:bg-blue-500/15 text-blue-500">⏱️</div>
+            </div>
+            <!-- Sparkline SVG -->
+            <div class="sparkline-wrap">
+              <svg id="sparkline-hours" width="100%" height="32" viewBox="0 0 120 32" preserveAspectRatio="none" fill="none">
+                <polyline id="sparkline-line" points="0,28 20,24 40,20 60,22 80,14 100,10 120,6" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <polyline id="sparkline-fill" points="0,28 20,24 40,20 60,22 80,14 100,10 120,6 120,32 0,32" fill="rgba(59,130,246,0.12)"/>
+              </svg>
+            </div>
+            <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-blue-500/5 rounded-full blur-2xl"></div>
+          </div>
+
+          <!-- Card 3: Bài Giảng -->
+          <div class="stat-card-v2 stat-card-green group relative overflow-hidden rounded-2xl p-5 cursor-default">
+            <div class="flex justify-between items-start">
+              <div class="relative z-10">
+                <p class="stat-label-v2">Bài Giảng Xem</p>
+                <h3 class="stat-value-v2" id="stat-completed-lectures">0</h3>
+              </div>
+              <div class="stat-icon-v2 bg-green-100 dark:bg-green-500/15 text-green-500">📚</div>
+            </div>
+            <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-green-500/5 rounded-full blur-2xl"></div>
+          </div>
+
+          <!-- Card 4: Điểm XP -->
+          <div class="stat-card-v2 stat-card-purple group relative overflow-hidden rounded-2xl p-5 cursor-default" style="display:none" id="stat-xp-card">
+            <div class="flex justify-between items-start">
+              <div class="relative z-10">
+                <p class="stat-label-v2">Điểm XP</p>
+                <h3 class="stat-value-v2" id="stat-xp">0</h3>
+              </div>
+              <div class="stat-icon-v2 bg-purple-100 dark:bg-purple-500/15 text-purple-500">🏆</div>
+            </div>
+            <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-purple-500/5 rounded-full blur-2xl"></div>
+          </div>
+
+        </div> <!-- end grid -->
+        <div class="flex flex-col xl:flex-row gap-8 mt-4">
+          
+          <!-- Left: Course Grid -->
+          <div class="xl:w-2/3 space-y-6">
+            <div class="flex justify-between items-center pb-2">
+              <h2 class="text-2xl font-black text-main flex items-center gap-3">
+                <span class="bg-gradient-to-r from-orange-500 to-red-500 w-2 h-8 rounded-full inline-block"></span>
+                Tiếp tục học
+              </h2>
+            </div>
+            <div id="dashboard-course-grid" class="flex flex-col gap-5">
+              <!-- Skeleton loaders -->
+              <div class="skeleton-card">
+                <div class="skeleton-img"></div>
+                <div class="skeleton-line" style="width:70%"></div>
+                <div class="skeleton-line" style="width:40%"></div>
+              </div>
+              <div class="skeleton-card">
+                <div class="skeleton-img"></div>
+                <div class="skeleton-line" style="width:65%"></div>
+                <div class="skeleton-line" style="width:35%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Sidebar Widgets -->
+          <div class="xl:w-1/3 flex flex-col gap-6">
+            
+            <!-- Leaderboard Widget -->
+            <div class="glass-card bg-card p-0 rounded-3xl border border-theme overflow-hidden shadow-xl">
+              <div class="bg-gradient-to-r from-orange-500/10 to-red-500/10 p-5 border-b border-theme flex justify-between items-center relative overflow-hidden">
+                <div class="absolute -right-4 -top-4 w-20 h-20 bg-orange-500/20 rounded-full blur-xl"></div>
+                <h3 class="text-lg font-black text-main flex items-center gap-2 relative z-10">
+                  <i data-lucide="flame" class="text-orange-500 w-6 h-6"></i> Bảng Xếp Hạng XP
+                </h3>
+              </div>
+              <div class="p-5 space-y-4" id="leaderboard-container">
+                <div class="loader mx-auto"></div>
+              </div>
+            </div>
+
+            <!-- Support Widget Premium -->
+            <div class="support-card-premium rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl group cursor-pointer" onclick="window.open('https://zalo.me/0327359035', '_blank')">
+              <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-800 to-slate-900 group-hover:scale-105 transition-transform duration-700"></div>
+              <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-400/30 rounded-full blur-3xl animate-pulse-slow"></div>
+              <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-purple-500/30 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 1.5s;"></div>
+              
+              <div class="relative z-10 text-center">
+                <div class="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20 group-hover:-translate-y-2 transition-transform duration-300 shadow-lg">
+                  <i data-lucide="headphones" class="w-8 h-8 text-blue-300"></i>
+                </div>
+                <h4 class="text-xl font-black mb-2 tracking-tight">Cần hỗ trợ học tập?</h4>
+                <p class="text-sm text-blue-200/80 mb-6 font-medium leading-relaxed">Admin luôn sẵn sàng giải đáp thắc mắc của bạn 24/7. Nhắn tin ngay để được hỗ trợ!</p>
+                <div class="inline-flex items-center justify-center w-full bg-white text-blue-900 py-3 rounded-xl font-bold shadow-[0_8px_20px_rgba(0,0,0,0.2)] group-hover:bg-blue-50 transition-colors">
+                  <span class="mr-2">Chat qua Zalo</span> <i data-lucide="message-circle" class="w-5 h-5"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> <!-- End content-container -->
+      </div> <!-- End view-content-wrapper -->
+    </main>
+      <main id="view-my-courses" class="main-view transition-all duration-500 hidden">
+        <div class="view-content-wrapper">
+          <div class="content-container flex flex-col gap-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div class="flex items-center gap-3 border-b border-theme pb-4 w-full sm:w-auto sm:border-0 sm:pb-0">
+            <div class="p-3 bg-blue-100 text-blue-600 rounded-xl shadow-inner"><i data-lucide="library" class="w-6 h-6"></i></div>
+            <div>
+              <h2 class="text-2xl font-black text-main">Khóa học của tôi</h2>
+              <p class="text-sm text-muted font-medium mt-1">Quản lý và theo dõi tiến độ học tập</p>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-3 w-full sm:w-auto">
+            <div class="relative flex-1 sm:w-64">
+              <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted"></i>
+              <input type="text" id="my-courses-search" placeholder="Tìm khóa học..." class="w-full pl-9 pr-4 py-2.5 bg-card border border-theme rounded-xl text-sm outline-none focus:border-blue-500 transition-colors shadow-sm font-medium">
+            </div>
+            <select id="my-courses-filter" class="px-4 py-2.5 bg-card border border-theme rounded-xl text-sm outline-none focus:border-blue-500 transition-colors shadow-sm font-medium cursor-pointer">
+              <option value="all">Tất cả</option>
+              <option value="in_progress">Đang học</option>
+              <option value="completed">Hoàn thành</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="my-courses-grid" class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
+          <!-- Skeleton loaders for my-courses -->
+          <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line" style="width:80%"></div><div class="skeleton-line" style="width:50%"></div></div>
+          <div class="skeleton-card hidden md:block"><div class="skeleton-img"></div><div class="skeleton-line" style="width:70%"></div><div class="skeleton-line" style="width:40%"></div></div>
+          <div class="skeleton-card hidden 2xl:block"><div class="skeleton-img"></div><div class="skeleton-line" style="width:75%"></div><div class="skeleton-line" style="width:45%"></div></div>
+        </div> <!-- End my-courses-grid -->
+          </div> <!-- End content-container -->
+        </div> <!-- End view-content-wrapper -->
+      </main>
+
+      <!-- ============================================== -->
+      <!-- VIEW: PROFILE -->
+      <!-- ============================================== -->
+      <main id="view-profile" class="main-view transition-all duration-500 hidden">
+        <div class="view-content-wrapper">
+          <div class="content-container flex flex-col gap-8">
+
+        <!-- Header -->
+        <div class="flex items-center gap-3">
+          <div class="p-3 bg-gradient-to-br from-orange-400 to-red-500 text-white rounded-xl shadow-lg shadow-orange-500/30">
+            <i data-lucide="user-cog" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h2 class="text-2xl font-black text-main">Hồ sơ cá nhân</h2>
+            <p class="text-sm text-muted font-medium mt-0.5">Cập nhật thông tin và ảnh đại diện của bạn</p>
+          </div>
+        </div>
+
+        <!-- Profile Completion Bar -->
+        <div class="bg-card border border-theme rounded-2xl p-5">
+          <div class="flex justify-between items-center mb-3">
+            <p class="text-sm font-bold text-main flex items-center gap-2"><i data-lucide="bar-chart-2" class="w-4 h-4 text-orange-500"></i> Mức độ hoàn thiện hồ sơ</p>
+            <span id="profile-completion-pct" class="text-sm font-black text-orange-500">0%</span>
+          </div>
+          <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2.5 overflow-hidden">
+            <div id="profile-completion-bar" class="h-full bg-gradient-to-r from-orange-400 to-red-500 rounded-full transition-all duration-700 ease-out" style="width:0%"></div>
+          </div>
+          <p id="profile-completion-tip" class="text-xs text-muted mt-2 font-medium">Hãy điền đầy đủ thông tin để đạt 100%!</p>
+        </div>
+
+        <!-- Main Two-Column Layout -->
+        <div class="flex flex-col lg:flex-row gap-6">
+
+          <!-- LEFT: Avatar Card -->
+          <div class="lg:w-72 shrink-0">
+            <div class="glass-card bg-card border border-theme rounded-2xl p-6 flex flex-col items-center text-center gap-5 sticky top-4">
+              <!-- Avatar wrapper with upload -->
+              <div class="relative group cursor-pointer" id="avatar-upload-area">
+                <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-xl shadow-orange-500/20 bg-gradient-to-tr from-orange-400 to-purple-500">
+                  <img id="profile-avatar-img" src="" alt="Avatar" class="w-full h-full object-cover hidden">
+                  <div id="profile-avatar-placeholder" class="w-full h-full flex items-center justify-center text-white text-5xl font-black">A</div>
+                </div>
+                <!-- Hover overlay -->
+                <div class="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <i data-lucide="camera" class="w-7 h-7 text-white"></i>
+                </div>
+                <input type="file" id="profile-photo-input" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full rounded-full">
+              </div>
+
+              <div>
+                <h3 id="profile-display-name" class="text-xl font-black text-main">---</h3>
+                <p id="profile-email-display" class="text-sm text-muted mt-1">---</p>
+              </div>
+
+              <!-- Upload Progress -->
+              <div id="upload-progress-wrap" class="w-full hidden">
+                <div class="flex justify-between text-xs font-bold mb-1">
+                  <span class="text-muted">Đang tải ảnh...</span>
+                  <span id="upload-pct" class="text-orange-500">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+                  <div id="upload-progress-bar" class="h-full bg-gradient-to-r from-orange-400 to-red-500 rounded-full transition-all duration-300" style="width:0%"></div>
+                </div>
+              </div>
+
+              <div class="w-full pt-4 border-t border-theme space-y-2">
+                <div class="flex items-center gap-2 text-sm text-muted">
+                  <i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i>
+                  <span class="font-medium">Tài khoản đã xác thực</span>
+                </div>
+                <div class="flex items-center gap-2 text-sm text-muted">
+                  <i data-lucide="calendar" class="w-4 h-4 text-blue-500"></i>
+                  <span id="profile-joined" class="font-medium">Thành viên từ...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Info Form -->
+          <div class="flex-1">
+            <div class="glass-card bg-card border border-theme rounded-2xl p-6 sm:p-8">
+              <h3 class="text-lg font-black text-main mb-6 flex items-center gap-2">
+                <i data-lucide="edit" class="w-5 h-5 text-orange-500"></i> Chỉnh sửa thông tin
+              </h3>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-bold text-muted uppercase tracking-widest mb-2">Họ và tên đầy đủ</label>
+                  <div class="relative">
+                    <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted"></i>
+                    <input id="pf-fullname" type="text" class="input-glass w-full pl-11" placeholder="Nguyễn Văn A">
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-muted uppercase tracking-widest mb-2">Số điện thoại</label>
+                  <div class="relative">
+                    <i data-lucide="phone" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted"></i>
+                    <input id="pf-phone" type="tel" class="input-glass w-full pl-11" placeholder="0987 654 321">
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-muted uppercase tracking-widest mb-2">Ngày sinh</label>
+                  <div class="relative">
+                    <i data-lucide="cake" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted"></i>
+                    <input id="pf-dob" type="date" class="input-glass w-full pl-11">
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-muted uppercase tracking-widest mb-2">Trường học</label>
+                  <div class="relative">
+                    <i data-lucide="building" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted"></i>
+                    <input id="pf-school" type="text" class="input-glass w-full pl-11" placeholder="THPT Nguyễn Du">
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-muted uppercase tracking-widest mb-2">Lớp học</label>
+                  <div class="relative">
+                    <i data-lucide="graduation-cap" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted"></i>
+                    <select id="pf-grade" class="input-glass w-full pl-11 appearance-none cursor-pointer">
+                      <option value="">Chọn lớp...</option>
+                      <option value="10A">Lớp 10</option>
+                      <option value="11A">Lớp 11</option>
+                      <option value="12A">Lớp 12 (2K9)</option>
+                      <option value="other">Khác</option>
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Save Button -->
+              <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-end">
+                <p class="text-xs text-muted self-center flex items-center gap-1">
+                  <i data-lucide="lock" class="w-3 h-3"></i> Thông tin được bảo mật và mã hóa
+                </p>
+                <button id="btn-save-profile" class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                  <i data-lucide="save" class="w-4 h-4"></i> Lưu thay đổi
+                </button>
+              </div>
+
+                      </div> <!-- End content-container -->
+        </div> <!-- End view-content-wrapper -->
+      </main>
+
+      <!-- ============================================== -->
+      <!-- VIEW 2: NEWS -->
+      <!-- ============================================== -->
+      <main id="view-news" class="main-view transition-all duration-500 hidden">
+        <div class="view-content-wrapper">
+          <div class="content-container flex flex-col gap-8">
+        <div class="flex items-center gap-3 border-b border-theme pb-4">
+          <div class="p-3 bg-red-100 text-red-600 rounded-xl"><i data-lucide="bell" class="w-6 h-6"></i></div>
+          <h2 class="text-2xl font-bold text-main">Tin tức & Thông báo</h2>
+        </div>
+        <div id="news-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="loader mx-auto col-span-full"></div>
+        </div> <!-- End news-grid -->
+          </div> <!-- End content-container -->
+        </div> <!-- End view-content-wrapper -->
+      </main>
+
+      <!-- ============================================== -->
+      <!-- VIEW 3: DOCUMENTS -->
+      <!-- ============================================== -->
+      <main id="view-docs" class="main-view transition-all duration-500 hidden">
+        <div class="view-content-wrapper">
+          <div class="content-container flex flex-col gap-8">
+        <div class="flex items-center gap-3 border-b border-theme pb-4">
+          <div class="p-3 bg-blue-100 text-blue-600 rounded-xl"><i data-lucide="file-text" class="w-6 h-6"></i></div>
+          <h2 class="text-2xl font-bold text-main">Thư viện Tài liệu</h2>
+        </div>
+        <div id="docs-list" class="space-y-4 max-w-4xl">
+          <div class="loader mx-auto"></div>
+        </div> <!-- End docs-list -->
+          </div> <!-- End content-container -->
+        </div> <!-- End view-content-wrapper -->
+      </main>
+
+      <!-- ============================================== -->
+      <!-- VIEW 4: DISCOVERY -->
+      <!-- ============================================== -->
+      <main id="view-discovery" class="main-view transition-all duration-500 hidden">
+        <div class="view-content-wrapper">
+          <div class="content-container">
+        
+        <!-- COMBO LANDING ADDED TO DISCOVERY -->
+        <div class="combo-landing">
+            <div class="main-wrapper">
+                <div class="blob blob-1"></div>
+                <div class="blob blob-2"></div>
+                <div class="blob blob-3"></div>
+
+                <div class="app-container">
+                    
+                    <header class="header" data-aos="fade-down" data-aos-duration="800">
+                        <img src="iogo.png" alt="Logo KhoaHocVip" class="site-logo">
+                        <h1 class="title">COMBO XPS 2K9 - 2027</h1>
+                        <p class="subtitle">Mua 1 lần học ĐẾN LÚC THI<br>KHÔNG PHÁT SINH CHI PHÍ GÌ THÊM!</p>
+                    </header>
+
+                    <h2 class="section-heading mini" data-aos="fade-up">Hình Thức Học Tập</h2>
+                    <div class="glass-card format-compact" data-aos="fade-up">
+                        <div class="format-mini-item"><i class='bx bx-laptop' style="color: #3498db;"></i> 100% Online</div>
+                        <div class="format-mini-item"><i class='bx bx-play-circle' style="color: #e74c3c;"></i> Video HD</div>
+                        <div class="format-mini-item"><i class='bx bx-file' style="color: #27ae60;"></i> PDF Chi Tiết</div>
+                        <div class="format-mini-item"><i class='bx bx-task' style="color: #f39c12;"></i> Thi Online</div>
+                    </div>
+                    <h2 class="section-heading" data-aos="fade-up">Vì sao chọn Combo 2K9?</h2>
+                    
+                    <div class="stats-trust-wrapper">
+                        <div class="stats-container" data-aos="zoom-in">
+                            <div class="stat-box"><i class='bx bxs-group'></i><span class="num">5000+</span><span class="text">Học viên</span></div>
+                            <div class="stat-box"><i class='bx bxs-certification' style="color: #e74c3c;"></i><span class="num">Uy tín</span><span class="text">Chất lượng</span></div>
+                        </div>
+
+                        <ul class="trust-list" data-aos="fade-up">
+                            <li><i class='bx bxs-check-shield'></i><span>Góp mặt <b>tất cả các thầy cô</b> nổi tiếng trên cả nước.</span></li>
+                            <li><i class='bx bxs-check-shield'></i><span>Đầy đủ <b>tất cả các môn học</b> trong chương trình.</span></li>
+                            <li><i class='bx bxs-star'></i><span>Số lượng thầy cô và môn học cam kết sẽ <b>nhiều hơn cả khóa cũ</b>.</span></li>
+                        </ul>
+                    </div>
+
+                    <h2 class="section-heading" data-aos="fade-up">Danh sách khóa học</h2>
+                    <div class="courses-section" data-aos="fade-up">
+                        <div class="tab-menu" id="tabMenu">
+                            <button class="tab-btn active" data-target="bonus"><i class='bx bx-gift'></i> QUÀ TẶNG (BONUS)</button>
+                            <button class="tab-btn" data-target="toan"><i class='bx bx-math'></i> TOÁN</button>
+                            <button class="tab-btn" data-target="vatly"><i class='bx bx-bulb'></i> VẬT LÝ</button>
+                            <button class="tab-btn" data-target="hoa"><i class='bx bx-test-tube'></i> HÓA</button>
+                            <button class="tab-btn" data-target="sinh"><i class='bx bx-dna'></i> SINH</button>
+                            <button class="tab-btn" data-target="anh"><i class='bx bx-world'></i> TIẾNG ANH</button>
+                            <button class="tab-btn" data-target="van"><i class='bx bx-book'></i> NGỮ VĂN</button>
+                            <button class="tab-btn" data-target="su"><i class='bx bx-history'></i> SỬ</button>
+                            <button class="tab-btn" data-target="dia"><i class='bx bx-globe'></i> ĐỊA</button>
+                            <button class="tab-btn" data-target="dgnl"><i class='bx bx-brain'></i> ĐGNL HSA & V-ACT</button>
+                            <button class="tab-btn" data-target="dgtd"><i class='bx bx-target-lock'></i> ĐGTD TSA</button>
+                            <button class="tab-btn" data-target="supham"><i class='bx bx-book-reader'></i> ĐGNL SƯ PHẠM</button>
+                        </div>
+                        <ul class="course-list" id="courseList"></ul>
+                        <div class="swipe-hint" style="margin-top: 15px; color: #e67e22;"><i class='bx bx-left-arrow-alt'></i> Bạn sẽ nhận được tất cả môn học và thầy cô trong môn học đó. <i class='bx bx-right-arrow-alt'></i></div>
+                    </div>
+
+                    <h2 class="section-heading" data-aos="fade-up">Bài Giảng Học Thử</h2>
+                    <div class="video-slider" data-aos="fade-up">
+                        <div class="video-item" data-id="CQ75B9Z_O9Y"><div class="video-thumb" style="background-image: url('https://img.youtube.com/vi/CQ75B9Z_O9Y/hqdefault.jpg');"></div><div class="play-overlay"><div class="play-btn-custom"><i class='bx bx-play'></i></div></div></div>
+                        <div class="video-item" data-id="2SuzM5pp8us"><div class="video-thumb" style="background-image: url('https://img.youtube.com/vi/2SuzM5pp8us/hqdefault.jpg');"></div><div class="play-overlay"><div class="play-btn-custom"><i class='bx bx-play'></i></div></div></div>
+                        <div class="video-item" data-id="RLnRRQnf40E"><div class="video-thumb" style="background-image: url('https://img.youtube.com/vi/RLnRRQnf40E/hqdefault.jpg');"></div><div class="play-overlay"><div class="play-btn-custom"><i class='bx bx-play'></i></div></div></div>
+                        <div class="video-item" data-id="Het--I4eleI"><div class="video-thumb" style="background-image: url('https://img.youtube.com/vi/Het--I4eleI/hqdefault.jpg');"></div><div class="play-overlay"><div class="play-btn-custom"><i class='bx bx-play'></i></div></div></div>
+                    </div>
+                    <div class="swipe-hint" data-aos="fade-up" style="margin-top: 5px;"><i class='bx bx-left-arrow-alt'></i> Vuốt ngang để xem thêm <i class='bx bx-right-arrow-alt'></i></div>
+
+                    <div class="pricing-box" data-aos="zoom-in">
+                        <div class="price-title">GIÁ TOÀN BỘ KHÓA HỌC: 8 MÔN + ĐGNL + ĐGTD</div>
+                        <div class="price-amount">350K</div>
+                        <div class="price-include">BAO GỒM TẤT CẢ DANH SÁCH TRÊN:</div>
+                        <ul class="pricing-list">
+                            <li><i class='bx bx-check-circle'></i> <span>Toàn bộ khóa 12 2K9 (2027) <span class="highlight">#đangkhaigiảng</span></span></li>
+                            <li><i class='bx bx-check-circle'></i> <span>Toàn bộ khóa lớp 12 2K8 (2026)</span></li>
+                            <li><i class='bx bx-check-circle'></i> <span>Toàn bộ khóa lớp 11 2K9 (2026)</span></li>
+                            <li><i class='bx bx-check-circle'></i> <span>Toàn bộ khóa lớp 10 2K10 (2026)</span></li>
+                            <li><i class='bx bx-check-circle'></i> <span>Bao gồm tất cả các môn, và tất cả các thầy cô, trung tâm trên cả nước.</span></li>
+                        </ul>
+                    </div>
+                    <div class="footer-text" data-aos="fade-in">CHÚC CÁC EM HỌC TỐT</div>
+                    <div class="domain-watermark" data-aos="fade-in">Hệ thống: khoahocvip.io.vn</div>
+                </div>
+            </div>
+            
+            <script>
+                // This script handles the interaction for the discovery landing section
+                setTimeout(() => {
+                    if (window.AOS) AOS.init({ once: true, offset: 10, easing: 'ease-out-cubic', duration: 800 });
+
+                    document.querySelectorAll('.video-item').forEach(item => {
+                        item.addEventListener('click', function() {
+                            let videoId = this.getAttribute('data-id');
+                            this.innerHTML = `<iframe sandbox="allow-scripts allow-same-origin allow-presentation" src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&fs=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width: 100%; height: 100%; border: none; border-radius: 16px;"></iframe>`;
+                        });
+                    });
+
+                    const courseData = {
+                        bonus: [
+                            "Tặng khóa Anh Giáo Kid lớp 11 2027 cho em tham khảo",
+                            "Tặng TOÁN THẦY CHÍ 2K9 LỚP 11 2027 cho em tham khảo",
+                            "Tặng khóa Tổ toán MAPSTUDY lớp 11 2027",
+                            "Tặng khóa Cô Ngọc Huyền LB lớp 11 2027",
+                            "Tặng khóa LÝ IPCLASS lớp 11 2027",
+                            "Tặng HOÁ 11 2027 THẦY PHẠM VĂN TRỌNG TENSCHOOL 2K9",
+                            "Tặng khóa HOÁ 11 2027 THẦY NGUYỄN ANH PHONG 2K9",
+                            "Tặng khóa SINH 11 2027 THẦY PHAN KHẮC NGHỆ MOON 2K9"
+                        ],
+                        toan: [
+                            "Thầy Đỗ Văn Đức - Trọn Bộ Lộ Trình TENS 2k9 🔥",
+                            "Cô Ngọc Huyền LB - Trọn Bộ Lộ Trình 6 step 2k9",
+                            "Thầy Nguyễn Quốc Chí - Trọn Bộ Lộ Trình Chuyên Đề Luyện Đề",
+                            "Thầy Nguyễn Đăng Ái - Trọn Bộ Lộ Trình TDM 🔥",
+                            "Thầy Nguyễn Phan Tiến - Trọn bộ lộ trình SMART",
+                            "Tổ toán MAPSTUDY - Trọn bộ lộ trình 2k9",
+                            "Thầy Nguyễn Tiến Đạt - Trọn bộ lộ trình 2k9",
+                            "Anh Giáo Kid - Trọn Bộ Lộ Trình SVIP 2027",
+                            "Thầy Trịnh Đình Thành DPAD - Trọn bộ lộ trình 2k9 🔥",
+                            "Anh Shiper Toán - Trọn bộ lộ trình 2k9",
+                            "TOÁN LXO - 2K9 - CÁC BUỔI HỌC VỀ TOÁN THỰC TẾ",
+                            "Thầy HUY HƯỚNG NỘI - 2K9 - TMT2027",
+                            "Nền tảng toán 12 HOCMAI 2k9 2027_Thầy Thưởng",
+                            "Khóa Bổ Trợ CASIO - Tặng Miễn Phí Không Cần Đăng Kí 🔥"
+                        ],
+                        vatly: [
+                            "Thầy Vũ Ngọc Anh - Trọn Bộ Lộ Trình IOME 🔥",
+                            "Thầy Vũ Tuấn Anh - Trọn Bộ Lộ Trình CTG, Thực Chiến",
+                            "Thầy Đỗ Ngọc Hà (TRỌN BỘ LỘ TRÌNH)",
+                            "IPCLASS 2K9 LÝ THẦY THẮNG, THẦY TIẾN 🔥",
+                            "Thầy Vũ Hoàng Quân - Trọn Bộ Lộ Trình XPS",
+                            "Thầy NGUYỄN ĐĂNG ÁI + BÙI XUÂN ĐẠT (FULL TDM) 🔥"
+                        ],
+                        hoa: [
+                            "Thầy Nguyễn Anh Phong (Mapstudy) - (Trọn Bộ Lộ Trình IOME) 🔥",
+                            "Thầy Phạm Văn Trọng - (Trọn Bộ Lộ Trình TENS) 🔥",
+                            "Cô Thân Thị Liên - Trọn Bộ Lộ Trình 2k9",
+                            "Thầy Phạm Thắng - Trọn Bộ Lộ Trình 2k9 🔥",
+                            "Thầy Phạm Văn Thuận - Trọn Bộ Lộ Trình 2k9",
+                            "HÓA HỌC 2027 HOCMAI - Thầy Vũ Khắc Ngọc, Cô Tống Thị Sơn..."
+                        ],
+                        sinh: [
+                            "THẦY PHAN KHẮC NGHỆ - (Trọn Bộ Lộ Trình Premium Web, Về Đích) 🔥",
+                            "SINH THẦY TRƯƠNG CÔNG KIÊN QANDA 2K9",
+                            "SINH CÔ TRÀ MY 🔥",
+                            "SINH - THẦY TUẤN",
+                            "NỀN TẢNG 12 MÔN SINH 2027 HOCMAI"
+                        ],
+                        anh: [
+                            "CÔ VŨ THỊ MAI PHƯƠNG (Trọn Bộ Lộ Trình Pro3m, Pro3mplus, Vip90) 🔥",
+                            "CÔ PHẠM LIỄU 2027 - Trọn Bộ Lộ Trình TENS 🔥",
+                            "CÔ TRANG ANH - Khóa giải đề THPT <span class='highlight'>(NEW)</span>"
+                        ],
+                        van: [
+                            "VĂN Cô Sương Mai - Trọn Bộ Lộ Trình VIP",
+                            "VĂN Cô Võ Phạm Trúc Linh -TTS - (Trọn Bộ Lộ Trình 5 Tháng, Luyện Đề)",
+                            "VĂN CÔ TRẦN THUỲ DƯƠNG 2K9"
+                        ],
+                        su: [
+                            "Cô Hương Sen - (Trọn Bộ Lộ Trình CTG, Thực Chiến) 🔥",
+                            "Cô Ngô Thị Lan Hương - (Trọn Bộ Lộ Trình A1, A2, A3)"
+                        ],
+                        dia: [
+                            "ĐỊA THẦY THANH TÙNG - (Trọn Bộ Lộ Trình A1, A2, A3) 🔥",
+                            "ĐỊA LÝ THẦY TÀI QANDA 2K9",
+                            "ĐỊA LÝ CÔ MAI ANH (Trọn bộ lộ trình L1, L2, L3)"
+                        ],
+                        dgnl: [
+                            "HSA HOCMAI 2K9 LUYỆN THI ĐGNL HÀ NỘI 2027 🔥",
+                            "HSA VNES 2K9 LUYỆN THI ĐGNL HÀ NỘI 2027",
+                            "HSA EDU - THẦY VĂN HOA 🔥",
+                            "HSA MAPSTUDY LUYỆN THI ĐGNL HÀ NỘI 2027",
+                            "HSA TUYỂN SINH 247",
+                            "HSA - EMPRIE 🔥",
+                            "V-ACT EMPIRE 2027",
+                            "V-ACT HOCMAI 2K9 LUYỆN THI ĐGNL TP.HCM 2027 🔥",
+                            "V-ACT 2K9 THẦY BÙI VĂN CÔNG",
+                            "V-ACT MAPSTUDY 2K9 LUYỆN THI ĐÁNH GIÁ NĂNG LỰC TP.HCM 2027"
+                        ],
+                        dgtd: [
+                            "TSA TUYỂN SINH 247 🔥",
+                            "TSA HOCMAI 2K9 LUYỆN THI ĐÁNH GIÁ TƯ DUY ĐHBK HÀ NỘI 🔥",
+                            "TSA NGUYỄN ĐĂNG ÁI 2K9",
+                            "TSA ILP 2K9 LUYỆN THI ĐÁNH GIÁ TƯ DUY ĐHBK HÀ NỘI 2027",
+                            "TSA - BMC EDUCATION 🔥",
+                            "TSA - THẦY THẮNG TRỌC SAITAMA 🔥 ",
+                            "TSA - MAPSTUDY - BỔ TRỢ TOÁN HỌC",
+                            "MÃ THI THỬ TSA MIỄN PHÍ <span class='highlight'>(HOT)</span> 🔥",
+                            "PIMAX TSA"
+                        ],
+                        supham: [
+                            "SPT 2K9 HN PEDA EDU LUYỆN THI ĐGNL SƯ PHẠM HÀ NỘI 2027 🔥",
+                            "H-SCA 2K9 HCM PEDA EDU LUYỆN THI ĐGNL SƯ PHẠM TP.HCM 2027 🔥"
+                        ]
+                    };
+
+                    const tabBtns = Array.from(document.querySelectorAll('.tab-btn'));
+                    const courseList = document.getElementById('courseList');
+                    const swipeHintText = document.querySelector('.courses-section .swipe-hint');
+                    const tabMenu = document.getElementById('tabMenu');
+                    let currentTabIndex = 0;
+                    let autoSlideInterval;
+
+                    function renderCourses(category) {
+                        courseList.innerHTML = '';
+                        const courses = courseData[category];
+                        courses.forEach((course, index) => {
+                            let courseText = course.replace('🔥', "<span class='hot-icon'>🔥</span>");
+                            const li = document.createElement('li');
+                            li.className = 'course-item';
+                            li.style.animationDelay = `${index * 0.05}s`; 
+                            li.innerHTML = `<i class='bx bx-check-circle check'></i> <span>${courseText}</span>`;
+                            courseList.appendChild(li);
+                        });
+                    }
+
+                    function activateTab(index) {
+                        tabBtns.forEach(b => b.classList.remove('active'));
+                        const btn = tabBtns[index];
+                        btn.classList.add('active');
+                        renderCourses(btn.getAttribute('data-target'));
+                        
+                        const scrollLeftPos = btn.offsetLeft - (tabMenu.clientWidth / 2) + (btn.clientWidth / 2);
+                        tabMenu.scrollTo({ left: scrollLeftPos, behavior: 'smooth' });
+                    }
+
+                    function startAutoSlide() {
+                        autoSlideInterval = setInterval(() => {
+                            currentTabIndex++;
+                            if(currentTabIndex >= tabBtns.length) currentTabIndex = 0;
+                            activateTab(currentTabIndex);
+                        }, 4000);
+                    }
+
+                    tabBtns.forEach((btn, index) => {
+                        btn.addEventListener('click', function() {
+                            clearInterval(autoSlideInterval);
+                            swipeHintText.innerHTML = "350K ở dưới tức là được tất cả chỗ này luôn. Kèm Qùa Tặng!"; 
+                            swipeHintText.style.color = "#7f8fa6";
+                            currentTabIndex = index;
+                            activateTab(index);
+                        });
+                    });
+
+                    renderCourses('bonus');
+                    startAutoSlide();
+                }, 500); // Slight delay to ensure DOM is ready
+            </script>
+        </div>
+
+        <div class="mt-8 border-t border-theme pt-8">
+            <h2 class="text-xl font-bold text-main mb-6 px-4">Bài viết & Video Khám phá khác</h2>
+            <div id="discovery-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div class="loader mx-auto col-span-full"></div>
+            </div> <!-- End discovery-grid -->
+          </div> <!-- End content-container -->
+        </div> <!-- End view-content-wrapper -->
+      </main>
+
+      <!-- ============================================== -->
+      <!-- VIEW 5: Q&A -->
+      <!-- ============================================== -->
+      <main id="view-qa" class="main-view transition-all duration-500 hidden">
+        <div class="view-content-wrapper">
+          <div class="content-container flex flex-col gap-8">
+        <div class="flex items-center gap-3 border-b border-theme pb-4">
+          <div class="p-3 bg-green-100 text-green-600 rounded-xl"><i data-lucide="message-square" class="w-6 h-6"></i></div>
+          <h2 class="text-2xl font-bold text-main">Cộng đồng Hỏi Đáp</h2>
+        </div>
+        
+        <div class="max-w-4xl mx-auto w-full flex flex-col gap-6">
+          <div class="glass-card bg-card p-6 rounded-2xl border border-theme shadow-md">
+            <h3 class="font-bold text-main mb-3">Đặt câu hỏi của bạn</h3>
+            <textarea id="qa-input" class="input-glass w-full mb-3" rows="3" placeholder="Ví dụ: Làm sao để học React hiệu quả?"></textarea>
+            <div class="flex justify-between items-center">
+              <p class="text-xs text-muted">Câu hỏi sẽ được Admin duyệt trước khi hiển thị công khai.</p>
+              <button id="btn-submit-qa" class="btn-primary flex items-center gap-2 shadow-lg"><i data-lucide="send" class="w-4 h-4"></i> Đăng câu hỏi</button>
+            </div>
+          </div>
+          
+          <div id="qa-feed" class="space-y-6">
+            <div class="loader mx-auto"></div>
+            </div> <!-- End qa-feed -->
+          </div> <!-- End content-container -->
+        </div> <!-- End view-content-wrapper -->
+      </main>
+
+      <!-- ============================================== -->
+      <!-- VIEW 6: LEARNING (VIDEO) -->
+      <!-- ============================================== -->
+      <main id="view-learning" class="main-view bg-main transition-all duration-500 hidden min-h-screen">
+        <div class="view-content-wrapper p-0 sm:p-0 lg:p-0"> <!-- No padding for video player wrapper -->
+          <div class="content-container max-w-none flex flex-col xl:flex-row">
+        <!-- Main Learning Area -->
+        <section class="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 custom-scrollbar">
+          <div class="max-w-6xl mx-auto w-full">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <div class="flex items-center gap-3">
+                <button class="text-muted hover:text-orange-500 flex items-center gap-1 font-bold focus-hide" onclick="window.changeMainView('view-dashboard')">
+                  <i data-lucide="arrow-left" class="w-5 h-5"></i> Về Dashboard
+                </button>
+                <button id="btn-focus-mode" class="p-2 bg-slate-800 text-white rounded-xl hover:bg-slate-700 transition-colors shadow-lg flex items-center gap-2 text-sm font-bold" title="Bật/Tắt chế độ tập trung">
+                  <i data-lucide="focus" class="w-4 h-4"></i> <span class="hidden sm:inline">Focus</span>
+                </button>
+              </div>
+              
+              <div class="flex items-center gap-3 w-full sm:w-64 bg-card p-3 rounded-2xl border border-theme shadow-sm">
+                <div class="w-10 h-10 rounded-full bg-orange-500/10 text-orange-500 flex items-center justify-center shrink-0">
+                  <i data-lucide="award" class="w-5 h-5"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="flex justify-between text-xs font-bold mb-1.5">
+                    <span class="text-main">Tiến độ</span><span class="text-orange-500" id="progress-percent">0%</span>
+                  </div>
+                  <div class="progress-bar-container bg-slate-100 dark:bg-slate-800">
+                    <div class="progress-bar-fill w-0 bg-gradient-to-r from-orange-400 to-red-500" id="progress-bar"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <h2 class="text-2xl font-extrabold text-main mb-6" id="current-lecture-title">Đang tải bài giảng...</h2>
+
+            <div class="video-container mb-8 shadow-2xl border-2 border-slate-200 dark:border-slate-800 relative">
+              <div id="player-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 bg-slate-900/90 backdrop-blur z-20">
+                <i data-lucide="play-circle" class="w-16 h-16 mb-4 opacity-50"></i>
+                <p class="font-medium text-lg">Chọn bài giảng để bắt đầu</p>
+              </div>
+              <div id="youtube-player" class="absolute inset-0 w-full h-full z-10"></div>
+              
+              <!-- Overlay cho Checkpoint -->
+              <div id="checkpoint-overlay" class="absolute inset-0 bg-slate-900/95 backdrop-blur-md z-30 hidden flex-col items-center justify-center text-center p-6 text-white">
+                <div class="w-16 h-16 bg-gradient-to-tr from-purple-500 to-indigo-500 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(139,92,246,0.5)]">
+                  <i data-lucide="help-circle" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-2xl font-black mb-2">Check-point Bài Giảng!</h3>
+                <p class="text-slate-300 mb-8 max-w-md text-lg" id="checkpoint-question">Câu hỏi...</p>
+                <div class="flex flex-col gap-3 w-full max-w-sm" id="checkpoint-options">
+                  <!-- Buttons rendered via JS -->
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-10">
+              <div class="lg:col-span-2 space-y-6">
+                <div class="glass-card bg-card p-6 border-theme rounded-2xl">
+                  <div class="flex justify-between items-start gap-4 mb-6 pb-6 border-b border-theme">
+                    <div class="flex-1">
+                      <h3 class="text-lg font-bold text-main mb-2">Mô tả bài giảng</h3>
+                      <p class="text-muted leading-relaxed whitespace-pre-wrap text-sm" id="lecture-description"></p>
+                    </div>
+                    <button id="btn-mark-done" class="btn-secondary !rounded-2xl !py-3 flex flex-col items-center min-w-[110px] shrink-0 border-2">
+                      <i data-lucide="check-circle" class="w-6 h-6"></i>
+                      <span id="text-mark-done" class="text-xs font-bold uppercase tracking-wider">Hoàn thành</span>
+                    </button>
+                  </div>
+                  <div id="resource-container" class="hidden">
+                    <h4 class="text-xs font-bold text-muted uppercase tracking-wider mb-3">Tài liệu đính kèm</h4>
+                    <a id="btn-download-doc" href="#" target="_blank" class="inline-flex items-center gap-2 bg-blue-500/10 text-blue-600 dark:text-blue-400 px-5 py-3 rounded-xl hover:bg-blue-500/20 font-bold border border-blue-500/20">
+                      <i data-lucide="file-down" class="w-5 h-5"></i> <span>Tải File</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="lg:col-span-1">
+                <div class="glass-card bg-card p-6 h-[400px] flex flex-col sticky top-6 border-theme rounded-2xl shadow-xl shadow-orange-500/5">
+                  <div class="flex justify-between items-center mb-3">
+                    <h3 class="font-bold text-main flex items-center gap-2"><i data-lucide="pen-tool" class="text-orange-500"></i> Smart Notebook</h3>
+                    <div class="flex gap-2">
+                      <button id="btn-pin-note" class="text-xs bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-3 py-1.5 rounded-lg hover:bg-indigo-200 transition-colors font-bold flex items-center gap-1">
+                        <i data-lucide="pin" class="w-3 h-3"></i> Ghim T.Gian
+                      </button>
+                      <button id="btn-export-pdf" class="text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-3 py-1.5 rounded-lg hover:bg-slate-200 transition-colors font-bold">PDF</button>
+                    </div>
+                  </div>
+                  <!-- Use contenteditable div instead of textarea to support HTML links for timestamps -->
+                  <div id="notebook-textarea" class="input-glass flex-1 overflow-y-auto text-sm !bg-slate-50 dark:!bg-slate-800/50 outline-none p-3" contenteditable="true" placeholder="Ghi chép auto-save..."></div>
+                  <div class="flex justify-end mt-3 opacity-0" id="save-indicator">
+                    <span class="text-xs text-green-500 font-bold flex items-center"><i data-lucide="check" class="w-4 h-4"></i> Đã lưu</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Sidebar Outline -->
+        <aside class="w-full xl:w-[380px] bg-card border-l border-theme flex flex-col shrink-0">
+          <div class="p-6 border-b border-theme flex justify-between bg-card">
+            <div>
+              <h3 class="font-bold text-main flex items-center gap-2 text-lg"><i data-lucide="list-video" class="w-5 h-5 text-orange-500"></i> Nội dung</h3>
+              <p class="text-xs text-muted mt-1 font-medium" id="sidebar-course-title">Tên khóa...</p>
+            </div>
+          </div>
+          <div id="course-outline" class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-3 bg-slate-50 dark:bg-slate-900/50"></div>
+        </aside>
+          </div> <!-- End content-container -->
+        </div> <!-- End view-content-wrapper -->
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div id="login-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[100] flex flex-col items-center justify-center hidden opacity-0 transition-opacity">
+    <div class="glass-card bg-card p-10 flex flex-col items-center max-w-sm text-center relative shadow-2xl rounded-3xl" id="login-card">
+      <button id="btn-close-login" class="absolute top-4 right-4 text-muted hover:text-red-500 p-2 rounded-full"><i data-lucide="x" class="w-6 h-6"></i></button>
+      <div class="w-24 h-24 bg-gradient-to-br from-orange-400 to-red-500 text-white rounded-full flex items-center justify-center mb-6 ring-8 ring-orange-500/20 shadow-xl">
+        <i data-lucide="lock-keyhole" class="w-10 h-10"></i>
+      </div>
+      <h2 class="text-2xl font-black mb-2 text-main">Đăng nhập yêu cầu</h2>
+      <button id="btn-login-large" class="w-full bg-white text-slate-800 border border-slate-200 py-3.5 rounded-2xl flex justify-center gap-3 font-bold mt-4 shadow-xl">
+        Google Login
+      </button>
+    </div>
+  </div>
+
+  <!-- Badge Popup (Lottie upgraded) -->
+  <div id="badge-popup" class="badge-popup">
+    <div class="glass-card bg-card p-10 flex flex-col items-center text-center rounded-3xl shadow-[0_0_80px_rgba(249,115,22,0.4)] border-4 border-orange-400 relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-red-500/5 pointer-events-none"></div>
+      <div class="w-40 h-40 mb-4 relative z-10" id="badge-lottie-container"></div>
+      <div class="w-28 h-28 mb-6 drop-shadow-2xl hidden" id="badge-icon-container"></div>
+      <h3 class="text-3xl font-black text-main mb-2 tracking-tight relative z-10" id="badge-title">Chúc mừng!</h3>
+      <p class="text-muted font-bold text-lg relative z-10" id="badge-desc">Bạn đã hoàn thành.</p>
+      <button class="bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full mt-8 py-3 px-10 font-bold shadow-lg hover:shadow-orange-500/40 hover:-translate-y-1 transition-all relative z-10" onclick="document.getElementById('badge-popup').classList.remove('show')">Tuyệt vời! 🎉</button>
+    </div>
+  </div>
+
+  <div id="auth-check-loader" class="fixed inset-0 bg-main z-[200] flex flex-col items-center justify-center transition-opacity">
+    <div class="loader mb-6 !w-14 !h-14 border-[4px]"></div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-20 lg:bottom-4 right-4 glass-card bg-card px-4 py-3 flex items-center gap-3 transform translate-y-20 opacity-0 transition-all z-[100] shadow-xl pointer-events-none rounded-2xl">
+    <i data-lucide="check-circle" class="text-green-500 w-5 h-5"></i>
+    <span id="toast-message" class="text-sm font-medium text-main">Thành công!</span>
+  </div>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav id="mobile-bottom-nav" class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card/90 backdrop-blur-xl border-t border-theme flex items-stretch shadow-2xl">
+    <button class="mobile-nav-btn flex-1 flex flex-col items-center justify-center gap-1 py-3 px-2 text-muted hover:text-orange-500 transition-colors" onclick="window.changeMainView('view-dashboard', this)" data-view="view-dashboard">
+      <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+      <span class="text-[10px] font-bold">Tổng quan</span>
+    </button>
+    <button class="mobile-nav-btn flex-1 flex flex-col items-center justify-center gap-1 py-3 px-2 text-muted hover:text-orange-500 transition-colors" onclick="window.changeMainView('view-my-courses', this)" data-view="view-my-courses">
+      <i data-lucide="book-open-check" class="w-5 h-5"></i>
+      <span class="text-[10px] font-bold">Khóa học</span>
+    </button>
+    <button class="mobile-nav-btn flex-1 flex flex-col items-center justify-center gap-1 py-3 px-2 text-muted hover:text-orange-500 transition-colors" onclick="window.changeMainView('view-news', this)" data-view="view-news">
+      <i data-lucide="bell" class="w-5 h-5"></i>
+      <span class="text-[10px] font-bold">Thông báo</span>
+    </button>
+    <button class="mobile-nav-btn flex-1 flex flex-col items-center justify-center gap-1 py-3 px-2 text-muted hover:text-orange-500 transition-colors" onclick="window.changeMainView('view-profile', this)" data-view="view-profile">
+      <i data-lucide="user-cog" class="w-5 h-5"></i>
+      <span class="text-[10px] font-bold">Hồ sơ</span>
+    </button>
+  </nav>
+
+  <script>
+    lucide.createIcons();
+    AOS.init({ once: true, duration: 700 });
+    if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
+    document.getElementById('btn-theme-toggle').addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    // ---- Mouse Glow Follower ----
+    const mouseGlow = document.getElementById('mouse-glow');
+    let glowX = 0, glowY = 0, targetX = 0, targetY = 0;
+    document.addEventListener('mousemove', e => {
+      targetX = e.clientX;
+      targetY = e.clientY;
+    });
+    function animateGlow() {
+      glowX += (targetX - glowX) * 0.08;
+      glowY += (targetY - glowY) * 0.08;
+      if (mouseGlow) {
+        mouseGlow.style.left = glowX + 'px';
+        mouseGlow.style.top = glowY + 'px';
+      }
+      requestAnimationFrame(animateGlow);
+    }
+    animateGlow();
+
+    // Show/hide glow only when over glass-cards
+    document.querySelectorAll('.glass-card, .stat-card-neumorph, .bg-card').forEach(el => {
+      el.addEventListener('mouseenter', () => { if(mouseGlow) mouseGlow.style.opacity = '1'; });
+      el.addEventListener('mouseleave', () => { if(mouseGlow) mouseGlow.style.opacity = '0'; });
+    });
+
+    // ---- Spring Button Effect ----
+    document.querySelectorAll('button:not(.mobile-nav-btn)').forEach(btn => {
+      btn.addEventListener('mousedown', () => btn.style.transform = 'scale(0.93)');
+      btn.addEventListener('mouseup', () => {
+        btn.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+        btn.style.transform = 'scale(1)';
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transition = 'transform 0.3s ease';
+        btn.style.transform = '';
+      });
+    });
+
+    // ---- Lottie Badge on show ----
+    const badgePopup = document.getElementById('badge-popup');
+    const badgeLottieContainer = document.getElementById('badge-lottie-container');
+    const badgeObserver = new MutationObserver(() => {
+      if (badgePopup.classList.contains('show') && badgeLottieContainer && typeof lottie !== 'undefined') {
+        badgeLottieContainer.innerHTML = '';
+        lottie.loadAnimation({
+          container: badgeLottieContainer,
+          renderer: 'svg',
+          loop: false,
+          autoplay: true,
+          path: 'https://assets10.lottiefiles.com/packages/lf20_jR229r.json'
+        });
+        // Also fire confetti
+        if (typeof confetti !== 'undefined') {
+          confetti({ particleCount: 120, spread: 90, origin: { y: 0.55 }, colors: ['#f97316','#ef4444','#a855f7','#3b82f6','#fbbf24'] });
+        }
+      }
+    });
+    if (badgePopup) badgeObserver.observe(badgePopup, { attributes: true, attributeFilter: ['class'] });
+
+    // ---- Animated Number Counter ----
+    window.animateCounter = function(el, targetVal, duration = 900, suffix = '') {
+      if (!el) return;
+      const start = 0;
+      const startTime = performance.now();
+      const isFloat = String(targetVal).includes('.');
+      function step(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease out cubic
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = isFloat ? (start + (targetVal - start) * eased).toFixed(1) : Math.floor(start + (targetVal - start) * eased);
+        el.innerHTML = current + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+        else el.innerHTML = targetVal + suffix;
+      }
+      requestAnimationFrame(step);
+    };
+
+    // Expose a global hook so hoconline.js can trigger counters after data loads
+    window.triggerDashboardCounters = function({ learning, hours, lectures, xp }) {
+      const elL = document.getElementById('stat-learning');
+      const elH = document.getElementById('stat-hours');
+      const elLec = document.getElementById('stat-completed-lectures');
+      const elXp = document.getElementById('stat-xp');
+      const xpCard = document.getElementById('stat-xp-card');
+
+      window.animateCounter(elL, learning);
+      window.animateCounter(elH, hours, 1000, '<span class="text-base text-muted font-medium ml-1">h</span>');
+      window.animateCounter(elLec, lectures);
+      window.animateCounter(elXp, xp);
+
+      // Show XP card if logged in
+      if (xp > 0 && xpCard) xpCard.style.display = '';
+    };
+
+    // ---- Banner Parallax (scroll-based) ----
+    const parallaxImg = document.getElementById('banner-parallax-img');
+    const mainContainer = document.getElementById('main-views-container');
+    if (mainContainer && parallaxImg) {
+      mainContainer.addEventListener('scroll', () => {
+        const scrollY = mainContainer.scrollTop;
+        const heroEl = document.getElementById('hero-banner');
+        if (heroEl) {
+          const heroBottom = heroEl.offsetTop + heroEl.offsetHeight;
+          if (scrollY < heroBottom) {
+            const shift = scrollY * 0.25;
+            parallaxImg.style.transform = `scale(1.08) translateY(${shift}px)`;
+          }
+        }
+      }, { passive: true });
+    }
+
+    // ---- Stagger animation for course cards ----
+    window.applyStaggerToCourseCards = function(containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const cards = container.querySelectorAll('[data-course-card]');
+      cards.forEach((card, i) => {
+        card.classList.add('stagger-course');
+        card.style.animationDelay = (i * 0.1) + 's';
+      });
+    };
+
+    // ---- Global navigation helper ----
+    window.changeMainView = window.changeMainView || function(viewId) {
+      const allViews = document.querySelectorAll('.main-view');
+      allViews.forEach(v => {
+        v.classList.add('hidden');
+        v.style.opacity = '0';
+      });
+      const target = document.getElementById(viewId);
+      if(target) {
+        target.classList.remove('hidden');
+        // Small delay to trigger CSS transition
+        setTimeout(() => { target.style.opacity = '1'; }, 10);
+      }
+    };
+    
+    // Ensure dashboard is visible on first load after DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      const dashboard = document.getElementById('view-dashboard');
+      if (dashboard) {
+        dashboard.classList.remove('hidden');
+        dashboard.style.opacity = '1';
+      }
+    });
+  </script>
+</body>
+</html>
+
+
