@@ -71,6 +71,10 @@
 
   // ─── 5. CSS: CHẶN CHỌN VĂN BẢN + IN ẤN ─────────────────
   document.addEventListener('DOMContentLoaded', function() {
+    // Xóa blur/filter từ phiên cũ (nếu có cache)
+    document.body.style.filter = '';
+    document.body.style.pointerEvents = '';
+
     var style = document.createElement('style');
     style.textContent = [
       /* Chặn chọn text trong vùng học */
@@ -85,10 +89,8 @@
       '  -webkit-user-select: text !important;',
       '  user-select: text !important;',
       '}',
-      /* Chặn kéo ảnh */
-      'img { -webkit-user-drag: none; user-drag: none; pointer-events: none; }',
-      /* Cho phép click ảnh thumbnail trong card (cần pointer-events) */
-      '.group img, button img, a img { pointer-events: auto; }',
+      /* Chặn kéo ảnh — KHÔNG dùng pointer-events (sẽ phá mobile touch) */
+      'img { -webkit-user-drag: none; }',
       /* Tắt in trang */
       '@media print { body { display: none !important; } }'
     ].join('\n');
