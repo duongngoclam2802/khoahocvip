@@ -2344,7 +2344,7 @@ window._headerActivateKey = () => {
 // ================================================================
 
 // ---- Config ----
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash:generateContent';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 const AI_CHAT_HISTORY = []; // In-memory history for current session
 // ---- KEY POOL (from Firestore ai_pool collection) ----
 let _aiKeyPool = []; // Array of { id, key } — active keys loaded at login
