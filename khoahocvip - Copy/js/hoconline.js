@@ -2352,7 +2352,6 @@ let _aiKeyPool = []; // Array of { id, key } — active keys loaded at login
 /** Load active keys from Firestore ai_pool */
 async function loadAIKeyPool() {
   try {
-    const { getDocs: _gd, collection: _col, query: _q, where: _w } = await import('./firebase-config.js').catch(() => ({}));
     // Use already-imported functions from top of file
     const snap = await getDocs(query(collection(db, 'ai_pool'), where('status', '==', 'active')));
     _aiKeyPool = [];
