@@ -1280,7 +1280,7 @@
             if(btnElement) btnElement.classList.add('active');
             
             // Scroll tab into view
-            if(btnElement) 
+            if(btnElement) {
                 const scrollLeft = btnElement.offsetLeft - (tabMenu.clientWidth / 2) + (btnElement.clientWidth / 2);
                 tabMenu.scrollTo({ left: scrollLeft, behavior: 'smooth' });
             }
