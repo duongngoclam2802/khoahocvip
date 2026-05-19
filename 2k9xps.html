@@ -1247,18 +1247,101 @@
 
         // Courses Data
         const courseData = {
-            bonus: { icon: 'bx-gift', name: 'QUÀ TẶNG (BONUS)', items: ["Tặng khóa Anh Giáo Kid lớp 11 2027", "Tặng TOÁN THẦY CHÍ 2K9 LỚP 11", "Tặng khóa Tổ toán MAPSTUDY lớp 11", "Tặng khóa Cô Ngọc Huyền LB lớp 11", "Tặng khóa LÝ IPCLASS lớp 11", "Tặng HOÁ 11 THẦY PHẠM VĂN TRỌNG", "Tặng khóa HOÁ 11 THẦY NGUYỄN ANH PHONG", "Tặng khóa SINH 11 THẦY PHAN KHẮC NGHỆ"] },
-            toan: { icon: 'bx-math', name: 'TOÁN', items: ["Thầy Đỗ Văn Đức - Trọn Bộ Lộ Trình TENS 🔥", "Cô Ngọc Huyền LB - Trọn Bộ 6 step", "Thầy Nguyễn Quốc Chí - Chuyên Đề Luyện Đề", "Thầy Nguyễn Đăng Ái - Lộ Trình TDM 🔥", "Tổ toán MAPSTUDY - Trọn bộ 2k9", "Anh Giáo Kid - SVIP 2027", "Khóa Bổ Trợ CASIO - Miễn Phí 🔥"] },
-            vatly: { icon: 'bx-bulb', name: 'VẬT LÝ', items: ["Thầy Vũ Ngọc Anh - Lộ Trình IOME 🔥", "Thầy Vũ Tuấn Anh - CTG, Thực Chiến", "Thầy Đỗ Ngọc Hà (TRỌN BỘ)", "IPCLASS LÝ THẦY THẮNG, THẦY TIẾN 🔥", "Thầy Vũ Hoàng Quân - XPS", "Thầy NGUYỄN ĐĂNG ÁI (FULL TDM) 🔥"] },
-            hoa: { icon: 'bx-test-tube', name: 'HÓA HỌC', items: ["Thầy Nguyễn Anh Phong - IOME 🔥", "Thầy Phạm Văn Trọng - TENS 🔥", "Cô Thân Thị Liên - Trọn Bộ", "Thầy Phạm Thắng - Trọn Bộ 🔥", "Thầy Vũ Khắc Ngọc - HOCMAI"] },
-            sinh: { icon: 'bx-dna', name: 'SINH HỌC', items: ["THẦY PHAN KHẮC NGHỆ - Premium 🔥", "SINH THẦY TRƯƠNG CÔNG KIÊN", "SINH CÔ TRÀ MY 🔥", "SINH - THẦY TUẤN", "NỀN TẢNG SINH HOCMAI"] },
-            anh: { icon: 'bx-world', name: 'TIẾNG ANH', items: ["CÔ VŨ THỊ MAI PHƯƠNG - Pro3m, Vip90 🔥", "CÔ PHẠM LIỄU - TENS 🔥", "CÔ TRANG ANH - Giải đề THPT 🔥"] },
-            van: { icon: 'bx-book', name: 'NGỮ VĂN', items: ["VĂN Cô Sương Mai - VIP", "VĂN Cô Võ Phạm Trúc Linh", "VĂN CÔ TRẦN THUỲ DƯƠNG"] },
-            su: { icon: 'bx-history', name: 'LỊCH SỬ', items: ["Cô Hương Sen - CTG, Thực Chiến 🔥", "Cô Ngô Thị Lan Hương - A1, A2, A3"] },
-            dia: { icon: 'bx-globe', name: 'ĐỊA LÝ', items: ["THẦY THANH TÙNG - A1, A2, A3 🔥", "THẦY TÀI QANDA", "CÔ MAI ANH - L1, L2, L3"] },
-            dgnl: { icon: 'bx-brain', name: 'ĐGNL HSA & V-ACT', items: ["HSA HOCMAI LUYỆN THI ĐGNL HN 🔥", "HSA VNES LUYỆN THI ĐGNL", "HSA MAPSTUDY", "V-ACT EMPIRE 2027 🔥", "V-ACT HOCMAI ĐGNL TP.HCM 🔥"] },
-            dgtd: { icon: 'bx-target-lock', name: 'ĐGTD TSA', items: ["TSA TUYỂN SINH 247 🔥", "TSA HOCMAI ĐHBK HN 🔥", "TSA NGUYỄN ĐĂNG ÁI", "TSA - BMC EDUCATION 🔥", "MÃ THI THỬ TSA MIỄN PHÍ 🔥"] },
-            supham: { icon: 'bx-book-reader', name: 'ĐGNL SƯ PHẠM', items: ["SPT HN PEDA EDU ĐGNL SP HN 🔥", "H-SCA HCM PEDA EDU ĐGNL SP HCM 🔥"] }
+            bonus: { icon: 'bx-gift', name: 'QUÀ TẶNG (BONUS)', items: [
+                "Tặng khóa Anh Giáo Kid lớp 11 2027 cho em tham khảo",
+                "Tặng TOÁN THẦY CHÍ 2K9 LỚP 11 2027 cho em tham khảo",
+                "Tặng khóa Tổ toán MAPSTUDY lớp 11 2027",
+                "Tặng khóa Cô Ngọc Huyền LB lớp 11 2027",
+                "Tặng khóa LÝ IPCLASS lớp 11 2027",
+                "Tặng HOÁ 11 2027 THẦY PHẠM VĂN TRỌNG TENSCHOOL 2K9",
+                "Tặng khóa HOÁ 11 2027 THẦY NGUYỄN ANH PHONG 2K9",
+                "Tặng khóa SINH 11 2027 THẦY PHAN KHẮC NGHỆ MOON 2K9"
+            ] },
+            toan: { icon: 'bx-math', name: 'TOÁN', items: [
+                "Thầy Đỗ Văn Đức - Trọn Bộ Lộ Trình TENS 2k9 🔥",
+                "Cô Ngọc Huyền LB - Trọn Bộ Lộ Trình 6 step 2k9",
+                "Thầy Nguyễn Quốc Chí - Trọn Bộ Lộ Trình Chuyên Đề Luyện Đề",
+                "Thầy Nguyễn Đăng Ái - Trọn Bộ Lộ Trình TDM 🔥",
+                "Thầy Nguyễn Phan Tiến - Trọn bộ lộ trình SMART",
+                "Tổ toán MAPSTUDY - Trọn bộ lộ trình 2k9",
+                "Thầy Nguyễn Tiến Đạt - Trọn bộ lộ trình 2k9",
+                "Anh Giáo Kid - Trọn Bộ Lộ Trình SVIP 2027",
+                "Thầy Trịnh Đình Thành DPAD - Trọn bộ lộ trình 2k9 🔥",
+                "Anh Shiper Toán - Trọn bộ lộ trình 2k9",
+                "TOÁN LXO - 2K9 - CÁC BUỔI HỌC VỀ TOÁN THỰC TẾ",
+                "Thầy HUY HƯỚNG NỘI - 2K9 - TMT2027",
+                "Nền tảng toán 12 HOCMAI 2k9 2027_Thầy Thưởng",
+                "Khóa Bổ Trợ CASIO - Tặng Miễn Phí Không Cần Đăng Kí 🔥"
+            ] },
+            vatly: { icon: 'bx-bulb', name: 'VẬT LÝ', items: [
+                "Thầy Vũ Ngọc Anh - Trọn Bộ Lộ Trình IOME 🔥",
+                "Thầy Vũ Tuấn Anh - Trọn Bộ Lộ Trình CTG, Thực Chiến",
+                "Thầy Đỗ Ngọc Hà (TRỌN BỘ LỘ TRÌNH)",
+                "IPCLASS 2K9 LÝ THẦY THẮNG, THẦY TIẾN 🔥",
+                "Thầy Vũ Hoàng Quân - Trọn Bộ Lộ Trình XPS",
+                "Thầy NGUYỄN ĐĂNG ÁI + BÙI XUÂN ĐẠT (FULL TDM) 🔥"
+            ] },
+            hoa: { icon: 'bx-test-tube', name: 'HÓA HỌC', items: [
+                "Thầy Nguyễn Anh Phong (Mapstudy) - (Trọn Bộ Lộ Trình IOME) 🔥",
+                "Thầy Phạm Văn Trọng - (Trọn Bộ Lộ Trình TENS) 🔥",
+                "Cô Thân Thị Liên - Trọn Bộ Lộ Trình 2k9",
+                "Thầy Phạm Thắng - Trọn Bộ Lộ Trình 2k9 🔥",
+                "Thầy Phạm Văn Thuận - Trọn Bộ Lộ Trình 2k9",
+                "HÓA HỌC 2027 HOCMAI - Thầy Vũ Khắc Ngọc, Cô Tống Thị Sơn..."
+            ] },
+            sinh: { icon: 'bx-dna', name: 'SINH HỌC', items: [
+                "THẦY PHAN KHẮC NGHỆ - (Trọn Bộ Lộ Trình Premium Web, Về Đích) 🔥",
+                "SINH THẦY TRƯƠNG CÔNG KIÊN QANDA 2K9",
+                "SINH CÔ TRÀ MY 🔥",
+                "SINH - THẦY TUẤN",
+                "NỀN TẢNG 12 MÔN SINH 2027 HOCMAI"
+            ] },
+            anh: { icon: 'bx-world', name: 'TIẾNG ANH', items: [
+                "CÔ VŨ THỊ MAI PHƯƠNG (Trọn Bộ Lộ Trình Pro3m, Pro3mplus, Vip90) 🔥",
+                "CÔ PHẠM LIỄU 2027 - Trọn Bộ Lộ Trình TENS 🔥",
+                "CÔ TRANG ANH - Khóa giải đề THPT <span class='highlight'>(NEW)</span>"
+            ] },
+            van: { icon: 'bx-book', name: 'NGỮ VĂN', items: [
+                "VĂN Cô Sương Mai - Trọn Bộ Lộ Trình VIP",
+                "VĂN Cô Võ Phạm Trúc Linh -TTS - (Trọn Bộ Lộ Trình 5 Tháng, Luyện Đề)",
+                "VĂN CÔ TRẦN THUỲ DƯƠNG 2K9"
+            ] },
+            su: { icon: 'bx-history', name: 'LỊCH SỬ', items: [
+                "Cô Hương Sen - (Trọn Bộ Lộ Trình CTG, Thực Chiến) 🔥",
+                "Cô Ngô Thị Lan Hương - (Trọn Bộ Lộ Trình A1, A2, A3)"
+            ] },
+            dia: { icon: 'bx-globe', name: 'ĐỊA LÝ', items: [
+                "ĐỊA THẦY THANH TÙNG - (Trọn Bộ Lộ Trình A1, A2, A3) 🔥",
+                "ĐỊA LÝ THẦY TÀI QANDA 2K9",
+                "ĐỊA LÝ CÔ MAI ANH (Trọn bộ lộ trình L1, L2, L3)"
+            ] },
+            dgnl: { icon: 'bx-brain', name: 'ĐGNL HSA & V-ACT', items: [
+                "HSA HOCMAI 2K9 LUYỆN THI ĐGNL HÀ NỘI 2027 🔥",
+                "HSA VNES 2K9 LUYỆN THI ĐGNL HÀ NỘI 2027",
+                "HSA EDU - THẦY VĂN HOA 🔥",
+                "HSA MAPSTUDY LUYỆN THI ĐGNL HÀ NỘI 2027",
+                "HSA TUYỂN SINH 247",
+                "HSA - EMPRIE 🔥",
+                "V-ACT EMPIRE 2027",
+                "V-ACT HOCMAI 2K9 LUYỆN THI ĐGNL TP.HCM 2027 🔥",
+                "V-ACT 2K9 THẦY BÙI VĂN CÔNG",
+                "V-ACT MAPSTUDY 2K9 LUYỆN THI ĐÁNH GIÁ NĂNG LỰC TP.HCM 2027"
+            ] },
+            dgtd: { icon: 'bx-target-lock', name: 'ĐGTD TSA', items: [
+                "TSA TUYỂN SINH 247 🔥",
+                "TSA HOCMAI 2K9 LUYỆN THI ĐÁNH GIÁ TƯ DUY ĐHBK HÀ NỘI 🔥",
+                "TSA NGUYỄN ĐĂNG ÁI 2K9",
+                "TSA ILP 2K9 LUYỆN THI ĐÁNH GIÁ TƯ DUY ĐHBK HÀ NỘI 2027",
+                "TSA - BMC EDUCATION 🔥",
+                "TSA - THẦY THẮNG TRỌC SAITAMA 🔥 ",
+                "TSA - MAPSTUDY - BỔ TRỢ TOÁN HỌC",
+                "MÃ THI THỬ TSA MIỄN PHÍ <span class='highlight'>(HOT)</span> 🔥",
+                "PIMAX TSA"
+            ] },
+            supham: { icon: 'bx-book-reader', name: 'ĐGNL SƯ PHẠM', items: [
+                "SPT 2K9 HN PEDA EDU LUYỆN THI ĐGNL SƯ PHẠM HÀ NỘI 2027 🔥",
+                "H-SCA 2K9 HCM PEDA EDU LUYỆN THI ĐGNL SƯ PHẠM TP.HCM 2027 🔥"
+            ] }
         };
 
         // Render Tabs
@@ -1297,7 +1380,7 @@
         }
 
         // Init first tab
-        selectTab('bonus', tabMenu.firstChild);
+        selectTab('bonus', tabMenu.querySelector('.tab-btn'));
 
         // Auto slide tabs
         let tabKeys = Object.keys(courseData);
@@ -1305,7 +1388,7 @@
         let tabInterval = setInterval(() => {
             tabIndex = (tabIndex + 1) % tabKeys.length;
             const nextKey = tabKeys[tabIndex];
-            const nextBtn = tabMenu.children[tabIndex];
+            const nextBtn = tabMenu.querySelectorAll('.tab-btn')[tabIndex];
             selectTab(nextKey, nextBtn);
         }, 5000);
         
